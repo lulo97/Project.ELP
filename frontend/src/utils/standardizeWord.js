@@ -9,3 +9,7 @@ export function getStandardizeWord({ word }) {
     
     return output;
 }
+
+export function compareStandardize(a, b) {
+    return getStandardizeWord({ word: a }) == getStandardizeWord({ word: b })
+}

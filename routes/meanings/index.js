@@ -34,6 +34,31 @@ async function getMeanings(req, res, next) {
     next();
 };
 
+async function getMeaningsForTooltip(req, res, next) {
+    let sql = `
+SELECT 
+    json_object(
+        'word', w.word,
+        'meanings', json_group_array(
+            json_object(
+                'part_of_speech', pos.name,
+                'meaning', m.meaning
+            )
+        )
+    ) AS data
+FROM Words w
+JOIN Meanings m ON m.word = w.word
+JOIN part_of_speechs pos on pos.id = m.part_of_speech
+GROUP BY w.word;
+    `;
+
+    let result = await executeSelect({ sql });
+
+    result = result.map(ele => JSON.parse(ele.data))
+
+    res.json({ data: result, error: null });
+};
+
 async function addMeaning(req, res, next) {
     const { meaning, word, part_of_speech } = req.body;
     const id = getRandomId();
@@ -58,6 +83,8 @@ async function deleteMeaning(req, res, next) {
 }
 
 router.get("/", getMeanings, paginationMiddleware);
+
+router.get("/forTooltip", getMeaningsForTooltip)
 
 router.post("/", addMeaning);
 

@@ -3,7 +3,9 @@ import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Popup } from "./Popup";
 import { getAllWords } from "../../services/word";
-import { getStandardizeWord } from "../../utils/getStandardizeWord";
+import { compareStandardize, getStandardizeWord } from "../../utils/standardizeWord";
+import { Tooltip } from "../../components/Tooltip";
+import { getMeaningsForTooltip } from "../../services/meaning";
 
 export function Read() {
   const location = useLocation();
@@ -18,6 +20,7 @@ export function Read() {
   const [currentWord, setCurrentWord] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [existWords, setExistWords] = useState([]);
+  const [meaningsForTooltip, setMeaningsForTooltip] = useState([]);
 
   async function fetchSource() {
     const result = await fetch(`/api/sources?name=${source_name}`);
@@ -30,9 +33,15 @@ export function Read() {
     setExistWords(result.data);
   }
 
+  async function fetchAllMeaningsForTooltip() {
+    const result = await getMeaningsForTooltip();
+    setMeaningsForTooltip(result);
+  }
+
   useEffect(() => {
     fetchSource();
     fetchAllWords();
+    fetchAllMeaningsForTooltip();
   }, []);
 
   function handleClose() {
@@ -51,7 +60,9 @@ export function Read() {
 
   return (
     <div style={{ margin: "10px" }}>
-      <div style={{ fontWeight: "bold", fontSize: "2rem", marginBottom: "10px" }}>
+      <div
+        style={{ fontWeight: "bold", fontSize: "2rem", marginBottom: "10px" }}
+      >
         Title: {currentSource.name}
       </div>
       <div
@@ -64,30 +75,45 @@ export function Read() {
             .map((ele) => ele.word)
             .find((ele) => {
               return (
-                getStandardizeWord({ word: ele }) ==
-                getStandardizeWord({ word: word })
+                compareStandardize(ele, word)
               );
             });
 
           const color = exist_word ? "blue" : "black";
 
+          const currentMeaningTooltip = meaningsForTooltip.find((ele) => {
+            return compareStandardize(ele.word, word);
+          });
+
+          const tooltipContent = [null, undefined, ""].includes(
+            currentMeaningTooltip
+          )
+            ? "Unknown meaning!"
+            : <ul>
+              {currentMeaningTooltip.meanings.map(ele => {
+                return <li>{`${ele.meaning} (${ele.part_of_speech})`}</li>
+              })}
+            </ul>;
+
           return (
-            <span
-              key={index}
-              style={{
-                cursor: "pointer",
-                marginRight: "4px",
-                color: color,
-                whiteSpace: "nowrap",
-              }}
-              onDoubleClick={() => {
-                const standardize_word = getStandardizeWord({ word: word });
-                setCurrentWord(standardize_word);
-                openPopup({ word: standardize_word, action: "ADD" });
-              }}
-            >
-              {word}
-            </span>
+            <Tooltip content={tooltipContent}>
+              <span
+                key={index}
+                style={{
+                  cursor: "pointer",
+                  marginRight: "4px",
+                  color: color,
+                  whiteSpace: "nowrap",
+                }}
+                onDoubleClick={() => {
+                  const standardize_word = getStandardizeWord({ word: word });
+                  setCurrentWord(standardize_word);
+                  openPopup({ word: standardize_word, action: "ADD" });
+                }}
+              >
+                {word}
+              </span>
+            </Tooltip>
           );
         })}
       </div>

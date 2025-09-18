@@ -1,5 +1,6 @@
 import { CommonPopup } from "../../../components/CommonPopup";
 import { PopupField } from "../../../components/PopupField";
+import { SelectNoStyle } from "../../../components/Select";
 
 export function Popup({
   show,
@@ -41,16 +42,13 @@ export function Popup({
       <PopupField
         label={"Part of speech"}
         fieldComponent={
-          <select
+          <SelectNoStyle
             disabled={action == "DELETE" ? true : false}
             onChange={(e) => {
               setCurrentRow({ ...row, part_of_speech: e.target.value });
             }}
-          >
-            {partOfSpeechs.map((ele) => {
-              return <option value={ele.id}>{ele.name}</option>;
-            })}
-          </select>
+            options={partOfSpeechs}
+          />
         }
       />
 

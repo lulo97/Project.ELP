@@ -51,3 +51,9 @@ export async function deleteMeaning({ row }) {
         method: "DELETE",
     });
 }
+
+export async function getMeaningsForTooltip() {
+    const result = await fetch(`/api/meanings/forTooltip`);
+    const result_json = await result.json();
+    return result_json.data;
+}

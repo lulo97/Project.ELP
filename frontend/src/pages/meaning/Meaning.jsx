@@ -11,7 +11,7 @@ import { getPartOfSpeechs } from "../../services/part_of_speech";
 import { PageTitle } from "../../components/PageTitle";
 import { Button } from "../../components/Button";
 
-const EMPTY_ROW = { id: "", meaning: "", word: "", part_of_speech: "noun" };
+const EMPTY_ROW = { id: "", meaning: "", word: "", part_of_speech: "" };
 
 export function Meaning() {
   const [rows, setRows] = useState([]);

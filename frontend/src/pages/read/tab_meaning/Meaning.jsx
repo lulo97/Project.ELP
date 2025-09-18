@@ -15,7 +15,7 @@ export function Meaning({
   partOfSpeechs,
   paginationData,
 }) {
-  const EMPTY_ROW = { id: "", meaning: "", word: word, part_of_speech: "noun" };
+  const EMPTY_ROW = { id: "", meaning: "", word: word, part_of_speech: "" };
 
   const [currentRow, setCurrentRow] = useState(EMPTY_ROW);
   const [showPopup, setShowPopup] = useState(false);
