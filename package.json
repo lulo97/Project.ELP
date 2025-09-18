@@ -1,0 +1,24 @@
+{
+  "name": "expressreactsameport",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build-start": "cd frontend && npm run build && cd .. && node app.js",
+    "dev": "nodemon --exec \"npm run build-start\""
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "express": "^5.1.0",
+    "install": "^0.13.0",
+    "npm": "^11.6.0",
+    "sqlite3": "^5.1.7",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}

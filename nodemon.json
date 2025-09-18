@@ -1,0 +1,4 @@
+{
+  "ignore": ["frontend/dist"],
+  "ext": "js,jsx,json,ts,tsx"
+}
