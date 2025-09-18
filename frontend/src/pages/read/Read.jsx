@@ -27,7 +27,7 @@ export function Read() {
 
   async function fetchAllWords() {
     const result = await getAllWords();
-    setExistWords(result);
+    setExistWords(result.data);
   }
 
   useEffect(() => {

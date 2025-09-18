@@ -19,10 +19,12 @@ export function Example() {
   const [showPopup, setShowPopup] = useState(false);
   const [action, setAction] = useState("ADD");
   const [partOfSpeechs, setPartOfSpeechs] = useState([]);
+  const [paginationData, setPaginationData] = useState({});
 
-  async function fetchRows() {
-    const result = await getAllExamples();
-    setRows(result);
+  async function fetchRows({ pageIndex, pageSize } = { pageIndex: null, pageSize: 5 }) {
+    const result = await getAllExamples({ pageIndex, pageSize });
+    setRows(result.data);
+    setPaginationData(result.pagination);
   }
 
   async function fetchPartOfSpeechs() {
@@ -81,6 +83,8 @@ export function Example() {
         ]}
         rows={rows}
         openPopup={openPopup}
+        paginationData={paginationData}
+        fetchData={fetchRows}
       />
       <Popup
         title={"Add"}

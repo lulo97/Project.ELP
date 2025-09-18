@@ -10,10 +10,10 @@ export async function getMeaning({ meaning }) {
     return null;
 }
 
-export async function getAllMeanings() {
-    const result = await fetch(`/api/meanings`);
+export async function getAllMeanings({ pageIndex, pageSize }) {
+    const result = await fetch(`/api/meanings?pageIndex=${pageIndex || ""}&pageSize=${pageSize || ""}`);
     const result_json = await result.json();
-    return result_json.data;
+    return result_json;
 }
 
 export async function getMeaningsByWord({ word }) {

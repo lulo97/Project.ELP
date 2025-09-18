@@ -1,6 +1,7 @@
 const express = require("express");
 const { executeSelect, execute } = require("../../database/execute.js");
 const { getRandomId } = require("../../utils/getRandomId.js");
+const { paginationMiddleware } = require("../../middleware/paginationMiddleware.js")
 
 const router = express.Router();
 
@@ -27,7 +28,10 @@ async function getMeanings(req, res, next) {
 
     const result = await executeSelect({ sql, params });
 
-    res.json({ data: result, error: null });
+    res.locals.data = result;
+    res.locals.error = null;
+
+    next();
 };
 
 async function addMeaning(req, res, next) {
@@ -53,7 +57,7 @@ async function deleteMeaning(req, res, next) {
     res.json({ data: result, error: null });
 }
 
-router.get("/", getMeanings);
+router.get("/", getMeanings, paginationMiddleware);
 
 router.post("/", addMeaning);
 

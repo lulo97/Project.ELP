@@ -10,10 +10,10 @@ export async function getExample({ example }) {
     return null;
 }
 
-export async function getAllExamples() {
-    const result = await fetch(`/api/examples`);
+export async function getAllExamples({ pageIndex, pageSize }) {
+    const result = await fetch(`/api/examples?pageIndex=${pageIndex || ""}&pageSize=${pageSize || ""}`);
     const result_json = await result.json();
-    return result_json.data;
+    return result_json;
 }
 
 export async function getExamplesByWord({ word }) {
