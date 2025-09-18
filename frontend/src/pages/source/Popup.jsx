@@ -1,4 +1,5 @@
 import { CommonPopup } from "../../components/CommonPopup";
+import { PopupField } from "../../components/PopupField";
 
 export function Popup({
   show,
@@ -16,28 +17,32 @@ export function Popup({
       handleConfirm={() => handleConfirm({ action })}
       handleClose={handleClose}
     >
-      <div>
-        <label>Id</label>
-        <input value={row.id} disabled />
-      </div>
+      <PopupField
+        label={"Id"}
+        fieldComponent={<input value={row.id} disabled />}
+      />
 
-      <div>
-        <label>Name</label>
-        <input
-          value={row.name}
-          disabled={action == "DELETE" ? true : false}
-          onChange={(e) => setCurrentRow({ ...row, name: e.target.value })}
-        />
-      </div>
+      <PopupField
+        label={"Name"}
+        fieldComponent={
+          <input
+            value={row.name}
+            disabled={action == "DELETE" ? true : false}
+            onChange={(e) => setCurrentRow({ ...row, name: e.target.value })}
+          />
+        }
+      />
 
-      <div>
-        <label>Source</label>
-        <textarea
-          value={row.source}
-          disabled={action == "DELETE" ? true : false}
-          onChange={(e) => setCurrentRow({ ...row, source: e.target.value })}
-        />
-      </div>
+      <PopupField
+        label={"Source"}
+        fieldComponent={
+          <textarea
+            value={row.source}
+            disabled={action == "DELETE" ? true : false}
+            onChange={(e) => setCurrentRow({ ...row, source: e.target.value })}
+          />
+        }
+      />
     </CommonPopup>
   );
 }

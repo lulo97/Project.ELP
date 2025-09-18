@@ -6,6 +6,8 @@ export function Pagination({
   paginationData = {
     totalCount: 1,
     totalPages: 1,
+    pageSize: 1,
+    pageIndex: 1
   },
 }) {
   const [selectedPage, setSelectedPage] = useState(1);
@@ -16,8 +18,13 @@ export function Pagination({
     await fetchData({ pageIndex, pageSize: paginationData.pageSize });
   }
 
-  const start = (selectedPage - 1) * paginationData.pageSize + 1;
-  const end = Math.min(selectedPage * paginationData.pageSize, paginationData.totalCount);
+  let start = (selectedPage - 1) * paginationData.pageSize + 1;
+  let end = Math.min(selectedPage * paginationData.pageSize, paginationData.totalCount);
+
+  if (paginationData.totalCount == 0) {
+    start = 0;
+    end = 0;
+  }
 
   return (
     <div className="flex justify-between items-center p-4 border-t bg-white">

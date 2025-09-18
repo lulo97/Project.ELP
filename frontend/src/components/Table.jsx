@@ -49,7 +49,7 @@ export function Table({
                   const key = isObject(col) ? col.id : col;
                   const cell = getLowercaseKeys(row)[key.toLowerCase()];
                   return (
-                    <td key={key + rowIndex} className="px-4 py-3">
+                    <td key={key + rowIndex} className="px-4 py-3 max-w-[200px] truncate">
                       {cell}
                     </td>
                   );

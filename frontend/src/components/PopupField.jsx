@@ -1,10 +1,12 @@
 import { cloneElement } from "react";
 
-export function PopupField({ 
-  label = "", 
-  fieldComponent, 
-  direction = "horizontal" // default
+export function PopupField({
+  label = "",
+  fieldComponent,
+  direction = "horizontal", // default
 }) {
+  const isTextarea = fieldComponent.type === "textarea";
+
   // Apply Ant Design-like Tailwind styles to the fieldComponent
   const styledField = cloneElement(fieldComponent, {
     placeholder: label,
@@ -14,7 +16,8 @@ export function PopupField({
       "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
       "text-sm text-gray-800",
       "flex-1", // allow growing in horizontal mode
-      fieldComponent.props.className || "" // keep user-provided classes
+      isTextarea ? "min-h-[200px]" : "",
+      fieldComponent.props.className || "", // keep user-provided classes
     ].join(" "),
   });
 

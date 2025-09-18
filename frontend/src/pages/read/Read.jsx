@@ -26,7 +26,7 @@ export function Read() {
   }
 
   async function fetchAllWords() {
-    const result = await getAllWords();
+    const result = await getAllWords({ pageIndex: 1, pageSize: null });
     setExistWords(result.data);
   }
 
@@ -38,6 +38,8 @@ export function Read() {
   function handleClose() {
     setCurrentWord("");
     setShowPopup(false);
+    fetchSource();
+    fetchAllWords();
   }
 
   function openPopup({ word, action }) {
@@ -48,8 +50,8 @@ export function Read() {
   if (!currentSource) return <div>Can't find source = {source_name}</div>;
 
   return (
-    <div>
-      <div style={{ fontWeight: "bold", fontSize: "2rem" }}>
+    <div style={{ margin: "10px" }}>
+      <div style={{ fontWeight: "bold", fontSize: "2rem", marginBottom: "10px" }}>
         Title: {currentSource.name}
       </div>
       <div
@@ -78,7 +80,7 @@ export function Read() {
                 color: color,
                 whiteSpace: "nowrap",
               }}
-              onClick={() => {
+              onDoubleClick={() => {
                 const standardize_word = getStandardizeWord({ word: word });
                 setCurrentWord(standardize_word);
                 openPopup({ word: standardize_word, action: "ADD" });

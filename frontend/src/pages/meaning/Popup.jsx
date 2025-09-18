@@ -1,4 +1,5 @@
 import { CommonPopup } from "../../components/CommonPopup";
+import { PopupField } from "../../components/PopupField";
 
 export function Popup({
   show,
@@ -17,42 +18,48 @@ export function Popup({
       handleConfirm={() => handleConfirm({ action })}
       handleClose={handleClose}
     >
-      <div>
-        <label>Id</label>
-        <input value={row.id} disabled />
-      </div>
+      <PopupField
+        label={"Id"}
+        fieldComponent={<input value={row.id} disabled />}
+      />
 
-      <div>
-        <label>Word</label>
-        <input
-          value={row.word}
-          disabled={action == "DELETE" ? true : false}
-          onChange={(e) => setCurrentRow({ ...row, word: e.target.value })}
-        />
-      </div>
+      <PopupField
+        label={"Word"}
+        fieldComponent={
+          <input
+            value={row.word}
+            disabled={action == "DELETE" ? true : false}
+            onChange={(e) => setCurrentRow({ ...row, word: e.target.value })}
+          />
+        }
+      />
 
-      <div>
-        <label>Meaning</label>
-        <input
-          value={row.meaning}
-          disabled={action == "DELETE" ? true : false}
-          onChange={(e) => setCurrentRow({ ...row, meaning: e.target.value })}
-        />
-      </div>
-
-      <div>
-        <label>Part of speech</label>
-        <select
-          disabled={action == "DELETE" ? true : false}
-          onChange={(e) => {
-            setCurrentRow({ ...row, part_of_speech: e.target.value });
-          }}
-        >
-          {partOfSpeechs.map((ele) => {
-            return <option value={ele.id}>{ele.name}</option>;
-          })}
-        </select>
-      </div>
+      <PopupField
+        label={"Meaning"}
+        fieldComponent={
+          <input
+            value={row.meaning}
+            disabled={action == "DELETE" ? true : false}
+            onChange={(e) => setCurrentRow({ ...row, meaning: e.target.value })}
+          />
+        }
+      />
+      
+      <PopupField
+        label={"Part of speech"}
+        fieldComponent={
+          <select
+            disabled={action == "DELETE" ? true : false}
+            onChange={(e) => {
+              setCurrentRow({ ...row, part_of_speech: e.target.value });
+            }}
+          >
+            {partOfSpeechs.map((ele) => {
+              return <option value={ele.id}>{ele.name}</option>;
+            })}
+          </select>
+        }
+      />
     </CommonPopup>
   );
 }

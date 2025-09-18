@@ -1,8 +1,16 @@
-export function Button({ text, onClick }) {
+export function Button({ text, onClick, disabled = false, className = "" }) {
   return (
     <button
-      className="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 transition"
-      onClick={() => onClick()}
+      disabled={disabled}
+      className={`
+        px-4 py-2 rounded-lg shadow-md transition
+        ${disabled
+          ? "bg-gray-400 text-gray-200 cursor-not-allowed"
+          : "bg-indigo-600 text-white hover:bg-indigo-700"
+        }
+        ${" " + className}
+      `}
+      onClick={() => !disabled && onClick()}
     >
       {text}
     </button>

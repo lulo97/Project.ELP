@@ -22,7 +22,7 @@ function paginationMiddleware(req, res, next) {
     error: error ?? null,
     pagination: {
       pageIndex: pageIndex,
-      pageSize: pageSize || null,
+      pageSize: pageSize || 1,
       totalCount: data.length,
       totalPages: pageSize ? Math.ceil(data.length / pageSize) : data.length,
     }

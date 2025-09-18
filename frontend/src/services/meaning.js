@@ -16,14 +16,14 @@ export async function getAllMeanings({ pageIndex, pageSize }) {
     return result_json;
 }
 
-export async function getMeaningsByWord({ word }) {
+export async function getMeaningsByWord({ word, pageIndex, pageSize }) {
     if ([null, undefined, ""].includes(word)) {
         throw Error("Word can't be null, input word = ", word)
     }
 
-    const result = await fetch(`/api/meanings?word=${word}`);
+    const result = await fetch(`/api/meanings?word=${word}&pageIndex=${pageIndex || ""}&pageSize=${pageSize || ""}`);
     const result_json = await result.json();
-    return result_json.data;
+    return result_json;
 }
 
 export async function addMeaning({ row }) {

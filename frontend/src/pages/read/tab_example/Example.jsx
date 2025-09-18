@@ -6,8 +6,15 @@ import {
   deleteExample,
   updateExample,
 } from "../../../services/example";
+import { Button } from "../../../components/Button";
 
-export function Example({ word, existingRows, fetchExistingRows, partOfSpeechs }) {
+export function Example({
+  word,
+  existingRows,
+  fetchExistingRows,
+  partOfSpeechs,
+  paginationData,
+}) {
   const EMPTY_ROW = { id: "", example: "", word: word, part_of_speech: "noun" };
 
   const [currentRow, setCurrentRow] = useState(EMPTY_ROW);
@@ -44,11 +51,12 @@ export function Example({ word, existingRows, fetchExistingRows, partOfSpeechs }
 
   return (
     <div>
-      <button
+      <Button
+        text={"Add"}
         onClick={() => openPopup({ currentRow: EMPTY_ROW, action: "ADD" })}
-      >
-        Add
-      </button>
+        className="mb-4"
+      />
+
       <Table
         columns={[
           { id: "id", name: "Id" },
@@ -58,6 +66,8 @@ export function Example({ word, existingRows, fetchExistingRows, partOfSpeechs }
         ]}
         rows={existingRows}
         openPopup={openPopup}
+        paginationData={paginationData}
+        fetchData={fetchExistingRows}
       />
       <Popup
         title={"Add"}

@@ -6,8 +6,15 @@ import {
   deleteMeaning,
   updateMeaning,
 } from "../../../services/meaning";
+import { Button } from "../../../components/Button";
 
-export function Meaning({ word, existingRows, fetchExistingRows, partOfSpeechs }) {
+export function Meaning({
+  word,
+  existingRows,
+  fetchExistingRows,
+  partOfSpeechs,
+  paginationData,
+}) {
   const EMPTY_ROW = { id: "", meaning: "", word: word, part_of_speech: "noun" };
 
   const [currentRow, setCurrentRow] = useState(EMPTY_ROW);
@@ -44,11 +51,11 @@ export function Meaning({ word, existingRows, fetchExistingRows, partOfSpeechs }
 
   return (
     <div>
-      <button
+      <Button
+        text={"Add"}
         onClick={() => openPopup({ currentRow: EMPTY_ROW, action: "ADD" })}
-      >
-        Add
-      </button>
+        className="mb-4"
+      />
       <Table
         columns={[
           { id: "id", name: "Id" },
@@ -58,6 +65,8 @@ export function Meaning({ word, existingRows, fetchExistingRows, partOfSpeechs }
         ]}
         rows={existingRows}
         openPopup={openPopup}
+        paginationData={paginationData}
+        fetchData={fetchExistingRows}
       />
       <Popup
         title={"Add"}

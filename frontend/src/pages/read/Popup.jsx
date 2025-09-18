@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { CommonPopup } from "../../components/CommonPopup";
 import { getWord } from "../../services/word.js";
 import { VerticalTab } from "../../components/VerticalTab.jsx";
-import { TabWord } from "./TabWord.jsx";
+import { TabWord } from "./tab_word/TabWord.jsx";
 import { TabMeaning } from "./tab_meaning/TabMeaning.jsx";
 import { TabExample } from "./tab_example/TabExample.jsx";
 
@@ -36,6 +36,9 @@ export function Popup({ show, title, word, handleClose }) {
       show={show}
       title={title}
       overWrittenBoxStyle={{ display: "flex", flexDirection: "column" }}
+      handleClose={handleClose}
+      isShowConfirmButton={false}
+      height="90%"
     >
       <div
         style={{
@@ -48,6 +51,7 @@ export function Popup({ show, title, word, handleClose }) {
           style={{
             flexGrow: "1",
             display: "flex",
+            gap: "10px"
           }}
         >
           <VerticalTab
@@ -71,12 +75,6 @@ export function Popup({ show, title, word, handleClose }) {
           {currentTabId == "meaning" && <TabMeaning word={word} />}
 
           {currentTabId == "example" && <TabExample word={word} />}
-        </div>
-
-        <div
-          style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}
-        >
-          <button onClick={handleClose}>Close</button>
         </div>
       </div>
     </CommonPopup>

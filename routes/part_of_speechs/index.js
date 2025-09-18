@@ -5,9 +5,22 @@ const router = express.Router();
 
 async function getPartOfSpeechs(req, res, next) {
 
-    let sql = "SELECT * FROM PART_OF_SPEECHS";
+    const { word } = req.query;
 
-    const result = await executeSelect({ sql });
+    let sql = `SELECT * FROM PART_OF_SPEECHS`;
+
+    if (word) {
+        sql = `
+            SELECT pos.*
+            FROM PART_OF_SPEECHS pos
+            JOIN MEANINGS m on m.part_of_speech = pos.id
+            WHERE m.word = ?
+        `
+    }
+
+    console.log({ sql: sql, param: [word] })
+
+    const result = await executeSelect({ sql: sql, params: [word] });
 
     res.json({ data: result, error: null });
 };

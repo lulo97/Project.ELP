@@ -16,14 +16,14 @@ export async function getAllExamples({ pageIndex, pageSize }) {
     return result_json;
 }
 
-export async function getExamplesByWord({ word }) {
+export async function getExamplesByWord({ word, pageIndex, pageSize }) {
     if ([null, undefined, ""].includes(word)) {
         throw Error("Word can't be null, input word = ", word)
     }
 
-    const result = await fetch(`/api/examples?word=${word}`);
+    const result = await fetch(`/api/examples?word=${word}&pageIndex=${pageIndex || ""}&pageSize=${pageSize || ""}`);
     const result_json = await result.json();
-    return result_json.data;
+    return result_json;
 }
 
 export async function addExample({ row }) {
