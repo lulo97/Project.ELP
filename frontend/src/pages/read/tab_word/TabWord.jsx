@@ -1,4 +1,5 @@
 import { Button } from "../../../components/Button";
+import { CommonAudio } from "../../../components/CommonAudio";
 import { PopupField } from "../../../components/PopupField";
 import { useEffect, useState } from "react";
 
@@ -28,12 +29,16 @@ export function TabWord({ word, wordData, fetchWordData }) {
 
   return (
     <div style={{ flexGrow: "1" }}>
-      <Button
-        disabled={addButtonDisabled}
-        text={"Add"}
-        onClick={() => handleAdd()}
-        className="mb-4"
-      />
+      <div className="flex gap-4">
+        <Button
+          disabled={addButtonDisabled}
+          text={"Add"}
+          onClick={() => handleAdd()}
+          className="mb-4"
+        />
+
+        <CommonAudio text={word} />
+      </div>
 
       <PopupField
         label="Word"

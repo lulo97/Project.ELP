@@ -1,0 +1,13 @@
+docker rm -f word-collection-container
+
+docker rmi word-collection-image
+
+docker build -t word-collection-image .
+
+docker run -d `
+  -p 3000:3000 `
+  --name word-collection-container `
+  -v C:/Users/admin/Desktop/ExpressReactSamePort/database/database.sqlite:/app/database/database.sqlite `
+  word-collection-image
+
+

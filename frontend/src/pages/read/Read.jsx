@@ -3,9 +3,8 @@ import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Popup } from "./Popup";
 import { getAllWords } from "../../services/word";
-import { compareStandardize, getStandardizeWord } from "../../utils/standardizeWord";
-import { Tooltip } from "../../components/Tooltip";
 import { getMeaningsForTooltip } from "../../services/meaning";
+import { ClickableWordParagraph } from "./ClickableWordParagraph";
 
 export function Read() {
   const location = useLocation();
@@ -38,17 +37,20 @@ export function Read() {
     setMeaningsForTooltip(result);
   }
 
-  useEffect(() => {
+  function reset() {
     fetchSource();
     fetchAllWords();
     fetchAllMeaningsForTooltip();
+  }
+
+  useEffect(() => {
+    reset();
   }, []);
 
   function handleClose() {
     setCurrentWord("");
     setShowPopup(false);
-    fetchSource();
-    fetchAllWords();
+    reset();
   }
 
   function openPopup({ word, action }) {
@@ -65,58 +67,14 @@ export function Read() {
       >
         Title: {currentSource.name}
       </div>
-      <div
-        style={{
-          wordWrap: "break-word",
-        }}
-      >
-        {currentSource.source.split(" ").map((word, index) => {
-          const exist_word = existWords
-            .map((ele) => ele.word)
-            .find((ele) => {
-              return (
-                compareStandardize(ele, word)
-              );
-            });
 
-          const color = exist_word ? "blue" : "black";
-
-          const currentMeaningTooltip = meaningsForTooltip.find((ele) => {
-            return compareStandardize(ele.word, word);
-          });
-
-          const tooltipContent = [null, undefined, ""].includes(
-            currentMeaningTooltip
-          )
-            ? "Unknown meaning!"
-            : <ul>
-              {currentMeaningTooltip.meanings.map(ele => {
-                return <li>{`${ele.meaning} (${ele.part_of_speech})`}</li>
-              })}
-            </ul>;
-
-          return (
-            <Tooltip content={tooltipContent}>
-              <span
-                key={index}
-                style={{
-                  cursor: "pointer",
-                  marginRight: "4px",
-                  color: color,
-                  whiteSpace: "nowrap",
-                }}
-                onDoubleClick={() => {
-                  const standardize_word = getStandardizeWord({ word: word });
-                  setCurrentWord(standardize_word);
-                  openPopup({ word: standardize_word, action: "ADD" });
-                }}
-              >
-                {word}
-              </span>
-            </Tooltip>
-          );
-        })}
-      </div>
+      <ClickableWordParagraph
+        currentSource={currentSource}
+        existWords={existWords}
+        meaningsForTooltip={meaningsForTooltip}
+        setCurrentWord={setCurrentWord}
+        openPopup={openPopup}
+      />
 
       <Popup
         show={showPopup}

@@ -9,4 +9,5 @@ module.exports = function (app) {
     app.use("/api/meanings", require("./meanings/index.js"));
     app.use("/api/part_of_speechs", require("./part_of_speechs/index.js"));
     app.use("/api/examples", require("./examples/index.js"));
+    app.use("/api/tts", require("./tts/index.js"));
 };

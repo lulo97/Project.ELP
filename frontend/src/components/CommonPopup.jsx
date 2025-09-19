@@ -14,8 +14,12 @@ export function CommonPopup({
   if (!show) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
+    <div
+      onClick={() => handleClose()}
+      className="fixed inset-0 flex items-center justify-center bg-black/30 z-50"
+    >
       <div
+        onClick={(e) => e.stopPropagation()}
         className="bg-white rounded-lg shadow-lg flex flex-col"
         style={{
           width: width || "90%",
