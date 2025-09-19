@@ -3,6 +3,7 @@ import { cloneElement } from "react";
 import { isObject } from "../utils/isObject";
 import { Button } from "./Button";
 import { Pagination } from "./Pagination";
+import { Fragment } from "react";
 
 export function Table({
   columns = [],
@@ -48,8 +49,15 @@ export function Table({
                 {columns.map((col) => {
                   const key = isObject(col) ? col.id : col;
                   const cell = getLowercaseKeys(row)[key.toLowerCase()];
+                  const isTruncate = col.truncate != null ? col.truncate : true;
+
                   return (
-                    <td key={key + rowIndex} className="px-4 py-3 max-w-[200px] truncate">
+                    <td
+                      key={key + rowIndex}
+                      className={`px-4 py-3 max-w-[200px] ${
+                        isTruncate ? "truncate" : ""
+                      }`}
+                    >
                       {cell}
                     </td>
                   );
@@ -68,12 +76,9 @@ export function Table({
                       openPopup({ currentRow: row, action: "DELETE" })
                     }
                   />
-                  {additionButtons.map((Btn, i) =>
-                    cloneElement(Btn, {
-                      key: i,
-                      onClick: () => Btn.props.onClick(row),
-                    })
-                  )}
+                  {additionButtons.map((renderBtn, i) => (
+                    <Fragment key={i}>{renderBtn(row)}</Fragment>
+                  ))}
                 </td>
               </tr>
             ))

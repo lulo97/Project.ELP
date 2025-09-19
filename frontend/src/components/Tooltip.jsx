@@ -1,7 +1,8 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 export function Tooltip({ children, content, placement = "top", delay = 500 }) {
   const [visible, setVisible] = useState(false);
+  const [currentPlacement, setCurrentPlacement] = useState(placement);
   const timeoutRef = useRef(null);
 
   const placements = {
@@ -22,6 +23,32 @@ export function Tooltip({ children, content, placement = "top", delay = 500 }) {
     setVisible(false);
   };
 
+  const tooltipRef = useRef(null);
+
+  useEffect(() => {
+    if (visible && tooltipRef.current) {
+      const rect = tooltipRef.current.getBoundingClientRect();
+
+      // Amount of overflow on the right
+      const horizontal_bar_width = 12;
+      const overflowRight = rect.right - window.innerWidth + horizontal_bar_width;
+      // Amount of overflow on the left
+      const overflowLeft = 0 - rect.left;
+
+      if (overflowRight > 0) {
+        // Shift left by the overflow amount
+        //tooltipRef.current.style.left = `calc(50% - ${2*overflowRight}px)`;
+        setCurrentPlacement('left')
+      } else if (overflowLeft > 0) {
+        // Shift right by the overflow amount
+        tooltipRef.current.style.left = `calc(50% + ${overflowLeft}px)`;
+      } else {
+        // Reset to center
+        tooltipRef.current.style.left = "";
+      }
+    }
+  }, [visible]);
+
   return (
     <div
       className="relative inline-block"
@@ -31,9 +58,10 @@ export function Tooltip({ children, content, placement = "top", delay = 500 }) {
       {children}
       {visible && (
         <div
+          ref={tooltipRef}
           className={`absolute z-50 px-2 py-1 text-sm rounded-md shadow-md
             bg-black text-white transition-opacity duration-200 whitespace-nowrap
-            ${placements[placement]}`}
+            ${placements[currentPlacement]}`}
         >
           {content}
         </div>

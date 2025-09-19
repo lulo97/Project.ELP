@@ -7,6 +7,7 @@ import {
   updateExample,
 } from "../../../services/example";
 import { Button } from "../../../components/Button";
+import { CommonAudio } from "../../../components/CommonAudio";
 
 export function Example({
   word,
@@ -60,7 +61,7 @@ export function Example({
       <Table
         columns={[
           { id: "id", name: "Id" },
-          { id: "example", name: "Example" },
+          { id: "example", name: "Example", truncate: false },
           { id: "word", name: "Word" },
           { id: "part_of_speech", name: "Part of speech" },
         ]}
@@ -68,6 +69,7 @@ export function Example({
         openPopup={openPopup}
         paginationData={paginationData}
         fetchData={fetchExistingRows}
+        additionButtons={[(row) => <CommonAudio text={row.example} />]}
       />
       <Popup
         title={"Add"}

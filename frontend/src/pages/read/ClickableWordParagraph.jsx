@@ -53,7 +53,7 @@ export function ClickableWordParagraph({
               key={index}
               style={{
                 cursor: "pointer",
-                marginRight: "4px",
+                marginRight: "0px",
                 color: color,
                 whiteSpace: "nowrap",
               }}
@@ -65,6 +65,7 @@ export function ClickableWordParagraph({
             >
               {word}
             </span>
+            &nbsp;
           </Tooltip>
         );
       })}

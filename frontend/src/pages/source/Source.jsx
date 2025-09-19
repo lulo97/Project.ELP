@@ -14,8 +14,10 @@ export function Source() {
   const [action, setAction] = useState("ADD");
   const [paginationData, setPaginationData] = useState({});
 
-  async function fetchRows({ pageIndex, pageSize } = { pageIndex: null, pageSize: 5 }) {
-    const result = await getAllSources({ pageIndex, pageSize })
+  async function fetchRows(
+    { pageIndex, pageSize } = { pageIndex: null, pageSize: 5 }
+  ) {
+    const result = await getAllSources({ pageIndex, pageSize });
     setRows(result.data);
     setPaginationData(result.pagination);
   }
@@ -80,12 +82,14 @@ export function Source() {
         rows={rows}
         openPopup={openPopup}
         additionButtons={[
-          <Button
-            text={"Read"}
-            onClick={(row) =>
-              (window.location.href = `/read?source_name=${row.name}`)
-            }
-          />,
+          (row) => (
+            <Button
+              text={"Read"}
+              onClick={() =>
+                (window.location.href = `/read?source_name=${row.name}`)
+              }
+            />
+          ),
         ]}
         paginationData={paginationData}
         fetchData={fetchRows}
