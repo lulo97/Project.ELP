@@ -10,11 +10,11 @@ docker build -t word-collection-image .
 
 REM Run container with SQLite volume bind
 docker run -d ^
-  -p 3000:3000 ^
+  -p 3001:3001 ^
   --name word-collection-container ^
-  -v C:/Users/admin/Desktop/ExpressReactSamePort/database/database.sqlite:/app/database/database.sqlite ^
+  -v C:/Users/admin\Desktop/WordCollection_ReactExpress/Application/database/database.sqlite:/app/database/database.sqlite ^
   word-collection-image
 
 echo.
-echo CleanStart finished. App should be running on http://localhost:3000
+echo CleanStart finished. App should be running on http://localhost:3001
 pause

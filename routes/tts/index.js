@@ -9,7 +9,9 @@ async function tts(req, res, next) {
             return res.status(400).json({ data: null, error: "Missing text parameter" });
         }
 
-        const result = await fetch(`http://localhost:5000/tts?text=${encodeURIComponent(text)}`);
+        const ttsHost = process.env.TTS_HOST || 'http://localhost:5000';
+
+        const result = await fetch(`${ttsHost}/tts?text=${encodeURIComponent(text)}`);
         const result_json = await result.json();
 
         res.json({ data: result_json, error: null });

@@ -21,6 +21,10 @@ FROM node:20-alpine
 
 WORKDIR /app
 
+# Set PORT for runtime
+ENV PORT=3001
+ENV TTS_HOST=http://host.docker.internal:5000
+
 # Copy only necessary files
 COPY package*.json ./
 # Install only production dependencies
@@ -38,7 +42,7 @@ COPY utils ./utils
 COPY --from=build /app/frontend/dist ./frontend/dist
 
 # Expose port
-EXPOSE 3000
+EXPOSE 3001
 
 # Run the app
 CMD ["node", "app.js"]
