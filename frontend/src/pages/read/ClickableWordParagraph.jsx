@@ -1,6 +1,15 @@
-import { compareStandardize, getStandardizeWord } from "../../utils/standardizeWord";
+import {
+  compareStandardize,
+  getStandardizeWord,
+} from "../../utils/standardizeWord";
 import { Tooltip } from "../../components/Tooltip";
-import { NEW_LINE_CHARACTER, splitParagraphContainsNewLines } from "../../utils/splitParagraphContainsNewLines";
+import {
+  NEW_LINE_CHARACTER,
+  splitParagraphContainsNewLines,
+} from "../../utils/splitParagraphContainsNewLines";
+import { useEffect, useState } from "react";
+import { getWindowSelectedText } from "../../utils/getWindowSelectedText";
+import { useSelectedText } from "../../hooks/useSelectedText";
 
 export function ClickableWordParagraph({
   currentSource,
@@ -9,8 +18,10 @@ export function ClickableWordParagraph({
   setCurrentWord = () => {},
   openPopup = () => {},
 }) {
-    const rawSource = currentSource.source.split(" ");
-    const rawSourceWithNewLines = splitParagraphContainsNewLines(rawSource);
+  const rawSource = currentSource.source.split(" ");
+  const rawSourceWithNewLines = splitParagraphContainsNewLines(rawSource);
+
+  const selectedText = useSelectedText();
 
   return (
     <div
@@ -20,7 +31,7 @@ export function ClickableWordParagraph({
     >
       {rawSourceWithNewLines.map((word, index) => {
         if (word == NEW_LINE_CHARACTER) {
-          return <br />
+          return <br />;
         }
 
         const exist_word = existWords
@@ -48,7 +59,7 @@ export function ClickableWordParagraph({
         );
 
         return (
-          <Tooltip content={tooltipContent}>
+          <Tooltip isDisable={selectedText.length != 0} content={tooltipContent}>
             <span
               key={index}
               style={{

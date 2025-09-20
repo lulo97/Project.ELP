@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 
-export function Tooltip({ children, content, placement = "top", delay = 500 }) {
+export function Tooltip({ children, content, placement = "top", delay = 500, isDisable=false }) {
   const [visible, setVisible] = useState(false);
   const [currentPlacement, setCurrentPlacement] = useState(placement);
   const timeoutRef = useRef(null);
@@ -56,7 +56,7 @@ export function Tooltip({ children, content, placement = "top", delay = 500 }) {
       onMouseLeave={hideTooltip}
     >
       {children}
-      {visible && (
+      {visible && isDisable == false && (
         <div
           ref={tooltipRef}
           className={`absolute z-50 px-2 py-1 text-sm rounded-md shadow-md
