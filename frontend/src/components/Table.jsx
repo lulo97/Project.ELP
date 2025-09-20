@@ -55,7 +55,7 @@ export function Table({
                     <td
                       key={key + rowIndex}
                       className={`px-4 py-3 max-w-[200px] ${
-                        isTruncate ? "truncate" : ""
+                        isTruncate ? "truncate" : "whitespace-pre-line"
                       }`}
                     >
                       {cell}

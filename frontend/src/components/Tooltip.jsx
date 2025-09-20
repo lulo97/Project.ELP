@@ -1,6 +1,12 @@
 import { useState, useRef, useEffect } from "react";
 
-export function Tooltip({ children, content, placement = "top", delay = 500, isDisable=false }) {
+export function Tooltip({
+  children,
+  content,
+  placement = "top",
+  delay = 500,
+  isDisable = false,
+}) {
   const [visible, setVisible] = useState(false);
   const [currentPlacement, setCurrentPlacement] = useState(placement);
   const timeoutRef = useRef(null);
@@ -31,14 +37,15 @@ export function Tooltip({ children, content, placement = "top", delay = 500, isD
 
       // Amount of overflow on the right
       const horizontal_bar_width = 12;
-      const overflowRight = rect.right - window.innerWidth + horizontal_bar_width;
+      const overflowRight =
+        rect.right - window.innerWidth + horizontal_bar_width;
       // Amount of overflow on the left
       const overflowLeft = 0 - rect.left;
 
       if (overflowRight > 0) {
         // Shift left by the overflow amount
         //tooltipRef.current.style.left = `calc(50% - ${2*overflowRight}px)`;
-        setCurrentPlacement('left')
+        setCurrentPlacement("left");
       } else if (overflowLeft > 0) {
         // Shift right by the overflow amount
         tooltipRef.current.style.left = `calc(50% + ${overflowLeft}px)`;
@@ -49,6 +56,9 @@ export function Tooltip({ children, content, placement = "top", delay = 500, isD
     }
   }, [visible]);
 
+  const isContentNotNull =
+    ![null, undefined].includes(content) && content.length != 0;
+
   return (
     <div
       className="relative inline-block"
@@ -56,7 +66,7 @@ export function Tooltip({ children, content, placement = "top", delay = 500, isD
       onMouseLeave={hideTooltip}
     >
       {children}
-      {visible && isDisable == false && (
+      {visible && isDisable == false && isContentNotNull && (
         <div
           ref={tooltipRef}
           className={`absolute z-50 px-2 py-1 text-sm rounded-md shadow-md

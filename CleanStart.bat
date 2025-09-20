@@ -12,6 +12,7 @@ REM Run container with SQLite volume bind
 docker run -d ^
   -p 3001:3001 ^
   --name word-collection-container ^
+  --restart unless-stopped ^
   -v C:/Users/admin\Desktop/WordCollection_ReactExpress/Application/database/database.sqlite:/app/database/database.sqlite ^
   word-collection-image
 

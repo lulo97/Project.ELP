@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { tts } from "../services/tts";
+import { removeVietnameseDiacritics } from "../utils/removeVietnameseDiacritics";
 
 export function CommonAudio({ text }) {
   const [isPlaying, setIsPlaying] = useState(false);
 
   async function handleSpeak() {
     try {
-      const result = await tts(text);
+      const result = await tts(removeVietnameseDiacritics(text));
       const audio_base64 = result.data.audio_base64;
 
       const audioBytes = Uint8Array.from(atob(audio_base64), (c) =>
