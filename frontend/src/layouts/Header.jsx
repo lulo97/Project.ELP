@@ -1,4 +1,5 @@
 import { routes } from "../routes";
+import { CONST } from "../utils/const";
 
 export function Header() {
   return (
@@ -10,7 +11,7 @@ export function Header() {
           window.location.href = "/";
         }}
       >
-        Application
+        {CONST.APPLICATION_NAME}
       </div>
 
       {/* Nav */}

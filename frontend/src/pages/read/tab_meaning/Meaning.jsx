@@ -7,6 +7,7 @@ import {
   updateMeaning,
 } from "../../../services/meaning";
 import { Button } from "../../../components/Button";
+import { useMessage } from "../../../providers/MessageProvider";
 
 export function Meaning({
   word,
@@ -16,6 +17,8 @@ export function Meaning({
   paginationData,
 }) {
   const EMPTY_ROW = { id: "", meaning: "", word: word, part_of_speech: "" };
+
+  const { fireMessage } = useMessage();
 
   const [currentRow, setCurrentRow] = useState(EMPTY_ROW);
   const [showPopup, setShowPopup] = useState(false);
@@ -42,6 +45,9 @@ export function Meaning({
 
     fetchExistingRows();
     setShowPopup(false);
+    fireMessage({
+      text: "Success!",
+    });
   }
 
   function handleClose() {

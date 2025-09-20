@@ -36,7 +36,10 @@ export function Popup({ show, title, word, handleClose }) {
       show={show}
       title={title}
       overWrittenBoxStyle={{ display: "flex", flexDirection: "column" }}
-      handleClose={handleClose}
+      handleClose={() => {
+        setCurrentTabId("word")
+        handleClose()
+      }}
       isShowConfirmButton={false}
       height="90%"
     >

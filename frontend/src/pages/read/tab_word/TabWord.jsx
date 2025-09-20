@@ -2,9 +2,12 @@ import { Button } from "../../../components/Button";
 import { CommonAudio } from "../../../components/CommonAudio";
 import { PopupField } from "../../../components/PopupField";
 import { useEffect, useState } from "react";
+import { useMessage } from "../../../providers/MessageProvider";
 
 export function TabWord({ word, wordData, fetchWordData }) {
   const [addButtonDisabled, setAddButtonDisabled] = useState(false);
+
+  const { fireMessage } = useMessage();
 
   useEffect(() => {
     setAddButtonDisabled(getButtonAddDisabled());
@@ -19,6 +22,9 @@ export function TabWord({ word, wordData, fetchWordData }) {
       body: JSON.stringify({ word: word }),
     });
     fetchWordData();
+    fireMessage({
+      text: "Success!",
+    });
   }
 
   function getButtonAddDisabled() {

@@ -8,6 +8,7 @@ import {
 } from "../../../services/example";
 import { Button } from "../../../components/Button";
 import { CommonAudio } from "../../../components/CommonAudio";
+import { useMessage } from "../../../providers/MessageProvider";
 
 export function Example({
   word,
@@ -17,6 +18,8 @@ export function Example({
   paginationData,
 }) {
   const EMPTY_ROW = { id: "", example: "", word: word, part_of_speech: "" };
+
+  const { fireMessage } = useMessage();
 
   const [currentRow, setCurrentRow] = useState(EMPTY_ROW);
   const [showPopup, setShowPopup] = useState(false);
@@ -43,6 +46,9 @@ export function Example({
 
     fetchExistingRows();
     setShowPopup(false);
+    fireMessage({
+      text: "Success!",
+    });
   }
 
   function handleClose() {
