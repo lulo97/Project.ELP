@@ -9,12 +9,14 @@ function paginationMiddleware(req, res, next) {
     pageIndex = 1;
   }
 
+  pageIndex = parseInt(pageIndex);
+  pageSize = parseInt(pageSize);
+
   if (pageSize) {
     const start = (pageIndex - 1) * pageSize;
     const end = start + pageSize;
 
     _data = data.slice(start, end)
-
   }
 
   return res.json({
