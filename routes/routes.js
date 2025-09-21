@@ -11,4 +11,5 @@ module.exports = function (app) {
     app.use("/api/examples", require("./examples/index.js"));
     app.use("/api/tts", require("./tts/index.js"));
     app.use("/api/phrases", require("./phrases/index.js"));
+    app.use("/api/exercises", require("./exercises/index.js"));
 };
