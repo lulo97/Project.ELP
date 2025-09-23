@@ -3,6 +3,9 @@ import {
   Editor,
   EditorState,
   RichUtils,
+  Modifier,
+  getDefaultKeyBinding,
+  KeyBindingUtil,
 } from "draft-js";
 import "draft-js/dist/Draft.css";
 
@@ -48,6 +51,30 @@ export function RichTextEditor({
     onChange?.(newState);
   };
 
+  // Custom key binding
+  const keyBindingFn = (e) => {
+    if (e.key === "Tab") {
+      return "insert-4-spaces";
+    }
+    return getDefaultKeyBinding(e);
+  };
+
+  // Handle custom command
+  const handleKeyCommand = (command, editorState) => {
+    if (command === "insert-4-spaces") {
+      const currentContent = editorState.getCurrentContent();
+      const selection = editorState.getSelection();
+
+      const newContent = Modifier.insertText(currentContent, selection, "    "); // 4 spaces
+      const newState = EditorState.push(editorState, newContent, "insert-characters");
+
+      setEditorState(newState);
+      onChange?.(newState);
+      return "handled";
+    }
+    return "not-handled";
+  };
+
   return (
     <div className={`p-4 border rounded ${className}`}>
       {/* Toolbar */}
@@ -72,6 +99,8 @@ export function RichTextEditor({
           onChange?.(newState);
         }}
         placeholder={placeholder}
+        keyBindingFn={keyBindingFn}
+        handleKeyCommand={handleKeyCommand}
       />
     </div>
   );
