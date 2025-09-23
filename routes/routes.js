@@ -12,4 +12,6 @@ module.exports = function (app) {
     app.use("/api/tts", require("./tts/index.js"));
     app.use("/api/phrases", require("./phrases/index.js"));
     app.use("/api/exercises", require("./exercises/index.js"));
+    app.use("/api/writing_questions", require("./writing_questions/index.js"));
+    app.use("/api/writing_answers", require("./writing_answers/index.js"));
 };

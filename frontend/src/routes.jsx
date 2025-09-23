@@ -5,6 +5,8 @@ import { Phrase } from "./pages/phrase/Phrase";
 import { Read } from "./pages/read/Read";
 import { Source } from "./pages/source/Source";
 import { Word } from "./pages/word/Word";
+import { Writing } from "./pages/writing/Writing";
+import { WritingQuestion } from "./pages/WritingQuestion/WritingQuestion";
 
 export const routes = [
     { name: "Word", path: "word", element: <Word /> },
@@ -14,4 +16,6 @@ export const routes = [
     { name: "Example", path: "example", element: <Example /> },
     { name: "Phrase", path: "phrase", element: <Phrase /> },
     { name: "Exercise", path: "exercise", element: <Exercise /> },
+    { name: "WritingQuestion", path: "writing_question", element: <WritingQuestion /> },
+    { name: "Writing", path: "writing", element: <Writing /> },
 ]
