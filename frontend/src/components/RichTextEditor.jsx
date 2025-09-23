@@ -38,6 +38,7 @@ export function RichTextEditor({
   onChange,
   placeholder = "Start typing...",
   className = "",
+  fontSize = "0.9rem", // 👈 new prop with default
 }) {
   const [editorState, setEditorState] = useState(
     value || EditorState.createEmpty()
@@ -66,7 +67,11 @@ export function RichTextEditor({
       const selection = editorState.getSelection();
 
       const newContent = Modifier.insertText(currentContent, selection, "    "); // 4 spaces
-      const newState = EditorState.push(editorState, newContent, "insert-characters");
+      const newState = EditorState.push(
+        editorState,
+        newContent,
+        "insert-characters"
+      );
 
       setEditorState(newState);
       onChange?.(newState);
@@ -76,9 +81,13 @@ export function RichTextEditor({
   };
 
   return (
-    <div className={`p-4 border rounded ${className}`}>
-      {/* Toolbar */}
-      <div className="mb-2 space-x-2">
+    // flex flex-col h-full = Flex in column direction, take full height
+    <div style={{ fontSize }} className={`flex flex-col h-full ${className}`}>
+      {/* Toolbar
+        flex-shrink-0 = Prevent shrinking, keep height default
+      */}
+
+      <div className="mb-2 space-x-2 flex-shrink-0">
         {INLINE_STYLES.map((btn) => (
           <ToolbarButton
             key={btn.style}
@@ -91,17 +100,28 @@ export function RichTextEditor({
         ))}
       </div>
 
-      {/* Editor */}
-      <Editor
-        editorState={editorState}
-        onChange={(newState) => {
-          setEditorState(newState);
-          onChange?.(newState);
-        }}
-        placeholder={placeholder}
-        keyBindingFn={keyBindingFn}
-        handleKeyCommand={handleKeyCommand}
-      />
+      {/* Editor takes remaining space 
+        flex-1 = Take remaining space
+        overflow-y-auto = Scroll if content overflows vertically
+      */}
+      <div
+        className="flex-1 overflow-y-auto border rounded p-2"
+      >
+        <Editor
+          editorState={editorState}
+          onChange={(newState) => {
+            setEditorState(newState);
+            onChange?.(newState);
+          }}
+          placeholder={placeholder}
+        />
+      </div>
     </div>
   );
 }
+
+/*
+Note: Make child component taking remaining space inside parent:
+- Parent must have defined height and flex
+- Child must have flex-1 and overflow-y-auto
+*/
