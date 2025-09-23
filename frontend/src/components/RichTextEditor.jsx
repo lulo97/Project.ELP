@@ -114,6 +114,8 @@ export function RichTextEditor({
             onChange?.(newState);
           }}
           placeholder={placeholder}
+          keyBindingFn={keyBindingFn}
+          handleKeyCommand={handleKeyCommand}
         />
       </div>
     </div>
