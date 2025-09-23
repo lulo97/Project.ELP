@@ -109,6 +109,10 @@ export function Answer({ row, refresh, className = "" }) {
     return <div>No answer passed</div>;
   }
 
+  const isSaveDisabled =
+    answerData.answer === ORIGINAL_ANSWER.answer &&
+    answerData.review === ORIGINAL_ANSWER.review;
+
   return (
     <SplitPane
       actions={
@@ -117,6 +121,7 @@ export function Answer({ row, refresh, className = "" }) {
             className="px-3 py-1 w-full"
             text={"Save"}
             onClick={saveAnswer}
+            disabled={isSaveDisabled}
           />
           <Button
             className="px-3 py-1 w-full"
