@@ -1,5 +1,10 @@
 export const NEW_LINE_CHARACTER = "NEW_LINE_CHARACTER";
 
+/**
+Input: ["he", "is\n", "well"];
+
+Output: ["he", "is", NEW_LINE_CHARACTER, "well"]
+*/
 export function splitParagraphContainsNewLines(words) {
     const result = [];
 

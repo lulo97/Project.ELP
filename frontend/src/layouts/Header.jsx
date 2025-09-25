@@ -16,15 +16,18 @@ export function Header() {
 
       {/* Nav */}
       <nav className="flex space-x-6">
-        {routes.map((ele, index) => (
-          <a
-            key={index}
-            href={ele.path}
-            className="text-gray-700 hover:text-indigo-600 font-medium transition-colors"
-          >
-            {ele.name}
-          </a>
-        ))}
+        {routes.map((ele, index) => {
+          if (ele.isNotDisplayOnHeader) return null;
+          return (
+            <a
+              key={index}
+              href={ele.path}
+              className="text-gray-700 hover:text-indigo-600 font-medium transition-colors"
+            >
+              {ele.name}
+            </a>
+          );
+        })}
       </nav>
     </header>
   );

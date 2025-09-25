@@ -12,12 +12,13 @@ import { getWindowSelectedText } from "../../utils/getWindowSelectedText";
 import { useSelectedText } from "../../hooks/useSelectedText";
 import { getSplittedSourceWithType } from "../../utils/getSplittedSourceWithType";
 import { splitParagraphContainsSpecialCharacters } from "../../utils/splitParagraphContainsSpecialCharacters";
-import { SPECIAL_CHARACTERS } from "../../utils/const";
+import { CONST, SPECIAL_CHARACTERS } from "../../utils/const";
 
 export function ClickableWordParagraph({
   currentSource,
   existWords = [],
   existPhrases = [],
+  existIdioms = [],
   meaningsForTooltip = [],
   setCurrentWord = () => {},
   openPopup = () => {},
@@ -30,6 +31,7 @@ export function ClickableWordParagraph({
   const rawSourceSplittedWithType = getSplittedSourceWithType({
     words: rawSourceWithSpecialCharaters,
     phrases: existPhrases.map((ele) => ele.phrase),
+    idioms: existIdioms.map((ele) => ele.idiom),
   });
 
   const selectedText = useSelectedText();
@@ -44,8 +46,18 @@ export function ClickableWordParagraph({
         let color = "black";
         let tooltipContent = "";
 
+        //Setting up for idiom color
+        if (word.type == "idiom") {
+          color = CONST.IDIOM_COLOR;
+
+          tooltipContent = existIdioms.find((ele) => {
+            return ele.idiom == word.value;
+          }).meaning;
+        }
+        
+        //Setting up for phrase color
         if (word.type == "phrase") {
-          color = "red";
+          color = CONST.PHRASE_COLOR;
 
           tooltipContent = existPhrases.find((ele) => {
             return ele.phrase == word.value;
@@ -60,7 +72,7 @@ export function ClickableWordParagraph({
               return compareStandardize(ele, word.value);
             });
 
-          color = exist_word ? "blue" : "black";
+          color = exist_word ? CONST.WORD_COLOR : "black";
 
           //Setting up for tooltip content
           const currentMeaningTooltip = meaningsForTooltip.find((ele) => {

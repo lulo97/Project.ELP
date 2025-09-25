@@ -14,4 +14,5 @@ module.exports = function (app) {
     app.use("/api/exercises", require("./exercises/index.js"));
     app.use("/api/writing_questions", require("./writing_questions/index.js"));
     app.use("/api/writing_answers", require("./writing_answers/index.js"));
+    app.use("/api/idioms", require("./idioms/index.js"));
 };

@@ -6,6 +6,7 @@ import { getAllWords } from "../../services/word";
 import { getMeaningsForTooltip } from "../../services/meaning";
 import { ClickableWordParagraph } from "./ClickableWordParagraph";
 import { getAllPhrases } from "../../services/phrases";
+import { getAllIdioms } from "../../services/idioms";
 
 export function Read() {
   const location = useLocation();
@@ -21,6 +22,7 @@ export function Read() {
   const [showPopup, setShowPopup] = useState(false);
   const [existWords, setExistWords] = useState([]);
   const [existPhrases, setExistPhrases] = useState([]);
+  const [existIdioms, setExistIdioms] = useState([]);
   const [meaningsForTooltip, setMeaningsForTooltip] = useState([]);
 
   async function fetchSource() {
@@ -39,6 +41,11 @@ export function Read() {
     setExistPhrases(result.data);
   }
 
+  async function fetchAllIdioms() {
+    const result = await getAllIdioms({ pageIndex: 1, pageSize: null });
+    setExistIdioms(result.data);
+  }
+
   async function fetchAllMeaningsForTooltip() {
     const result = await getMeaningsForTooltip();
     setMeaningsForTooltip(result);
@@ -48,6 +55,7 @@ export function Read() {
     fetchSource();
     fetchAllWords();
     fetchAllPhrases();
+    fetchAllIdioms();
     fetchAllMeaningsForTooltip();
   }
 
@@ -80,6 +88,7 @@ export function Read() {
         currentSource={currentSource}
         existWords={existWords}
         existPhrases={existPhrases}
+        existIdioms={existIdioms}
         meaningsForTooltip={meaningsForTooltip}
         setCurrentWord={setCurrentWord}
         openPopup={openPopup}

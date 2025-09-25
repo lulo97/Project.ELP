@@ -1,5 +1,10 @@
 import { SPECIAL_CHARACTERS } from "./const";
 
+/**
+Input: ["he", "is.", "well"];
+
+Output: ["he", "is", ".", "well"]
+*/
 export function splitParagraphContainsSpecialCharacters(words) {
     return words.flatMap((word) => {
         for (let ch of SPECIAL_CHARACTERS) {
