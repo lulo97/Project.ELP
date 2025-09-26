@@ -1,5 +1,6 @@
 import { Example } from "./pages/examples/Example";
 import { Exercise } from "./pages/exercise/Exercise";
+import { Grammar } from "./pages/grammar/Grammar";
 import { Idiom } from "./pages/idiom/Idiom";
 import { Meaning } from "./pages/meaning/Meaning";
 import { Phrase } from "./pages/phrase/Phrase";
@@ -7,7 +8,7 @@ import { Read } from "./pages/read/Read";
 import { Source } from "./pages/source/Source";
 import { Word } from "./pages/word/Word";
 import { Writing } from "./pages/writing/Writing";
-import { WritingQuestion } from "./pages/WritingQuestion/WritingQuestion";
+import { WritingQuestion } from "./pages/writing_question/WritingQuestion";
 
 export const routes = [
     { name: "Word", path: "word", element: <Word /> },
@@ -20,4 +21,5 @@ export const routes = [
     { name: "WritingQuestion", path: "writing_question", element: <WritingQuestion /> },
     { name: "Writing", path: "writing", element: <Writing />, isNotDisplayOnHeader: true },
     { name: "Idiom", path: "idiom", element: <Idiom /> },
+    { name: "Grammar", path: "grammar", element: <Grammar /> },
 ]
