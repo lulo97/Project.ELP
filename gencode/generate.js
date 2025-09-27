@@ -5,7 +5,7 @@ const { generateApi } = require("./generateApi");
 const { generateComponent } = require("./generateComponent");
 const { generatePopup } = require("./generatePopup");
 const { generateService } = require("./generateService");
-const { capitalize } = require("./utils");
+const { toPascalCase } = require("./utils");
 
 function ensureDir(filePath) {
   const dir = path.dirname(filePath);
@@ -16,7 +16,7 @@ function generate(sql) {
   // 1. Extract table name
   const tableMatch = sql.match(/CREATE TABLE\s+"?(\w+)"?/i);
   if (!tableMatch) throw new Error("Table name not found in SQL");
-  const tableName = tableMatch[1];
+  const tableName = toPascalCase(tableMatch[1]);
 
   // 2. Root output folder
   const rootPath = path.join(__dirname, tableName);
@@ -47,7 +47,7 @@ function generate(sql) {
     {
       path: path.join(
         rootPath,
-        `frontend/src/pages/${tableName}/${capitalize(tableName.slice(0, -1))}.jsx`
+        `frontend/src/pages/${tableName}/${toPascalCase(tableName.slice(0, -1))}.jsx`
       ),
       content: componentContent,
     },
@@ -64,10 +64,11 @@ function generate(sql) {
 
 // --- Example usage ---
 generate(`
-CREATE TABLE "speakings" (
+CREATE TABLE "speaking_scores" (
 	"id"	TEXT,
-	"question"	TEXT NOT NULL CHECK("question" <> ''),
-	"answer"	TEXT NOT NULL CHECK("answer" <> ''),
+	"speaking_id"	TEXT NOT NULL CHECK("speaking_id" <> ''),
+	"question_score"	NUMERIC NOT NULL CHECK("question_score" <> ''),
+	"answer_score"	NUMERIC NOT NULL CHECK("answer_score" <> ''),
 	PRIMARY KEY("id")
 )
 `);

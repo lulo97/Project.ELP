@@ -1,4 +1,4 @@
-const { capitalize } = require("./utils.js");
+const { toPascalCase } = require("./utils.js");
 
 function generateApi(sql) {
     // 1. Extract table name
@@ -26,7 +26,7 @@ const { paginationMiddleware } = require("../../middleware/paginationMiddleware.
 
 const router = express.Router();
 
-async function get${capitalize(tableName)}(req, res, next) {
+async function get${toPascalCase(tableName)}(req, res, next) {
     const { ${columns.join(", ")} } = req.query;
 
     let sql = "SELECT * FROM ${tableName}";
@@ -49,7 +49,7 @@ ${columns.map(c =>
     next();
 }
 
-async function add${capitalize(tableName)}(req, res) {
+async function add${toPascalCase(tableName)}(req, res) {
     const { ${nonPkCols.join(", ")} } = req.body;
     const ${primaryKey} = getRandomId();
 
@@ -66,7 +66,7 @@ async function add${capitalize(tableName)}(req, res) {
     res.json({ data: result, error: null });
 }
 
-async function update${capitalize(tableName)}(req, res) {
+async function update${toPascalCase(tableName)}(req, res) {
     const { ${primaryKey} } = req.params;
     const { ${nonPkCols.join(", ")} } = req.body;
 
@@ -84,7 +84,7 @@ async function update${capitalize(tableName)}(req, res) {
     res.json({ data: result, error: null });
 }
 
-async function delete${capitalize(tableName)}(req, res) {
+async function delete${toPascalCase(tableName)}(req, res) {
     const { ${primaryKey} } = req.params;
 
     const sql = "DELETE FROM ${tableName} WHERE ${primaryKey} = ?";
@@ -93,10 +93,10 @@ async function delete${capitalize(tableName)}(req, res) {
     res.json({ data: result, error: null });
 }
 
-router.get("/", get${capitalize(tableName)}, paginationMiddleware);
-router.post("/", add${capitalize(tableName)});
-router.put("/:${primaryKey}", update${capitalize(tableName)});
-router.delete("/:${primaryKey}", delete${capitalize(tableName)});
+router.get("/", get${toPascalCase(tableName)}, paginationMiddleware);
+router.post("/", add${toPascalCase(tableName)});
+router.put("/:${primaryKey}", update${toPascalCase(tableName)});
+router.delete("/:${primaryKey}", delete${toPascalCase(tableName)});
 
 module.exports = router;
 

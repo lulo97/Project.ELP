@@ -1,11 +1,11 @@
-const { capitalize, toTitleCase } = require("./utils")
+const { toPascalCase, toTitleCase } = require("./utils")
 
 function generateComponent(sql) {
     // 1. Extract table name
     const tableMatch = sql.match(/CREATE TABLE\s+"?(\w+)"?/i);
     if (!tableMatch) throw new Error("Table name not found in SQL");
     const tableName = tableMatch[1];
-    const compName = capitalize(tableName.slice(0, -1)); // Example(s) -> Example
+    const compName = toPascalCase(tableName.slice(0, -1)); // Example(s) -> Example
 
     // 2. Extract columns
     const insideParens = sql.match(/\(([\s\S]*)\)/)[1];
@@ -43,7 +43,7 @@ export function ${compName}() {
   const [paginationData, setPaginationData] = useState({});
 
   async function fetchRows({ pageIndex, pageSize } = { pageIndex: null, pageSize: 5 }) {
-    const result = await getAll${capitalize(tableName)}({ pageIndex, pageSize });
+    const result = await getAll${toPascalCase(tableName)}({ pageIndex, pageSize });
     setRows(result.data);
     setPaginationData(result.pagination);
   }
