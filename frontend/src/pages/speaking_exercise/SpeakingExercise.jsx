@@ -33,6 +33,15 @@ export function SpeakingExercise() {
     answer: false,
   });
 
+  function refresh() {
+    setScores({ question: null, answer: null });
+    setSpokenTexts({ question: "", answer: "" });
+    setTtsAudios({ question: null, answer: null });
+    setIsPlaying({ question: false, answer: false });
+    setRecording(false);
+    setRecordTarget(null);
+  }
+
   const { fireMessage } = useMessage();
 
   const audioContextRef = useRef(null);
@@ -212,6 +221,15 @@ export function SpeakingExercise() {
             const result = await addSpeakingScore({ row: body });
 
             if (!result.error) {
+              fireMessage({
+                text: "Save succesfully!",
+              });
+              refresh();
+            } else {
+              fireMessage({
+                text: result.error,
+                type: "error",
+              });
             }
           }}
         />
