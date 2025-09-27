@@ -1,5 +1,4 @@
 const path = require("path");
-const { extractApiDocs } = require("../utils/extractApiDocs")
 
 const routes = [
     { path: "/api/helloworld", handler: (req, res) => res.json({ message: "Hello World" }) },
