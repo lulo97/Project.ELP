@@ -18,4 +18,5 @@ module.exports = function (app) {
     app.use("/api/grammar", require("./grammar/index.js"));
     app.use("/api/homepage", require("./homepage/index.js"));
     app.use("/api/stt", require("./stt/index.js"));
+    app.use("/api/speakings", require("./speakings/index.js"));
 };

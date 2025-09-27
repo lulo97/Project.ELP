@@ -5,6 +5,18 @@ import { routes } from "./routes";
 import "./index.css";
 import { MessageProvider } from "./providers/MessageProvider";
 
+function flattenRoutes(routes) {
+  const result = [];
+  routes.forEach((r) => {
+    if (r.children) {
+      result.push(...flattenRoutes(r.children));
+    } else {
+      result.push(r);
+    }
+  });
+  return result;
+}
+
 function App() {
   return (
     <div>
@@ -12,7 +24,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<HomePage />} />
-            {routes.map((r, index) => (
+            {flattenRoutes(routes).map((r, index) => (
               <Route key={index} path={r.path} element={r.element} />
             ))}
           </Route>

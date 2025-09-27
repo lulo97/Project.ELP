@@ -10,18 +10,36 @@ import { Word } from "./pages/word/Word";
 import { Writing } from "./pages/writing/Writing";
 import { WritingQuestion } from "./pages/writing_question/WritingQuestion";
 import { SpeechToText } from "./pages/stt/SpeechToText";
+import { Speaking } from "./pages/speakings/Speaking";
 
 export const routes = [
-    { name: "Word", path: "word", element: <Word /> },
-    { name: "Source", path: "source", element: <Source /> },
-    { name: "Read", path: "read", element: <Read />, isNotDisplayOnHeader: true },
-    { name: "Meaning", path: "meaning", element: <Meaning /> },
-    { name: "Example", path: "example", element: <Example /> },
-    { name: "Phrase", path: "phrase", element: <Phrase /> },
-    { name: "Exercise", path: "exercise", element: <Exercise /> },
-    { name: "WritingQuestion", path: "writing_question", element: <WritingQuestion /> },
-    { name: "Writing", path: "writing", element: <Writing />, isNotDisplayOnHeader: true },
-    { name: "Idiom", path: "idiom", element: <Idiom /> },
-    { name: "Grammar", path: "grammar", element: <Grammar /> },
-    { name: "SpeechToText", path: "speech_to_text", element: <SpeechToText /> },
-]
+  {
+    name: "Database",
+    children: [
+      { name: "Word", path: "word", element: <Word /> },
+      { name: "Source", path: "source", element: <Source /> },
+      { name: "Meaning", path: "meaning", element: <Meaning /> },
+      { name: "Example", path: "example", element: <Example /> },
+      { name: "Phrase", path: "phrase", element: <Phrase /> },
+      { name: "Idiom", path: "idiom", element: <Idiom /> },
+    ],
+  },
+
+  { name: "Read", path: "read", element: <Read />, isNotDisplayOnHeader: true },
+
+  { name: "Exercise", path: "exercise", element: <Exercise /> },
+  {
+    name: "WritingQuestion",
+    path: "writing_question",
+    element: <WritingQuestion />,
+  },
+  {
+    name: "Writing",
+    path: "writing",
+    element: <Writing />,
+    isNotDisplayOnHeader: true,
+  },
+  { name: "Grammar", path: "grammar", element: <Grammar /> },
+  { name: "SpeechToText", path: "speech_to_text", element: <SpeechToText /> },
+  { name: "Speaking", path: "speaking", element: <Speaking /> },
+];

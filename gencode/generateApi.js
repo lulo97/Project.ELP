@@ -6,8 +6,9 @@ function generateApi(sql) {
     if (!tableMatch) throw new Error("Table name not found in SQL");
     const tableName = tableMatch[1];
 
-    // 2. Extract columns
-    const columnMatches = [...sql.matchAll(/"(\w+)"\s+([\w()]+)/g)];
+      // 2. Extract columns
+    const insideParens = sql.match(/\(([\s\S]*)\)/)[1];
+    const columnMatches = [...insideParens.matchAll(/"(\w+)"\s+([\w()]+)/g)];
     const columns = columnMatches.map(m => m[1]);
 
     // 3. Identify primary key (first one found)

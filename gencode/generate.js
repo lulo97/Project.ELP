@@ -64,11 +64,10 @@ function generate(sql) {
 
 // --- Example usage ---
 generate(`
-CREATE TABLE "examples" (
-  "id" TEXT,
-  "word" TEXT NOT NULL,
-  "part_of_speech" TEXT NOT NULL,
-  "example" TEXT NOT NULL,
-  PRIMARY KEY("id")
+CREATE TABLE "speakings" (
+	"id"	TEXT,
+	"question"	TEXT NOT NULL CHECK("question" <> ''),
+	"answer"	TEXT NOT NULL CHECK("answer" <> ''),
+	PRIMARY KEY("id")
 )
 `);

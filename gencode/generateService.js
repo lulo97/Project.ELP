@@ -7,8 +7,9 @@ function generateService(sql) {
     const tableName = tableMatch[1];
     const capName = capitalize(tableName.slice(0, -1)); // singular
 
-    // 2. Extract columns
-    const columnMatches = [...sql.matchAll(/"(\w+)"\s+([\w()]+)/g)];
+    // 2. Extract columns 
+    const insideParens = sql.match(/\(([\s\S]*)\)/)[1];
+    const columnMatches = [...insideParens.matchAll(/"(\w+)"\s+([\w()]+)/g)];
     const columns = columnMatches.map(m => m[1]);
 
     // 3. Identify primary key

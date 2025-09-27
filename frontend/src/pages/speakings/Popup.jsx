@@ -29,43 +29,26 @@ export function Popup({
         fieldComponent={<input value={row.id} disabled />}
       />
 
-      {/* word */}
+      {/* question */}
       <PopupField
-        label="Word"
+        label="Question"
         fieldComponent={
           <input
-            value={row.word}
+            value={row.question}
             disabled={isDelete}
-            onChange={(e) => setCurrentRow({ ...row, word: e.target.value })}
+            onChange={(e) => setCurrentRow({ ...row, question: e.target.value })}
           />
         }
       />
 
-      {/* part_of_speech */}
+      {/* answer */}
       <PopupField
-        label="Part of speech"
+        label="Answer"
         fieldComponent={
-          <SelectNoStyle
-            value={row.part_of_speech}
+          <input
+            value={row.answer}
             disabled={isDelete}
-            onChange={(e) =>
-              setCurrentRow({ ...row, part_of_speech: e.target.value })
-            }
-            options={partOfSpeechs}
-          />
-        }
-      />
-
-      {/* example */}
-      <PopupField
-        label="Example"
-        fieldComponent={
-          <textarea
-            value={row.example}
-            disabled={isDelete}
-            onChange={(e) =>
-              setCurrentRow({ ...row, example: e.target.value })
-            }
+            onChange={(e) => setCurrentRow({ ...row, answer: e.target.value })}
           />
         }
       />

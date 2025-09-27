@@ -2,17 +2,17 @@ import { useEffect, useState } from "react";
 import { Table } from "../../components/Table";
 import { Popup } from "./Popup";
 import {
-  addExample,
-  deleteExample,
-  getAllExamples,
-  updateExample,
-} from "../../services/examples";
+  addSpeaking,
+  deleteSpeaking,
+  getAllSpeakings,
+  updateSpeaking,
+} from "../../services/speakings";
 import { PageTitle } from "../../components/PageTitle";
 import { Button } from "../../components/Button";
 
-const EMPTY_ROW = { { id: "", word: "", part_of_speech: "", example: "" } };
+const EMPTY_ROW = { id: "", question: "", answer: "" };
 
-export function Example() {
+export function Speaking() {
   const [rows, setRows] = useState([]);
   const [currentRow, setCurrentRow] = useState(EMPTY_ROW);
   const [showPopup, setShowPopup] = useState(false);
@@ -20,7 +20,7 @@ export function Example() {
   const [paginationData, setPaginationData] = useState({});
 
   async function fetchRows({ pageIndex, pageSize } = { pageIndex: null, pageSize: 5 }) {
-    const result = await getAllExamples({ pageIndex, pageSize });
+    const result = await getAllSpeakings({ pageIndex, pageSize });
     setRows(result.data);
     setPaginationData(result.pagination);
   }
@@ -33,15 +33,15 @@ export function Example() {
 
   async function handleConfirm({ action }) {
     if (action == "ADD") {
-      await addExample({ row: currentRow });
+      await addSpeaking({ row: currentRow });
     }
 
     if (action == "EDIT") {
-      await updateExample({ row: currentRow });
+      await updateSpeaking({ row: currentRow });
     }
 
     if (action == "DELETE") {
-      await deleteExample({ row: currentRow });
+      await deleteSpeaking({ row: currentRow });
     }
 
     fetchRows();
@@ -60,7 +60,7 @@ export function Example() {
   return (
     <div className="p-4">
       <div className="justify-between items-center mb-6">
-        <PageTitle title={"Example Manager"} />
+        <PageTitle title={"Speaking Manager"} />
         <Button
           text={"Add"}
           onClick={() => openPopup({ currentRow: EMPTY_ROW, action: "ADD" })}
@@ -69,9 +69,8 @@ export function Example() {
       <Table
         columns={[
           { id: "id", name: "Id" },
-          { id: "word", name: "Word" },
-          { id: "part_of_speech", name: "Part Of Speech" },
-          { id: "example", name: "Example" }
+          { id: "question", name: "Question" },
+          { id: "answer", name: "Answer" }
         ]}
         rows={rows}
         openPopup={openPopup}
