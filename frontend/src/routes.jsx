@@ -23,5 +23,5 @@ export const routes = [
     { name: "Writing", path: "writing", element: <Writing />, isNotDisplayOnHeader: true },
     { name: "Idiom", path: "idiom", element: <Idiom /> },
     { name: "Grammar", path: "grammar", element: <Grammar /> },
-    { name: "STT", path: "STT", element: <SpeechToText /> },
+    { name: "SpeechToText", path: "speech_to_text", element: <SpeechToText /> },
 ]
