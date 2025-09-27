@@ -33,7 +33,7 @@ import {
 import { PageTitle } from "../../components/PageTitle";
 import { Button } from "../../components/Button";
 
-const EMPTY_ROW = { ${emptyRow} };
+const EMPTY_ROW = ${emptyRow};
 
 export function ${compName}() {
   const [rows, setRows] = useState([]);
