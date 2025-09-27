@@ -1,88 +1,31 @@
-import { useEffect } from "react";
-import { useState } from "react";
 import { useLocation } from "react-router-dom";
-import { Popup } from "./Popup";
-import { getAllWords } from "../../services/word";
-import { getMeaningsForTooltip } from "../../services/meaning";
 import { ClickableWordParagraph } from "./ClickableWordParagraph";
-import { getAllPhrases } from "../../services/phrases";
-import { getAllIdioms } from "../../services/idioms";
+import { Popup } from "./Popup";
+import { useSourceDataForRead } from "../../hooks/useSourceDataForRead";
+import { usePopupForRead } from "../../hooks/usePopupForRead";
 
 export function Read() {
   const location = useLocation();
+  const source_name = new URLSearchParams(location.search).get("source_name");
 
-  const queryParams = new URLSearchParams(location.search);
+  const {
+    currentSource,
+    existWords,
+    existPhrases,
+    existIdioms,
+    meaningsForTooltip,
+    reset,
+  } = useSourceDataForRead(source_name);
 
-  const source_name = queryParams.get("source_name");
+  const { currentWord, showPopup, openPopup, handleClose, setCurrentWord } =
+    usePopupForRead(reset);
 
   if (!source_name) return <div>No source selected!</div>;
-
-  const [currentSource, setCurrentSources] = useState(null);
-  const [currentWord, setCurrentWord] = useState("");
-  const [showPopup, setShowPopup] = useState(false);
-  const [existWords, setExistWords] = useState([]);
-  const [existPhrases, setExistPhrases] = useState([]);
-  const [existIdioms, setExistIdioms] = useState([]);
-  const [meaningsForTooltip, setMeaningsForTooltip] = useState([]);
-
-  async function fetchSource() {
-    const result = await fetch(`/api/sources?name=${source_name}`);
-    const result_json = await result.json();
-    setCurrentSources(result_json.data[0]);
-  }
-
-  async function fetchAllWords() {
-    const result = await getAllWords({ pageIndex: 1, pageSize: null });
-    setExistWords(result.data);
-  }
-
-  async function fetchAllPhrases() {
-    const result = await getAllPhrases({ pageIndex: 1, pageSize: null });
-    setExistPhrases(result.data);
-  }
-
-  async function fetchAllIdioms() {
-    const result = await getAllIdioms({ pageIndex: 1, pageSize: null });
-    setExistIdioms(result.data);
-  }
-
-  async function fetchAllMeaningsForTooltip() {
-    const result = await getMeaningsForTooltip();
-    setMeaningsForTooltip(result);
-  }
-
-  function reset() {
-    fetchSource();
-    fetchAllWords();
-    fetchAllPhrases();
-    fetchAllIdioms();
-    fetchAllMeaningsForTooltip();
-  }
-
-  useEffect(() => {
-    reset();
-  }, []);
-
-  function handleClose() {
-    setCurrentWord("");
-    setShowPopup(false);
-    reset();
-  }
-
-  function openPopup({ word, action }) {
-    setCurrentWord(word);
-    setShowPopup(true);
-  }
-
   if (!currentSource) return <div>Can't find source = {source_name}</div>;
 
   return (
-    <div style={{ margin: "10px" }}>
-      <div
-        style={{ fontWeight: "bold", fontSize: "2rem", marginBottom: "10px" }}
-      >
-        Title: {currentSource.name}
-      </div>
+    <div className="p-4">
+      <h1 className="text-2xl font-bold mb-4">Title: {currentSource.name}</h1>
 
       <ClickableWordParagraph
         currentSource={currentSource}
@@ -96,7 +39,7 @@ export function Read() {
 
       <Popup
         show={showPopup}
-        title={"Add"}
+        title="Add"
         word={currentWord}
         handleClose={handleClose}
       />

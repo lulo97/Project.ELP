@@ -90,6 +90,14 @@ export function Source() {
               }
             />
           ),
+          (row) => (
+            <Button
+              text={"Read Sentence"}
+              onClick={() =>
+                (window.location.href = `/read_sentence?source_name=${row.name}`)
+              }
+            />
+          ),
         ]}
         paginationData={paginationData}
         fetchData={fetchRows}
