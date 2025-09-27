@@ -9,6 +9,7 @@ import { Source } from "./pages/source/Source";
 import { Word } from "./pages/word/Word";
 import { Writing } from "./pages/writing/Writing";
 import { WritingQuestion } from "./pages/writing_question/WritingQuestion";
+import { SpeechToText } from "./pages/stt/SpeechToText";
 
 export const routes = [
     { name: "Word", path: "word", element: <Word /> },
@@ -22,4 +23,5 @@ export const routes = [
     { name: "Writing", path: "writing", element: <Writing />, isNotDisplayOnHeader: true },
     { name: "Idiom", path: "idiom", element: <Idiom /> },
     { name: "Grammar", path: "grammar", element: <Grammar /> },
+    { name: "STT", path: "STT", element: <SpeechToText /> },
 ]

@@ -10,8 +10,8 @@ export async function getWord({ word }) {
     return null;
 }
 
-export async function getAllWords({ pageIndex, pageSize }) {
-    const result = await fetch(`/api/words?pageIndex=${pageIndex || ""}&pageSize=${pageSize || ""}`);
+export async function getAllWords({ pageIndex, pageSize, word }) {
+    const result = await fetch(`/api/words?pageIndex=${pageIndex || ""}&pageSize=${pageSize || ""}&word=${word || ""}`);
     const result_json = await result.json();
     return result_json;
 }

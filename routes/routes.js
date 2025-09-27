@@ -17,4 +17,5 @@ module.exports = function (app) {
     app.use("/api/idioms", require("./idioms/index.js"));
     app.use("/api/grammar", require("./grammar/index.js"));
     app.use("/api/homepage", require("./homepage/index.js"));
+    app.use("/api/stt", require("./stt/index.js"));
 };

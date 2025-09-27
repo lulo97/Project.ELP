@@ -9,6 +9,8 @@ import {
 } from "../../services/word";
 import { PageTitle } from "../../components/PageTitle";
 import { Button } from "../../components/Button";
+import { Input } from "../../components/Input";
+import { SearchTable } from "../../components/SearchTable";
 
 const EMPTY_ROW = { id: "", word: "" };
 
@@ -19,8 +21,11 @@ export function Word() {
   const [action, setAction] = useState("ADD");
   const [paginationData, setPaginationData] = useState({});
 
-  async function fetchRows({ pageIndex, pageSize } = { pageIndex: null, pageSize: 5 }) {
-    const result = await getAllWords({ pageIndex, pageSize });
+  async function fetchRows(
+    { pageIndex, pageSize, word } = { pageIndex: null, pageSize: 5, word: null }
+  ) {
+    console.log(word);
+    const result = await getAllWords({ pageIndex, pageSize, word });
     setRows(result.data);
     setPaginationData(result.pagination);
   }
@@ -57,7 +62,7 @@ export function Word() {
 
   return (
     <div className="p-4">
-      <div className="justify-between items-center mb-6">
+      <div className="justify-between items-center mb-3">
         <PageTitle title={"Word Manager"} />
         <Button
           text={"Add"}
@@ -65,8 +70,20 @@ export function Word() {
         />
       </div>
 
+      <div className="mb-3">
+        <SearchTable fetchRows={fetchRows} searchData={[
+          { id: "word", placeholder: "Search by word" },
+        ]} />
+      </div>
+
       {/* Table */}
-      <Table columns={["Id", "Word"]} rows={rows} openPopup={openPopup} fetchData={fetchRows} paginationData={paginationData} />
+      <Table
+        columns={["Id", "Word"]}
+        rows={rows}
+        openPopup={openPopup}
+        fetchData={fetchRows}
+        paginationData={paginationData}
+      />
 
       {/* Popup (already styled) */}
       <Popup
