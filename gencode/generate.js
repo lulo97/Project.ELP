@@ -37,11 +37,11 @@ function generate(sql) {
       content: apiContent,
     },
     {
-      path: path.join(rootPath, `frontend/src/services/${tableName}.js`),
+      path: path.join(rootPath, `frontend/src/services/${tableName.slice(0, -1)}.js`),
       content: serviceContent,
     },
     {
-      path: path.join(rootPath, `frontend/src/pages/${tableName}/Popup.jsx`),
+      path: path.join(rootPath, `frontend/src/pages/${tableName.slice(0, -1)}/Popup.jsx`),
       content: popupContent,
     },
     {
@@ -69,6 +69,8 @@ CREATE TABLE "speaking_scores" (
 	"speaking_id"	TEXT NOT NULL CHECK("speaking_id" <> ''),
 	"question_score"	NUMERIC NOT NULL CHECK("question_score" <> ''),
 	"answer_score"	NUMERIC NOT NULL CHECK("answer_score" <> ''),
+	"question_listened"	TEXT NOT NULL CHECK(question_listened <> ''),
+	"answer_listened"	TEXT NOT NULL CHECK(answer_listened <> ''),
 	PRIMARY KEY("id")
 )
 `);

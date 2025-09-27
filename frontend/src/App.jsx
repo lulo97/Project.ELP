@@ -5,6 +5,7 @@ import { routes } from "./routes";
 import "./index.css";
 import { MessageProvider } from "./providers/MessageProvider";
 import { Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 function flattenRoutes(routes) {
   const result = [];
@@ -25,7 +26,8 @@ export function NotFoundPage() {
         <h1 className="text-6xl font-bold text-red-500">404</h1>
         <h2 className="text-2xl font-semibold mt-4">Page Not Found</h2>
         <p className="text-gray-600 mt-2">
-          Sorry, the page you’re looking for doesn’t exist. Try one of these available routes:
+          Sorry, the page you’re looking for doesn’t exist. Try one of these
+          available routes:
         </p>
 
         <div className="mt-6 flex flex-wrap gap-2 justify-center">
@@ -54,6 +56,8 @@ export function NotFoundPage() {
 }
 
 function App() {
+  const location = useLocation();
+
   return (
     <div>
       <MessageProvider>
@@ -63,7 +67,9 @@ function App() {
             {flattenRoutes(routes).map((r, index) => (
               <Route key={index} path={r.path} element={r.element} />
             ))}
-            <Route path="*" element={<NotFoundPage />} />
+            {!location.pathname.startsWith("/api/") && (
+              <Route path="*" element={<NotFoundPage />} />
+            )}
           </Route>
         </Routes>
       </MessageProvider>

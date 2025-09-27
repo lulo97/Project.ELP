@@ -36,6 +36,26 @@ export async function getSpeakingScoresByAnswerScore({ answer_score, pageIndex, 
     return result_json;
 }
 
+export async function getSpeakingScoresByQuestionListened({ question_listened, pageIndex, pageSize }) {
+    if ([null, undefined, ""].includes(question_listened)) {
+        throw Error("QuestionListened can't be null, input question_listened = ", question_listened)
+    }
+
+    const result = await fetch(`/api/speaking_scores?question_listened=${question_listened}&pageIndex=${pageIndex || ""}&pageSize=${pageSize || ""}`);
+    const result_json = await result.json();
+    return result_json;
+}
+
+export async function getSpeakingScoresByAnswerListened({ answer_listened, pageIndex, pageSize }) {
+    if ([null, undefined, ""].includes(answer_listened)) {
+        throw Error("AnswerListened can't be null, input answer_listened = ", answer_listened)
+    }
+
+    const result = await fetch(`/api/speaking_scores?answer_listened=${answer_listened}&pageIndex=${pageIndex || ""}&pageSize=${pageSize || ""}`);
+    const result_json = await result.json();
+    return result_json;
+}
+
 export async function addSpeakingScore({ row }) {
     const result = await fetch("/api/speaking_scores", {
         method: "POST",

@@ -7,6 +7,8 @@ import { tts } from "../../services/tts";
 import { stt } from "../../services/stt";
 import { removeVietnameseDiacritics } from "../../utils/removeVietnameseDiacritics";
 import { encodeWAV, blobToBase64 } from "../../utils/audioUtils";
+import { addSpeakingScore } from "../../services/speaking_score";
+import { useMessage } from "../../providers/MessageProvider";
 
 export function SpeakingExercise() {
   const location = useLocation();
@@ -26,7 +28,12 @@ export function SpeakingExercise() {
   const [loading, setLoading] = useState(false);
   const [ttsLoading, setTtsLoading] = useState(false);
   const [ttsAudios, setTtsAudios] = useState({ question: null, answer: null });
-  const [isPlaying, setIsPlaying] = useState({ question: false, answer: false });
+  const [isPlaying, setIsPlaying] = useState({
+    question: false,
+    answer: false,
+  });
+
+  const { fireMessage } = useMessage();
 
   const audioContextRef = useRef(null);
   const mediaStreamRef = useRef(null);
@@ -160,11 +167,55 @@ export function SpeakingExercise() {
     }
   }
 
-  if (!speaking_id) return <div>No exercise selected!</div>
+  if (!speaking_id) return <div>No exercise selected!</div>;
 
   return (
     <div className="p-6 space-y-8">
-      <h1 className="text-2xl font-bold">Speaking Practice</h1>
+      <div className="flex justify-between">
+        <h1 className="text-2xl font-bold">Speaking Practice</h1>
+        <Button
+          text={"Save"}
+          onClick={async () => {
+            const body = {
+              speaking_id: speaking_id,
+              question_score: scores.question,
+              answer_score: scores.answer,
+              question_listened: spokenTexts.question,
+              answer_listened: spokenTexts.answer,
+            };
+
+            if (!body.speaking_id) {
+              fireMessage({
+                text: "Speaking id cannot be empty!",
+                type: "error",
+              });
+              return;
+            }
+
+            // optional: validate other fields
+            if (body.question_score == null || body.answer_score == null) {
+              fireMessage({ text: "Scores cannot be empty!", type: "error" });
+              return;
+            }
+
+            if (
+              body.question_listened == null ||
+              body.answer_listened == null
+            ) {
+              fireMessage({
+                text: "Listened text cannot be empty!",
+                type: "error",
+              });
+              return;
+            }
+
+            const result = await addSpeakingScore({ row: body });
+
+            if (!result.error) {
+            }
+          }}
+        />
+      </div>
 
       {ttsLoading && (
         <p className="text-blue-500">Generating audio... please wait</p>

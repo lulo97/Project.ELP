@@ -1,22 +1,76 @@
-module.exports = function (app) {
-    app.use("/api/helloworld", (req, res) => {
-        return res.json({ message: "Hello World" });
-    })
+const path = require("path");
+const { extractApiDocs } = require("../utils/extractApiDocs")
 
-    app.use("/api/todos", require("./todos/index.js"));
-    app.use("/api/words", require("./words/index.js"));
-    app.use("/api/sources", require("./sources/index.js"));
-    app.use("/api/meanings", require("./meanings/index.js"));
-    app.use("/api/part_of_speechs", require("./part_of_speechs/index.js"));
-    app.use("/api/examples", require("./examples/index.js"));
-    app.use("/api/tts", require("./tts/index.js"));
-    app.use("/api/phrases", require("./phrases/index.js"));
-    app.use("/api/exercises", require("./exercises/index.js"));
-    app.use("/api/writing_questions", require("./writing_questions/index.js"));
-    app.use("/api/writing_answers", require("./writing_answers/index.js"));
-    app.use("/api/idioms", require("./idioms/index.js"));
-    app.use("/api/grammar", require("./grammar/index.js"));
-    app.use("/api/homepage", require("./homepage/index.js"));
-    app.use("/api/stt", require("./stt/index.js"));
-    app.use("/api/speakings", require("./speakings/index.js"));
+const routes = [
+    { path: "/api/helloworld", handler: (req, res) => res.json({ message: "Hello World" }) },
+    { path: "/api/todos", module: "./todos/index.js" },
+    { path: "/api/words", module: "./words/index.js" },
+    { path: "/api/sources", module: "./sources/index.js" },
+    { path: "/api/meanings", module: "./meanings/index.js" },
+    { path: "/api/part_of_speechs", module: "./part_of_speechs/index.js" },
+    { path: "/api/examples", module: "./examples/index.js" },
+    { path: "/api/tts", module: "./tts/index.js" },
+    { path: "/api/phrases", module: "./phrases/index.js" },
+    { path: "/api/exercises", module: "./exercises/index.js" },
+    { path: "/api/writing_questions", module: "./writing_questions/index.js" },
+    { path: "/api/writing_answers", module: "./writing_answers/index.js" },
+    { path: "/api/idioms", module: "./idioms/index.js" },
+    { path: "/api/grammar", module: "./grammar/index.js" },
+    { path: "/api/homepage", module: "./homepage/index.js" },
+    { path: "/api/stt", module: "./stt/index.js" },
+    { path: "/api/speakings", module: "./speakings/index.js" },
+    { path: "/api/speaking_scores", module: "./speaking_scores/index.js" },
+];
+
+function extractRoutes(routes) {
+    return routes
+        .map(ele => {
+            // Case 1: Direct handler (like /api/helloworld)
+            if (ele.handler) {
+                return {
+                    path: ele.path,
+                    methods: ["get"] // default: single GET handler
+                };
+            }
+
+            // Case 2: Module with Express router
+            if (ele.module) {
+                const router = require(ele.module);
+
+                return router.stack
+                    .filter(r => r.route) // only keep actual routes
+                    .map(r => {
+                        const route = r.route;
+                        return {
+                            path: ele.path + route.path, // combine base + sub path
+                            methods: Object.keys(route.methods)
+                        };
+                    });
+            }
+
+            return null;
+        })
+        .flat()        // flatten nested arrays
+        .filter(Boolean); // remove nulls
+}
+
+module.exports = function (app) {
+    routes.forEach((r) => {
+        if (r.handler) {
+            app.use(r.path, r.handler);
+        } else if (r.module) {
+            app.use(r.path, require(path.resolve(__dirname, r.module)));
+        }
+    });
+
+    app.use("/api/docs", (req, res) => {
+        const data = extractRoutes(routes);
+        res.json(data);
+    });
+
+    app.use("/api/{*any}", (req, res) => {
+        return res.json({
+            error: "Unknown route!", unknownRoute: req.originalUrl, existingRoutes: extractRoutes(routes)
+        })
+    })
 };
