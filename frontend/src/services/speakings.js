@@ -16,6 +16,19 @@ export async function getAllSpeakings({ pageIndex, pageSize }) {
     return result_json;
 }
 
+export async function getSpeakingsById({ id, pageIndex, pageSize }) {
+    if ([null, undefined, ""].includes(id)) {
+        throw Error("Answer can't be null, input id = ", id)
+    }
+
+    const result = await fetch(`/api/speakings?id=${id}&pageIndex=${pageIndex || ""}&pageSize=${pageSize || ""}`);
+    const result_json = await result.json();
+    if (result_json.data.length > 0) {
+        return result_json.data[0];
+    }
+    return null;
+}
+
 export async function getSpeakingsByAnswer({ answer, pageIndex, pageSize }) {
     if ([null, undefined, ""].includes(answer)) {
         throw Error("Answer can't be null, input answer = ", answer)

@@ -11,6 +11,7 @@ import { Writing } from "./pages/writing/Writing";
 import { WritingQuestion } from "./pages/writing_question/WritingQuestion";
 import { SpeechToText } from "./pages/stt/SpeechToText";
 import { Speaking } from "./pages/speakings/Speaking";
+import { SpeakingExercise } from "./pages/speaking_exercise/SpeakingExercise";
 
 export const routes = [
   {
@@ -42,4 +43,10 @@ export const routes = [
   { name: "Grammar", path: "grammar", element: <Grammar /> },
   { name: "SpeechToText", path: "speech_to_text", element: <SpeechToText /> },
   { name: "Speaking", path: "speaking", element: <Speaking /> },
+  {
+    name: "SpeakingExercise",
+    path: "speaking_exercise",
+    element: <SpeakingExercise />,
+    isNotDisplayOnHeader: true,
+  },
 ];

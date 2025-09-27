@@ -16,7 +16,7 @@ function generate(sql) {
   // 1. Extract table name
   const tableMatch = sql.match(/CREATE TABLE\s+"?(\w+)"?/i);
   if (!tableMatch) throw new Error("Table name not found in SQL");
-  const tableName = toPascalCase(tableMatch[1]);
+  const tableName = tableMatch[1];
 
   // 2. Root output folder
   const rootPath = path.join(__dirname, tableName);

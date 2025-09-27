@@ -76,6 +76,16 @@ export function Speaking() {
         openPopup={openPopup}
         paginationData={paginationData}
         fetchData={fetchRows}
+        additionButtons={[
+          (row) => (
+            <Button
+              text={"Speaking"}
+              onClick={() =>
+                (window.location.href = `/speaking_exercise?speaking_id=${row.id}`)
+              }
+            />
+          ),
+        ]}
       />
       <Popup
         title={"Add"}
