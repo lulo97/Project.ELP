@@ -3,9 +3,13 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.jsx";
 import { BrowserRouter } from "react-router";
-import { CONST } from "./utils/const.js";
+import { getConsts, initConsts } from "./utils/const.js";
 
-document.title = CONST.APPLICATION_NAME;
+await initConsts();
+
+document.title = getConsts().APPLICATION_NAME;
+
+console.log(getConsts())
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>

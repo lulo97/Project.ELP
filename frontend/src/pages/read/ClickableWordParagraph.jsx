@@ -12,7 +12,7 @@ import { getWindowSelectedText } from "../../utils/getWindowSelectedText";
 import { useSelectedText } from "../../hooks/useSelectedText";
 import { getSplittedSourceWithType } from "../../utils/getSplittedSourceWithType";
 import { splitParagraphContainsSpecialCharacters } from "../../utils/splitParagraphContainsSpecialCharacters";
-import { CONST, SPECIAL_CHARACTERS } from "../../utils/const";
+import { getConsts } from "../../utils/const";
 
 export function ClickableWordParagraph({
   currentSource,
@@ -48,7 +48,7 @@ export function ClickableWordParagraph({
 
         //Setting up for idiom color
         if (word.type == "idiom") {
-          color = CONST.IDIOM_COLOR;
+          color = getConsts().IDIOM_COLOR;
 
           tooltipContent = existIdioms.find((ele) => {
             return ele.idiom == word.value;
@@ -57,7 +57,7 @@ export function ClickableWordParagraph({
         
         //Setting up for phrase color
         if (word.type == "phrase") {
-          color = CONST.PHRASE_COLOR;
+          color = getConsts().PHRASE_COLOR;
 
           tooltipContent = existPhrases.find((ele) => {
             return ele.phrase == word.value;
@@ -72,7 +72,7 @@ export function ClickableWordParagraph({
               return compareStandardize(ele, word.value);
             });
 
-          color = exist_word ? CONST.WORD_COLOR : "black";
+          color = exist_word ? getConsts().WORD_COLOR : "black";
 
           //Setting up for tooltip content
           const currentMeaningTooltip = meaningsForTooltip.find((ele) => {
@@ -99,7 +99,7 @@ export function ClickableWordParagraph({
             isDisable={selectedText.length != 0}
             content={tooltipContent}
           >
-            {SPECIAL_CHARACTERS.includes(word.value) ? null : <>&nbsp;</>}
+            {getConsts().SPECIAL_CHARACTERS.includes(word.value) ? null : <>&nbsp;</>}
 
             <span
               key={index}

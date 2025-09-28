@@ -1,4 +1,4 @@
-import { SPECIAL_CHARACTERS } from "./const";
+import { getConsts } from "./const";
 
 export function getStandardizeWord({ word }) {
     if ([null, undefined].includes(word)) return "";
@@ -6,7 +6,7 @@ export function getStandardizeWord({ word }) {
 
     let output = word.toLowerCase();
 
-    for (const character of SPECIAL_CHARACTERS) {
+    for (const character of getConsts().SPECIAL_CHARACTERS) {
         output = output.replace(character, "");
     }
 

@@ -1,5 +1,5 @@
 import { routes } from "../routes";
-import { CONST } from "../utils/const";
+import { getConsts } from "../utils/const";
 
 export function Header() {
   return (
@@ -11,7 +11,7 @@ export function Header() {
           window.location.href = "/";
         }}
       >
-        {CONST.APPLICATION_NAME}
+        {getConsts().APPLICATION_NAME}
       </div>
 
       {/* Nav */}
