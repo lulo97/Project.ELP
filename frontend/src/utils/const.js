@@ -5,4 +5,4 @@ export const CONST = {
     IDIOM_COLOR: "green",
 }
 
-export const SPECIAL_CHARACTERS = [",", ".", "'s", ")", "(", "!", "?", ";", ":"];
+export const SPECIAL_CHARACTERS = [",", ".", "'s", ")", "(", "!", "?", ";", ":", "“", "”"];

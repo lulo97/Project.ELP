@@ -16,11 +16,12 @@ export function ReadSentence() {
     existPhrases,
     existIdioms,
     meaningsForTooltip,
-    reset,
+    resetAll,
+    refreshDataOnly,
   } = useSourceDataForRead(source_name);
 
   const { currentWord, showPopup, openPopup, handleClose, setCurrentWord } =
-    usePopupForRead(reset);
+    usePopupForRead(refreshDataOnly);
 
   const [sentences, setSentences] = useState([]);
   const [usedSentences, setUsedSentences] = useState([]);

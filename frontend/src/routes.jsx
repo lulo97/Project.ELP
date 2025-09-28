@@ -28,8 +28,13 @@ export const routes = [
   },
 
   { name: "Read", path: "read", element: <Read />, isNotDisplayOnHeader: true },
-  { name: "ReadSentence", path: "read_sentence", element: <ReadSentence /> },
-  
+  {
+    name: "ReadSentence",
+    path: "read_sentence",
+    element: <ReadSentence />,
+    isNotDisplayOnHeader: true,
+  },
+
   { name: "Exercise", path: "exercise", element: <Exercise /> },
   {
     name: "WritingQuestion",

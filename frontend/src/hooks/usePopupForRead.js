@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export function usePopupForRead(reset) {
+export function usePopupForRead(refreshDataOnly) {
   const [currentWord, setCurrentWord] = useState("");
   const [showPopup, setShowPopup] = useState(false);
 
@@ -12,8 +12,9 @@ export function usePopupForRead(reset) {
   function handleClose() {
     setCurrentWord("");
     setShowPopup(false);
-    reset();
+    refreshDataOnly(); // không làm đổi currentSentence
   }
 
   return { currentWord, showPopup, openPopup, handleClose, setCurrentWord };
 }
+

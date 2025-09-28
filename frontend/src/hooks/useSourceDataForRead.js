@@ -5,47 +5,19 @@ import { getAllIdioms } from "../services/idioms";
 import { getMeaningsForTooltip } from "../services/meaning";
 
 /**
- * Custom React hook for fetching and managing data required for reading sources.
+ * Hook: useSourceDataForRead
  *
- * Responsibilities:
- * - Fetches a single source by its `source_name` (from backend `/api/sources`).
- * - Loads all known words, phrases, idioms, and meanings used for tooltips.
- * - Keeps the fetched data in local state and exposes it to consuming components.
- * - Provides a `reset()` function to refetch everything on demand.
+ * @param {string} source_name - Tên nguồn cần fetch.
  *
- * Usage:
- * ```jsx
- * const {
- *   currentSource,
- *   existWords,
- *   existPhrases,
- *   existIdioms,
- *   meaningsForTooltip,
- *   reset,
- * } = useSourceDataForRead(source_name);
- *
- * if (!currentSource) return <div>Loading...</div>;
- *
- * return (
- *   <ClickableWordParagraph
- *     currentSource={currentSource}
- *     existWords={existWords}
- *     existPhrases={existPhrases}
- *     existIdioms={existIdioms}
- *     meaningsForTooltip={meaningsForTooltip}
- *   />
- * );
- * ```
- *
- * @param {string} source_name - The unique name of the source to fetch.
- *
- * @returns {object} An object containing:
- * - `currentSource`: The fetched source object (or `null` if not loaded).
- * - `existWords`: Array of all existing words from the system.
- * - `existPhrases`: Array of all existing phrases.
- * - `existIdioms`: Array of all existing idioms.
- * - `meaningsForTooltip`: Array of meanings for tooltip display.
- * - `reset`: A function that refetches all the above data.
+ * @returns {{
+ *   currentSource: object|null,   // nguồn hiện tại
+ *   existWords: object[],         // danh sách từ vựng
+ *   existPhrases: object[],       // danh sách cụm từ
+ *   existIdioms: object[],        // danh sách thành ngữ
+ *   meaningsForTooltip: object[], // nghĩa để hiển thị tooltip
+ *   resetAll: () => void,         // fetch lại source + dữ liệu
+ *   refreshDataOnly: () => void,  // chỉ fetch lại dữ liệu
+ * }}
  */
 
 export function useSourceDataForRead(source_name) {
@@ -74,13 +46,18 @@ export function useSourceDataForRead(source_name) {
     setMeaningsForTooltip(meanings);
   }
 
-  function reset() {
+  function resetAll() {
     fetchSource();
     fetchAll();
   }
 
+  function refreshDataOnly() {
+    fetchAll(); // không fetchSource
+  }
+
+
   useEffect(() => {
-    if (source_name) reset();
+    if (source_name) resetAll();
   }, [source_name]);
 
   return {
@@ -89,6 +66,8 @@ export function useSourceDataForRead(source_name) {
     existPhrases,
     existIdioms,
     meaningsForTooltip,
-    reset,
+    resetAll,
+    refreshDataOnly,
   };
+
 }
