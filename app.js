@@ -3,6 +3,7 @@ const path = require('path');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
 const fs = require('fs');
+const { initData } = require('./redis/initData.js');
 require('dotenv').config();
 
 const app = express();
@@ -45,4 +46,6 @@ app.get("/{*any}", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server listening on port http://localhost:${PORT}`);
   console.log(`📖 Swagger docs at http://localhost:${PORT}/api-docs`);
+
+  initData();
 });

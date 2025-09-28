@@ -19,6 +19,7 @@ const routes = [
     { path: "/api/stt", module: "./stt/index.js" },
     { path: "/api/speakings", module: "./speakings/index.js" },
     { path: "/api/speaking_scores", module: "./speaking_scores/index.js" },
+    { path: "/api/redis", module: "./redis/index.js" },
 ];
 
 function extractRoutes(routes) {
