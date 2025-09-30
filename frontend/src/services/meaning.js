@@ -10,10 +10,23 @@ export async function getMeaning({ meaning }) {
     return null;
 }
 
-export async function getAllMeanings({ pageIndex, pageSize }) {
-    const result = await fetch(`/api/meanings?pageIndex=${pageIndex || ""}&pageSize=${pageSize || ""}`);
-    const result_json = await result.json();
-    return result_json;
+export async function getAllMeanings({ pageIndex, pageSize, word, meaning, part_of_speech }) {
+  const params = new URLSearchParams();
+
+  params.append("pageIndex", pageIndex || "");
+  params.append("pageSize", pageSize || "");
+  params.append("word", word || "");
+  params.append("meaning", meaning || "");
+  params.append("part_of_speech", part_of_speech || "");
+
+  const result = await fetch(`/api/meanings?${params.toString()}`);
+
+  if (!result.ok) {
+    throw new Error(`Failed to fetch meanings: ${result.status} ${result.statusText}`);
+  }
+
+  const result_json = await result.json();
+  return result_json;
 }
 
 export async function getMeaningsByWord({ word, pageIndex, pageSize }) {

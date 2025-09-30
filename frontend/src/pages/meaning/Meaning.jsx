@@ -10,6 +10,7 @@ import {
 import { getPartOfSpeechs } from "../../services/part_of_speech";
 import { PageTitle } from "../../components/PageTitle";
 import { Button } from "../../components/Button";
+import { SearchTable } from "../../components/SearchTable";
 
 const EMPTY_ROW = { id: "", meaning: "", word: "", part_of_speech: "" };
 
@@ -20,9 +21,28 @@ export function Meaning() {
   const [action, setAction] = useState("ADD");
   const [partOfSpeechs, setPartOfSpeechs] = useState([]);
   const [paginationData, setPaginationData] = useState({});
+  const [searchValues, setSearchValues] = useState([
+    { id: "meaning", placeholder: "Search by meaning", value: "" },
+    { id: "word", placeholder: "Search by word", value: "" },
+    {
+      id: "part_of_speech",
+      placeholder: "Search by part of speech",
+      value: "",
+    },
+  ]);
 
-  async function fetchRows({ pageIndex, pageSize } = { pageIndex: null, pageSize: 5 }) {
-    const result = await getAllMeanings({ pageIndex, pageSize });
+  async function fetchRows(
+    { pageIndex, pageSize } = {
+      pageIndex: paginationData.pageIndex || null,
+      pageSize: paginationData.pageSize || 5,
+    }
+  ) {
+    const params = searchValues.reduce((acc, ele) => {
+      acc[ele.id] = ele.value;
+      return acc;
+    }, {});
+
+    const result = await getAllMeanings({ pageIndex, pageSize, ...params });
     setRows(result.data);
     setPaginationData(result.pagination);
   }
@@ -74,6 +94,15 @@ export function Meaning() {
           onClick={() => openPopup({ currentRow: EMPTY_ROW, action: "ADD" })}
         />
       </div>
+
+      <div className="mb-3">
+        <SearchTable
+          searchValues={searchValues}
+          setSearchValues={setSearchValues}
+          fetchRows={fetchRows}
+        />
+      </div>
+
       <Table
         columns={[
           { id: "id", name: "Id" },

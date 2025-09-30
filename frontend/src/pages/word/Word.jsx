@@ -85,7 +85,6 @@ export function Word() {
           searchValues={searchValues}
           setSearchValues={setSearchValues}
           fetchRows={fetchRows}
-          searchData={[{ id: "word", placeholder: "Search by word" }]}
         />
       </div>
 

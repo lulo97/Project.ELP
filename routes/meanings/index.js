@@ -6,33 +6,39 @@ const { paginationMiddleware } = require("../../middleware/paginationMiddleware.
 const router = express.Router();
 
 async function getMeanings(req, res, next) {
-    const { meaning, word } = req.query;
+  const { meaning, word, part_of_speech } = req.query;
 
-    let sql = "SELECT * FROM MEANINGS";
-    const params = [];
-    const conditions = [];
+  let sql = "SELECT * FROM MEANINGS";
+  const params = [];
+  const conditions = [];
 
-    if (meaning) {
-        conditions.push("meaning = ?");
-        params.push(meaning);
-    }
+  if (meaning) {
+    conditions.push("meaning LIKE ?");
+    params.push(`%${meaning}%`);
+  }
 
-    if (word) {
-        conditions.push("word = ?");
-        params.push(word);
-    }
+  if (word) {
+    conditions.push("word LIKE ?");
+    params.push(`%${word}%`);
+  }
 
-    if (conditions.length > 0) {
-        sql += " WHERE " + conditions.join(" AND ");
-    }
+  if (part_of_speech) {
+    conditions.push("part_of_speech LIKE ?");
+    params.push(`%${part_of_speech}%`);
+  }
 
-    const result = await executeSelect({ sql, params });
+  if (conditions.length > 0) {
+    sql += " WHERE " + conditions.join(" AND ");
+  }
 
-    res.locals.data = result;
-    res.locals.error = null;
+  const result = await executeSelect({ sql, params });
 
-    next();
-};
+  res.locals.data = result;
+  res.locals.error = null;
+
+  next();
+}
+
 
 async function getMeaningsForTooltip(req, res, next) {
     let sql = `
