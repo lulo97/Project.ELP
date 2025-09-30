@@ -20,12 +20,22 @@ export function Word() {
   const [showPopup, setShowPopup] = useState(false);
   const [action, setAction] = useState("ADD");
   const [paginationData, setPaginationData] = useState({});
+  const [searchValues, setSearchValues] = useState([
+    { id: "word", placeholder: "Search by word", value: "" },
+  ]);
 
   async function fetchRows(
-    { pageIndex, pageSize, word } = { pageIndex: null, pageSize: 5, word: null }
+    { pageIndex, pageSize } = {
+      pageIndex: paginationData.pageIndex || null,
+      pageSize: paginationData.pageSize || 5,
+    }
   ) {
-    console.log(word);
-    const result = await getAllWords({ pageIndex, pageSize, word });
+    const params = searchValues.reduce((acc, ele) => {
+      acc[ele.id] = ele.value;
+      return acc;
+    }, {});
+
+    const result = await getAllWords({ pageIndex, pageSize, ...params });
     setRows(result.data);
     setPaginationData(result.pagination);
   }
@@ -71,9 +81,12 @@ export function Word() {
       </div>
 
       <div className="mb-3">
-        <SearchTable fetchRows={fetchRows} searchData={[
-          { id: "word", placeholder: "Search by word" },
-        ]} />
+        <SearchTable
+          searchValues={searchValues}
+          setSearchValues={setSearchValues}
+          fetchRows={fetchRows}
+          searchData={[{ id: "word", placeholder: "Search by word" }]}
+        />
       </div>
 
       {/* Table */}

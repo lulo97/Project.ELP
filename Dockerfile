@@ -36,10 +36,11 @@ RUN npm install --omit=dev
 # Copy backend code
 COPY app.js .
 COPY database ./database
-COPY frontend ./frontend
+COPY frontend/dist ./frontend/dist
 COPY middleware ./middleware
 COPY routes ./routes
 COPY utils ./utils
+COPY redis ./redis
 
 # Copy frontend build
 COPY --from=build /app/frontend/dist ./frontend/dist

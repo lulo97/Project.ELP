@@ -13,8 +13,8 @@ async function getWords(req, res, next) {
     const params = [];
 
     if (word) {
-      sql += " WHERE word = ?";
-      params.push(word);
+      sql += " WHERE word LIKE ?";
+      params.push(`%${word}%`);  // Add wildcards around the parameter
     }
 
     const result = await executeSelect({ sql, params });

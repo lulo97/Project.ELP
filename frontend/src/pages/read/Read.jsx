@@ -14,11 +14,11 @@ export function Read() {
     existPhrases,
     existIdioms,
     meaningsForTooltip,
-    reset,
+    resetAll,
   } = useSourceDataForRead(source_name);
 
   const { currentWord, showPopup, openPopup, handleClose, setCurrentWord } =
-    usePopupForRead(reset);
+    usePopupForRead(resetAll);
 
   if (!source_name) return <div>No source selected!</div>;
   if (!currentSource) return <div>Can't find source = {source_name}</div>;

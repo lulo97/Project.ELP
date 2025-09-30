@@ -9,8 +9,6 @@ await initConsts();
 
 document.title = getConsts().APPLICATION_NAME;
 
-console.log(getConsts())
-
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>

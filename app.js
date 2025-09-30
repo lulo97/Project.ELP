@@ -3,7 +3,7 @@ const path = require('path');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
 const fs = require('fs');
-const { initData } = require('./redis/initData.js');
+const { initData } = require('./redis/initData');
 require('dotenv').config();
 
 const app = express();
