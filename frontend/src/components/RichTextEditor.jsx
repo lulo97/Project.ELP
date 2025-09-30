@@ -8,6 +8,7 @@ import {
   KeyBindingUtil,
 } from "draft-js";
 import "draft-js/dist/Draft.css";
+import { mergeTailwindClasses } from "../utils/mergeTailwindClasses";
 
 // Toolbar button definition
 const INLINE_STYLES = [
@@ -39,6 +40,7 @@ export function RichTextEditor({
   placeholder = "Start typing...",
   className = "",
   fontSize = "0.9rem", // 👈 new prop with default
+  disabled = false
 }) {
   const [editorState, setEditorState] = useState(
     value || EditorState.createEmpty()
@@ -80,9 +82,15 @@ export function RichTextEditor({
     return "not-handled";
   };
 
+  const style = `flex flex-col h-full ${className}`;
+  const overrideStyle = mergeTailwindClasses(style);
+
+  console.log('Input = ', style)
+  console.log('Output = ', overrideStyle)
+
   return (
     // flex flex-col h-full = Flex in column direction, take full height
-    <div style={{ fontSize }} className={`flex flex-col h-full ${className}`}>
+    <div style={{ fontSize }} className={overrideStyle}>
       {/* Toolbar
         flex-shrink-0 = Prevent shrinking, keep height default
       */}
@@ -108,8 +116,10 @@ export function RichTextEditor({
         className="flex-1 overflow-y-auto border rounded p-2"
       >
         <Editor
+          readOnly={disabled}
           editorState={editorState}
           onChange={(newState) => {
+            if (disabled) return;
             setEditorState(newState);
             onChange?.(newState);
           }}

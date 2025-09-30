@@ -1,4 +1,6 @@
+import { useSelectedText } from "../hooks/useSelectedText";
 import { Button } from "./Button";
+import { useRef } from "react";
 
 export function CommonPopup({
   show,
@@ -11,11 +13,16 @@ export function CommonPopup({
   width = "",
   height = "",
 }) {
+  const selectedText = useSelectedText();
+
   if (!show) return null;
 
   return (
     <div
-      onClick={() => handleClose()}
+      onClick={(e) => {
+        if (selectedText && selectedText.length > 0) return;
+        handleClose()
+      }}
       className="fixed inset-0 flex items-center justify-center bg-black/30 z-50"
     >
       <div

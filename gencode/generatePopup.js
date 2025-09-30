@@ -80,7 +80,6 @@ export function Popup({
   setCurrentRow,
   handleConfirm,
   handleClose,
-  partOfSpeechs,
 }) {
   const isDelete = action === "DELETE";
 
