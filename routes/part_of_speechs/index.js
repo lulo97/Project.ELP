@@ -12,7 +12,7 @@ async function getPartOfSpeechs(req, res, next) {
 
     if (word) {
         sql = `
-            SELECT pos.*
+            SELECT DISTINCT pos.*
             FROM PART_OF_SPEECHS pos
             JOIN MEANINGS m on m.part_of_speech = pos.id
             WHERE m.word = ?

@@ -79,6 +79,7 @@ export function Speaking() {
         additionButtons={[
           (row) => (
             <Button
+              className="py-0"
               text={"Speaking"}
               onClick={() =>
                 (window.location.href = `/speaking_exercise?speaking_id=${row.id}`)

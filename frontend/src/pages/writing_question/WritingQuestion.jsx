@@ -77,6 +77,7 @@ export function WritingQuestion() {
         additionButtons={[
           (row) => (
             <Button
+              className="py-0"
               text={"Answer"}
               onClick={() =>
                 (window.location.href = `/writing?question=${row.question}`)

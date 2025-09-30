@@ -44,44 +44,72 @@ export function Table({
               </td>
             </tr>
           ) : (
-            rows.map((row, rowIndex) => (
-              <tr key={rowIndex} className="hover:bg-gray-50 transition-colors">
-                {columns.map((col) => {
-                  const key = isObject(col) ? col.id : col;
-                  const cell = getLowercaseKeys(row)[key.toLowerCase()];
-                  const isTruncate = col.truncate != null ? col.truncate : true;
+            <>
+              {rows.map((row, rowIndex) => (
+                <tr
+                  key={rowIndex}
+                  className="hover:bg-gray-50 transition-colors"
+                >
+                  {columns.map((col) => {
+                    const key = isObject(col) ? col.id : col;
+                    const cell = getLowercaseKeys(row)[key.toLowerCase()];
+                    const isTruncate =
+                      col.truncate != null ? col.truncate : true;
 
-                  return (
-                    <td
-                      key={key + rowIndex}
-                      className={`px-4 py-3 max-w-[200px] ${
-                        isTruncate ? "truncate" : "whitespace-pre-line"
-                      }`}
-                    >
-                      {cell}
-                    </td>
-                  );
-                })}
+                    return (
+                      <td
+                        key={key + rowIndex}
+                        className={`px-4 py-3 max-w-[200px] h-[48px] ${
+                          isTruncate ? "truncate" : "whitespace-pre-line"
+                        }`}
+                      >
+                        {cell}
+                      </td>
+                    );
+                  })}
 
-                <td className="px-4 py-3 space-x-2 flex">
-                  <Button
-                    text="Edit"
-                    onClick={() =>
-                      openPopup({ currentRow: row, action: "EDIT" })
-                    }
-                  />
-                  <Button
-                    text="Delete"
-                    onClick={() =>
-                      openPopup({ currentRow: row, action: "DELETE" })
-                    }
-                  />
-                  {additionButtons.map((renderBtn, i) => (
-                    <Fragment key={i}>{renderBtn(row)}</Fragment>
-                  ))}
-                </td>
-              </tr>
-            ))
+                  {/* 
+                    <tr> = control height
+                    <td> = height strech to <tr> height auto
+                    Wrapping cell inside <td> by a <div> and <div> style = h-full
+                  */}
+                  <td className="px-4 py-3 space-x-2 h-[48px]">
+                    <div className="flex h-full items-center space-x-2">
+                      <Button
+                        className="py-0"
+                        text="Edit"
+                        onClick={() =>
+                          openPopup({ currentRow: row, action: "EDIT" })
+                        }
+                      />
+                      <Button
+                        className="py-0"
+                        text="Delete"
+                        onClick={() =>
+                          openPopup({ currentRow: row, action: "DELETE" })
+                        }
+                      />
+                      {additionButtons.map((renderBtn, i) => (
+                        <Fragment key={i}>{renderBtn(row)}</Fragment>
+                      ))}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+
+              {/* Add empty rows to keep table height consistent */}
+              {paginationData.pageSize &&
+                rows.length < paginationData.pageSize &&
+                Array.from({
+                  length: paginationData.pageSize - rows.length,
+                }).map((_, i) => (
+                  <tr key={"empty-" + i} className="h-[48px]">
+                    {" "}
+                    {/* approximate row height */}
+                    <td colSpan={columns.length + 1} />
+                  </tr>
+                ))}
+            </>
           )}
         </tbody>
       </table>
