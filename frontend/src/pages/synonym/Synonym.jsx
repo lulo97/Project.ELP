@@ -1,53 +1,28 @@
-const { toPascalCase, toTitleCase } = require("./utils")
-
-function generateComponent(sql) {
-    // 1. Extract table name
-    const tableMatch = sql.match(/CREATE TABLE\s+"?(\w+)"?/i);
-    if (!tableMatch) throw new Error("Table name not found in SQL");
-    const tableName = tableMatch[1];
-    const compName = toPascalCase(tableName.slice(0, -1)); // Example(s) -> Example
-
-    // 2. Extract columns
-    const insideParens = sql.match(/\(([\s\S]*)\)/)[1];
-    const columnMatches = [...insideParens.matchAll(/"(\w+)"\s+([\w()]+)/g)];
-    const columns = columnMatches.map(m => m[1]);
-
-    // 3. Build EMPTY_ROW
-    const emptyRow = `{ ${columns.map(c => `${c}: ""`).join(", ")} }`;
-
-    // 4. Build columns config
-    const tableCols = columns
-        .map(c => `{ id: "${c}", name: "${toTitleCase(c)}" }`)
-        .join(",\n          ");
-
-    // 5. Generate code
-    return `import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Table } from "../../components/Table";
 import { Popup } from "./Popup";
 import {
-  add${compName},
-  delete${compName},
-  getAll${tableName.charAt(0).toUpperCase() + tableName.slice(1)},
-  update${compName},
-} from "../../services/${tableName}";
+  addSynonym,
+  deleteSynonym,
+  getAllSynonyms,
+  updateSynonym,
+} from "../../services/synonyms";
 import { PageTitle } from "../../components/PageTitle";
 import { Button } from "../../components/Button";
 import { SearchTable } from "../../components/SearchTable";
 
-const EMPTY_ROW = ${emptyRow};
+const EMPTY_ROW = { id: "", word: "", synomym: "", note: "" };
 
-export function ${compName}() {
+export function Synonym() {
   const [rows, setRows] = useState([]);
   const [currentRow, setCurrentRow] = useState(EMPTY_ROW);
   const [showPopup, setShowPopup] = useState(false);
   const [action, setAction] = useState("ADD");
   const [paginationData, setPaginationData] = useState({});
   const [searchValues, setSearchValues] = useState([
-    ${columns
-        .filter(ele => ele != "id")
-        .map(c => `{ id: "${c}", placeholder: "Search by ${toTitleCase(c)}", value: "" }`)
-        .join(",\n          ")
-    }
+    { id: "word", placeholder: "Search by Word", value: "" },
+          { id: "synomym", placeholder: "Search by Synomym", value: "" },
+          { id: "note", placeholder: "Search by Note", value: "" }
   ]);
 
   async function fetchRows({ pageIndex, pageSize } = { pageIndex: paginationData.pageIndex || null, pageSize: paginationData.pageSize || 5 }) {
@@ -56,7 +31,7 @@ export function ${compName}() {
       return acc;
     }, {});
 
-    const result = await getAll${toPascalCase(tableName)}({ pageIndex, pageSize, ...params });
+    const result = await getAllSynonyms({ pageIndex, pageSize, ...params });
     setRows(result.data);
     setPaginationData(result.pagination);
   }
@@ -69,15 +44,15 @@ export function ${compName}() {
 
   async function handleConfirm({ action }) {
     if (action == "ADD") {
-      await add${compName}({ row: currentRow });
+      await addSynonym({ row: currentRow });
     }
 
     if (action == "EDIT") {
-      await update${compName}({ row: currentRow });
+      await updateSynonym({ row: currentRow });
     }
 
     if (action == "DELETE") {
-      await delete${compName}({ row: currentRow });
+      await deleteSynonym({ row: currentRow });
     }
 
     fetchRows();
@@ -96,7 +71,7 @@ export function ${compName}() {
   return (
     <div className="p-4">
       <div className="justify-between items-center mb-6">
-        <PageTitle title={"${compName} Manager"} />
+        <PageTitle title={"Synonym Manager"} />
         <Button
           text={"Add"}
           onClick={() => openPopup({ currentRow: EMPTY_ROW, action: "ADD" })}
@@ -113,7 +88,10 @@ export function ${compName}() {
 
       <Table
         columns={[
-          ${tableCols}
+          { id: "id", name: "Id" },
+          { id: "word", name: "Word" },
+          { id: "synomym", name: "Synomym" },
+          { id: "note", name: "Note" }
         ]}
         rows={rows}
         openPopup={openPopup}
@@ -131,9 +109,4 @@ export function ${compName}() {
       />
     </div>
   );
-}`;
-}
-
-module.exports = {
-    generateComponent
 }

@@ -13,6 +13,7 @@ import { SpeechToText } from "./pages/stt/SpeechToText";
 import { Speaking } from "./pages/speakings/Speaking";
 import { SpeakingExercise } from "./pages/speaking_exercise/SpeakingExercise";
 import { ReadSentence } from "./pages/read_sentence/ReadSentence";
+import { Synonym } from "./pages/synonym/Synonym";
 
 export const routes = [
   {
@@ -24,6 +25,7 @@ export const routes = [
       { name: "Example", path: "example", element: <Example /> },
       { name: "Phrase", path: "phrase", element: <Phrase /> },
       { name: "Idiom", path: "idiom", element: <Idiom /> },
+      { name: "Synonym", path: "synonym", element: <Synonym /> },
     ],
   },
 

@@ -37,7 +37,7 @@ function generate(sql) {
       content: apiContent,
     },
     {
-      path: path.join(rootPath, `frontend/src/services/${tableName.slice(0, -1)}.js`),
+      path: path.join(rootPath, `frontend/src/services/${tableName}.js`),
       content: serviceContent,
     },
     {
@@ -47,7 +47,7 @@ function generate(sql) {
     {
       path: path.join(
         rootPath,
-        `frontend/src/pages/${tableName}/${toPascalCase(tableName.slice(0, -1))}.jsx`
+        `frontend/src/pages/${tableName.slice(0, -1)}/${toPascalCase(tableName.slice(0, -1))}.jsx`
       ),
       content: componentContent,
     },
@@ -64,13 +64,11 @@ function generate(sql) {
 
 // --- Example usage ---
 generate(`
-CREATE TABLE "speaking_scores" (
+CREATE TABLE "synonyms" (
 	"id"	TEXT,
-	"speaking_id"	TEXT NOT NULL CHECK("speaking_id" <> ''),
-	"question_score"	NUMERIC NOT NULL CHECK("question_score" <> ''),
-	"answer_score"	NUMERIC NOT NULL CHECK("answer_score" <> ''),
-	"question_listened"	TEXT NOT NULL CHECK(question_listened <> ''),
-	"answer_listened"	TEXT NOT NULL CHECK(answer_listened <> ''),
+	"word"	TEXT NOT NULL CHECK(word <> ''),
+	"synomym"	TEXT NOT NULL CHECK(synomym <> ''),
+	"note"	TEXT,
 	PRIMARY KEY("id")
 )
 `);

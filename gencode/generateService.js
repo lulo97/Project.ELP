@@ -1,85 +1,104 @@
-const { toPascalCase } = require("./utils")
+const { toPascalCase } = require("./utils");
 
 function generateService(sql) {
-    // 1. Extract table name
-    const tableMatch = sql.match(/CREATE TABLE\s+"?(\w+)"?/i);
-    if (!tableMatch) throw new Error("Table name not found in SQL");
-    const tableName = tableMatch[1];
-    const capName = toPascalCase(tableName.slice(0, -1)); // singular
+  const tableMatch = sql.match(/CREATE TABLE\s+"?(\w+)"?/i);
+  if (!tableMatch) throw new Error("Table name not found in SQL");
+  const tableName = tableMatch[1];
 
-    // 2. Extract columns 
-    const insideParens = sql.match(/\(([\s\S]*)\)/)[1];
-    const columnMatches = [...insideParens.matchAll(/"(\w+)"\s+([\w()]+)/g)];
-    const columns = columnMatches.map(m => m[1]);
+  const singularName = toPascalCase(tableName.endsWith('s') ? tableName.slice(0, -1) : tableName);
+  const pascalTable = toPascalCase(tableName);
 
-    // 3. Identify primary key
-    const pkMatch = sql.match(/PRIMARY KEY\("(\w+)"\)/i);
-    const primaryKey = pkMatch ? pkMatch[1] : columns[0];
+  const insideParens = sql.match(/\(([\s\S]*)\)/)[1];
+  const columnMatches = [...insideParens.matchAll(/"(\w+)"\s+([\w()]+)/g)];
+  const columns = columnMatches.map(m => m[1]);
 
-    // 4. Build code
-    return `export async function get${capName}({ ${columns[1]} }) {
-    if (!${columns[1]}) {
-        throw Error("${toPascalCase(columns[1])} can't be null!")
-    }
-    const result = await fetch(\`/api/${tableName}?${columns[1]}=\${${columns[1]}}\`);
-    const result_json = await result.json();
-    if (result_json.data.length > 0) {
-        return result_json.data[0];
-    }
-    return null;
+  const pkMatch = sql.match(/PRIMARY KEY\("(\w+)"\)/i);
+  const primaryKey = pkMatch ? pkMatch[1] : columns[0];
+
+  const firstFilterCol = columns.find(c => c !== primaryKey);
+
+  return `// Auto-generated service for ${tableName}
+
+export async function get${singularName}({ ${firstFilterCol} }) {
+  if (!${firstFilterCol}) {
+    throw new Error("${firstFilterCol} can't be null or undefined.");
+  }
+
+  const result = await fetch(\`/api/${tableName}?${firstFilterCol}=\${${firstFilterCol}}\`);
+  const result_json = await result.json();
+
+  if (result_json.data.length > 0) {
+    return result_json.data[0];
+  }
+
+  return null;
 }
 
-export async function getAll${toPascalCase(tableName)}({ pageIndex, pageSize }) {
-    const result = await fetch(\`/api/${tableName}?pageIndex=\${pageIndex || ""}&pageSize=\${pageSize || ""}\`);
-    const result_json = await result.json();
-    return result_json;
+export async function getAll${pascalTable}({ ${columns.join(", ")} , pageIndex, pageSize }) {
+  const params = new URLSearchParams();
+
+  params.append("pageIndex", pageIndex || "");
+  params.append("pageSize", pageSize || "");
+${columns.map(c => `  params.append("${c}", ${c} || "");`).join("\n")}
+
+  const result = await fetch(\`/api/${tableName}?\${params.toString()}\`);
+  return await result.json();
 }
 
 ${columns
-    .filter(c => c !== pkMatch?.[1] && c !== columns[1]) // exclude PK + first col used in getX
-    .map(
-        c => `export async function get${toPascalCase(tableName)}By${toPascalCase(c)}({ ${c}, pageIndex, pageSize }) {
-    if ([null, undefined, ""].includes(${c})) {
-        throw Error("${toPascalCase(c)} can't be null, input ${c} = ", ${c})
-    }
+  .filter(c => c !== primaryKey && c !== firstFilterCol)
+  .map(
+    c => `export async function get${pascalTable}By${toPascalCase(c)}({ ${c}, pageIndex, pageSize }) {
+  if ([null, undefined, ""].includes(${c})) {
+    throw new Error("${c} is required.");
+  }
 
-    const result = await fetch(\`/api/${tableName}?${c}=\${${c}}&pageIndex=\${pageIndex || ""}&pageSize=\${pageSize || ""}\`);
-    const result_json = await result.json();
-    return result_json;
+  const params = new URLSearchParams({
+    ${c}: ${c},
+    pageIndex: pageIndex ?? "",
+    pageSize: pageSize ?? "",
+  });
+
+  const result = await fetch(\`/api/${tableName}?\${params.toString()}\`);
+  return await result.json();
 }`
-    )
-    .join("\n\n")}
+  )
+  .join("\n\n")}
 
-export async function add${capName}({ row }) {
-    const result = await fetch("/api/${tableName}", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(row),
-    });
-    return await result.json();
+export async function add${singularName}({ row }) {
+  const result = await fetch("/api/${tableName}", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(row),
+  });
+
+  return await result.json();
 }
 
-export async function update${capName}({ row }) {
-    const result = await fetch(\`/api/${tableName}/\${row.${primaryKey}}\`, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(row),
-    });
-    return await result.json();
+export async function update${singularName}({ row }) {
+  const result = await fetch(\`/api/${tableName}/\${row.${primaryKey}}\`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(row),
+  });
+
+  return await result.json();
 }
 
-export async function delete${capName}({ row }) {
-    const result = await fetch(\`/api/${tableName}/\${row.${primaryKey}}\`, {
-        method: "DELETE",
-    });
-    return await result.json();
-}`;
+export async function delete${singularName}({ row }) {
+  const result = await fetch(\`/api/${tableName}/\${row.${primaryKey}}\`, {
+    method: "DELETE",
+  });
+
+  return await result.json();
+}
+`;
 }
 
 module.exports = {
-    generateService
-}
+  generateService,
+};
