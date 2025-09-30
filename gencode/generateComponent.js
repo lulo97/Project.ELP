@@ -44,10 +44,13 @@ export function ${compName}() {
   const [paginationData, setPaginationData] = useState({});
   const [searchValues, setSearchValues] = useState([
     ${columns
-        .filter(ele => ele != "id")
-        .map(c => `{ id: "${c}", placeholder: "Search by ${toTitleCase(c)}", value: "" }`)
-        .join(",\n          ")
-    }
+      .filter(ele => ele !== "id")
+      .map(c => `{
+        id: "${c}",
+        placeholder: "Search by ${toTitleCase(c)}",
+        value: ""
+      }`)
+      .join(",\n  ")}
   ]);
 
   async function fetchRows({ pageIndex, pageSize } = { pageIndex: paginationData.pageIndex || null, pageSize: paginationData.pageSize || 5 }) {
