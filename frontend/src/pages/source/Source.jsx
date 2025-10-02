@@ -84,7 +84,7 @@ export function Source() {
         additionButtons={[
           (row) => (
             <Button
-              className="py-0"
+              className="py-0 h-full"
               text={"Read"}
               onClick={() =>
                 (window.location.href = `/read?source_name=${row.name}`)
@@ -93,7 +93,7 @@ export function Source() {
           ),
           (row) => (
             <Button
-              className="py-0"
+              className="py-0 h-full"
               text={"Read Sentence"}
               onClick={() =>
                 (window.location.href = `/read_sentence?source_name=${row.name}`)

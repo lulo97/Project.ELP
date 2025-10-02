@@ -76,14 +76,14 @@ export function Table({
                   <td className="px-4 py-3 space-x-2 h-[48px]">
                     <div className="flex h-full items-center space-x-2">
                       <Button
-                        className="py-0"
+                        className="py-0 h-full"
                         text="Edit"
                         onClick={() =>
                           openPopup({ currentRow: row, action: "EDIT" })
                         }
                       />
                       <Button
-                        className="py-0"
+                        className="py-0 h-full"
                         text="Delete"
                         onClick={() =>
                           openPopup({ currentRow: row, action: "DELETE" })
