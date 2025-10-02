@@ -31,6 +31,8 @@ async function getMeanings(req, res, next) {
     sql += " WHERE " + conditions.join(" AND ");
   }
 
+
+  sql += " ORDER BY CAST(id AS UNSIGNED) desc";
   const result = await executeSelect({ sql, params });
 
   res.locals.data = result;

@@ -17,7 +17,9 @@ async function getPhrases(req, res, next) {
       params.push(phrases);
     }
 
-    const result = await executeSelect({ sql, params });
+
+  sql += " ORDER BY CAST(id AS UNSIGNED) desc";
+  const result = await executeSelect({ sql, params });
 
     res.locals.data = result;
     next();
