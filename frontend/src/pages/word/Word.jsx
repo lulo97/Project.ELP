@@ -11,6 +11,7 @@ import { PageTitle } from "../../components/PageTitle";
 import { Button } from "../../components/Button";
 import { Input } from "../../components/Input";
 import { SearchTable } from "../../components/SearchTable";
+import { Popup as PopupDetail } from "../read/Popup";
 
 const EMPTY_ROW = { id: "", word: "" };
 
@@ -23,6 +24,8 @@ export function Word() {
   const [searchValues, setSearchValues] = useState([
     { id: "word", placeholder: "Search by word", value: "" },
   ]);
+  const [showPopupDetail, setShowPopupDetail] = useState(false);
+  const [selectedWord, setSelectedWord] = useState(EMPTY_ROW);
 
   async function fetchRows(
     { pageIndex, pageSize } = {
@@ -66,6 +69,11 @@ export function Word() {
     setShowPopup(false);
   }
 
+  function handleClosePopupDetail() {
+    setCurrentRow(EMPTY_ROW);
+    setShowPopupDetail(false);
+  }
+
   useEffect(() => {
     fetchRows();
   }, []);
@@ -95,6 +103,18 @@ export function Word() {
         openPopup={openPopup}
         fetchData={fetchRows}
         paginationData={paginationData}
+        additionButtons={[
+          (row) => (
+            <Button
+              className="py-0 h-full"
+              text={"Add detail"}
+              onClick={() => {
+                setShowPopupDetail(true);
+                setSelectedWord(row);
+              }}
+            />
+          ),
+        ]}
       />
 
       {/* Popup (already styled) */}
@@ -107,6 +127,15 @@ export function Word() {
         handleConfirm={handleConfirm}
         handleClose={handleClose}
       />
+
+      {selectedWord.word && (
+        <PopupDetail
+          show={showPopupDetail}
+          title="Add"
+          word={selectedWord.word}
+          handleClose={handleClosePopupDetail}
+        />
+      )}
     </div>
   );
 }

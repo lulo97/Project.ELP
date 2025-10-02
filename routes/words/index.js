@@ -17,6 +17,8 @@ async function getWords(req, res, next) {
       params.push(`%${word}%`);  // Add wildcards around the parameter
     }
 
+    sql += " ORDER BY CAST(id AS UNSIGNED) desc";
+
     const result = await executeSelect({ sql, params });
 
     res.locals.data = result;
