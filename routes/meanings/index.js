@@ -6,7 +6,12 @@ const { paginationMiddleware } = require("../../middleware/paginationMiddleware.
 const router = express.Router();
 
 async function getMeanings(req, res, next) {
-  const { meaning, word, part_of_speech } = req.query;
+  const { meaning, word, part_of_speech, where_options } = req.query;
+
+  let _where_options;
+  if (where_options) {
+    _where_options = JSON.parse(where_options)
+  }
 
   let sql = "SELECT * FROM MEANINGS";
   const params = [];
@@ -18,8 +23,13 @@ async function getMeanings(req, res, next) {
   }
 
   if (word) {
-    conditions.push("word LIKE ?");
-    params.push(`%${word}%`);
+    if (_where_options && _where_options.word && _where_options.word.comparisonOperation == '=') {
+      conditions.push("word = ?");
+      params.push(`${word}`);
+    } else {
+      conditions.push("word LIKE ?");
+      params.push(`%${word}%`);
+    }
   }
 
   if (part_of_speech) {
@@ -43,7 +53,7 @@ async function getMeanings(req, res, next) {
 
 
 async function getMeaningsForTooltip(req, res, next) {
-    let sql = `
+  let sql = `
 SELECT 
     json_object(
         'word', w.word,
@@ -60,34 +70,34 @@ JOIN part_of_speechs pos on pos.id = m.part_of_speech
 GROUP BY w.word;
     `;
 
-    let result = await executeSelect({ sql });
+  let result = await executeSelect({ sql });
 
-    result = result.map(ele => JSON.parse(ele.data))
+  result = result.map(ele => JSON.parse(ele.data))
 
-    res.json({ data: result, error: null });
+  res.json({ data: result, error: null });
 };
 
 async function addMeaning(req, res, next) {
-    const { meaning, word, part_of_speech } = req.body;
-    const id = getRandomId();
-    const sql = "INSERT INTO MEANINGS (id, meaning, word, part_of_speech) VALUES (?, ?, ?, ?)";
-    const result = await execute({ sql: sql, params: [id, meaning, word, part_of_speech] })
-    res.json({ data: result, error: null });
+  const { meaning, word, part_of_speech } = req.body;
+  const id = getRandomId();
+  const sql = "INSERT INTO MEANINGS (id, meaning, word, part_of_speech) VALUES (?, ?, ?, ?)";
+  const result = await execute({ sql: sql, params: [id, meaning, word, part_of_speech] })
+  res.json({ data: result, error: null });
 }
 
 async function updateMeaning(req, res, next) {
-    const { id } = req.params;
-    const { meaning, word, part_of_speech } = req.body;
-    const sql = "UPDATE MEANINGS SET meaning = ?, word = ?, part_of_speech = ? WHERE id = ?";
-    const result = await execute({ sql: sql, params: [meaning, word, part_of_speech, id] })
-    res.json({ data: result, error: null });
+  const { id } = req.params;
+  const { meaning, word, part_of_speech } = req.body;
+  const sql = "UPDATE MEANINGS SET meaning = ?, word = ?, part_of_speech = ? WHERE id = ?";
+  const result = await execute({ sql: sql, params: [meaning, word, part_of_speech, id] })
+  res.json({ data: result, error: null });
 }
 
 async function deleteMeaning(req, res, next) {
-    const { id } = req.params;
-    const sql = "DELETE FROM MEANINGS WHERE id = ?";
-    const result = await execute({ sql: sql, params: [id] })
-    res.json({ data: result, error: null });
+  const { id } = req.params;
+  const sql = "DELETE FROM MEANINGS WHERE id = ?";
+  const result = await execute({ sql: sql, params: [id] })
+  res.json({ data: result, error: null });
 }
 
 router.get("/", getMeanings, paginationMiddleware);

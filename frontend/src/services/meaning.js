@@ -11,32 +11,49 @@ export async function getMeaning({ meaning }) {
 }
 
 export async function getAllMeanings({ pageIndex, pageSize, word, meaning, part_of_speech }) {
-  const params = new URLSearchParams();
+    const params = new URLSearchParams();
 
-  params.append("pageIndex", pageIndex || "");
-  params.append("pageSize", pageSize || "");
-  params.append("word", word || "");
-  params.append("meaning", meaning || "");
-  params.append("part_of_speech", part_of_speech || "");
+    params.append("pageIndex", pageIndex || "");
+    params.append("pageSize", pageSize || "");
+    params.append("word", word || "");
+    params.append("meaning", meaning || "");
+    params.append("part_of_speech", part_of_speech || "");
 
-  const result = await fetch(`/api/meanings?${params.toString()}`);
+    const result = await fetch(`/api/meanings?${params.toString()}`);
 
-  if (!result.ok) {
-    throw new Error(`Failed to fetch meanings: ${result.status} ${result.statusText}`);
-  }
-
-  const result_json = await result.json();
-  return result_json;
-}
-
-export async function getMeaningsByWord({ word, pageIndex, pageSize }) {
-    if ([null, undefined, ""].includes(word)) {
-        throw Error("Word can't be null, input word = ", word)
+    if (!result.ok) {
+        throw new Error(`Failed to fetch meanings: ${result.status} ${result.statusText}`);
     }
 
-    const result = await fetch(`/api/meanings?word=${word}&pageIndex=${pageIndex || ""}&pageSize=${pageSize || ""}`);
     const result_json = await result.json();
     return result_json;
+}
+
+export async function getMeaningsByWord({ word, pageIndex = "", pageSize = "" }) {
+    if (!word) {
+        throw new Error(`Word can't be null or empty. Input word: ${word}`);
+    }
+
+    const whereOptions = {
+        word: {
+            comparisonOperation: "=",
+        },
+    };
+
+    const query = new URLSearchParams({
+        word,
+        pageIndex: String(pageIndex || ""),
+        pageSize: String(pageSize || ""),
+        where_options: JSON.stringify(whereOptions) || "",
+    });
+
+    const response = await fetch(`/api/meanings?${query.toString()}`);
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch meanings: ${response.status} ${response.statusText}`);
+    }
+
+    return response.json();
 }
 
 export async function addMeaning({ row }) {
