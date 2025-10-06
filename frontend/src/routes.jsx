@@ -14,6 +14,7 @@ import { Speaking } from "./pages/speakings/Speaking";
 import { SpeakingExercise } from "./pages/speaking_exercise/SpeakingExercise";
 import { ReadSentence } from "./pages/read_sentence/ReadSentence";
 import { Synonym } from "./pages/synonym/Synonym";
+import { ReadWordList } from "./pages/read_word_list/ReadWordList";
 
 export const routes = [
   {
@@ -34,6 +35,12 @@ export const routes = [
     name: "ReadSentence",
     path: "read_sentence",
     element: <ReadSentence />,
+    isNotDisplayOnHeader: true,
+  },
+  {
+    name: "ReadWordList",
+    path: "read_word_list",
+    element: <ReadWordList />,
     isNotDisplayOnHeader: true,
   },
 

@@ -5,6 +5,7 @@ import { ClickableWordParagraph } from "../read/ClickableWordParagraph";
 import { Popup } from "../read/Popup";
 import { useSourceDataForRead } from "../../hooks/useSourceDataForRead";
 import { usePopupForRead } from "../../hooks/usePopupForRead";
+import { splitParagraph } from "../../utils/splitParagraph";
 
 export function ReadSentence() {
   const location = useLocation();
@@ -61,7 +62,11 @@ export function ReadSentence() {
       <PageTitle title="Random Sentence Reader" />
 
       <ClickableWordParagraph
-        currentSource={{ source: currentSentence }}
+        currentSource={splitParagraph({
+          source: currentSentence,
+          existIdioms: existIdioms,
+          existPhrases: existPhrases,
+        })}
         existWords={existWords}
         existPhrases={existPhrases}
         existIdioms={existIdioms}

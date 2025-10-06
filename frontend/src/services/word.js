@@ -1,8 +1,8 @@
-export async function getWord({ word }) {
+export async function getWord({ word, where_options }) {
     if (!word) {
         throw Error("Word can't be null!")
     }
-    const result = await fetch(`/api/words?word=${word}`);
+    const result = await fetch(`/api/words?word=${word}&where_options=${JSON.stringify(where_options) || ""}`);
     const result_json = await result.json();
     if (result_json.data.length > 0) {
         return result_json.data[0];

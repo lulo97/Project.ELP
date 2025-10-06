@@ -3,6 +3,7 @@ import { ClickableWordParagraph } from "./ClickableWordParagraph";
 import { Popup } from "./Popup";
 import { useSourceDataForRead } from "../../hooks/useSourceDataForRead";
 import { usePopupForRead } from "../../hooks/usePopupForRead";
+import { splitParagraph } from "../../utils/splitParagraph";
 
 export function Read() {
   const location = useLocation();
@@ -28,7 +29,11 @@ export function Read() {
       <h1 className="text-2xl font-bold mb-4">Title: {currentSource.name}</h1>
 
       <ClickableWordParagraph
-        currentSource={currentSource}
+        currentSource={splitParagraph({
+          source: currentSource.source,
+          existIdioms: existIdioms,
+          existPhrases: existPhrases,
+        })}
         existWords={existWords}
         existPhrases={existPhrases}
         existIdioms={existIdioms}

@@ -17,7 +17,10 @@ export function Popup({ show, title, word, handleClose }) {
 
   async function fetchWordData() {
     if ([null, undefined, ""].includes(word)) return;
-    const result = await getWord({ word: word });
+    const result = await getWord({
+      word: word,
+      where_options: [{ field: "word", comparison_operation: "=" }],
+    });
     setWordData(result);
   }
 
@@ -37,8 +40,8 @@ export function Popup({ show, title, word, handleClose }) {
       title={title}
       overWrittenBoxStyle={{ display: "flex", flexDirection: "column" }}
       handleClose={() => {
-        setCurrentTabId("word")
-        handleClose()
+        setCurrentTabId("word");
+        handleClose();
       }}
       isShowConfirmButton={false}
       height="90%"
@@ -54,7 +57,7 @@ export function Popup({ show, title, word, handleClose }) {
           style={{
             flexGrow: "1",
             display: "flex",
-            gap: "10px"
+            gap: "10px",
           }}
         >
           <VerticalTab

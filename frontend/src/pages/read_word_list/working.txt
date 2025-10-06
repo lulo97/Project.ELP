@@ -1,0 +1,30 @@
+<div>
+      {Object.keys(groupedWords)
+        .sort()
+        .map((letter) => {
+          const words = groupedWords[letter];
+          return (
+            <div>
+              <div>Letter: {letter}</div>
+              {words.map((word, index) => {
+                if (word.value === NEW_LINE_CHARACTER)
+                  return <br key={index} />;
+
+                return (
+                  <Tooltip content={word.value} key={index}>
+                    <span
+                      style={{
+                        cursor: "pointer",
+                        marginRight: "4px", // small gap between words
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {word.value}
+                    </span>
+                  </Tooltip>
+                );
+              })}
+            </div>
+          );
+        })}
+    </div>

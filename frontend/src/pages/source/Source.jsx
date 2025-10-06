@@ -100,6 +100,15 @@ export function Source() {
               }
             />
           ),
+          (row) => (
+            <Button
+              className="py-0 h-full"
+              text={"Word List"}
+              onClick={() =>
+                (window.location.href = `/read_word_list?source_name=${row.name}`)
+              }
+            />
+          ),
         ]}
         paginationData={paginationData}
         fetchData={fetchRows}
