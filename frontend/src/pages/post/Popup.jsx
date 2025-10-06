@@ -12,7 +12,6 @@ export function Popup({
   handleClose,
 }) {
   const isDelete = action === "DELETE";
-
   return (
     <CommonPopup
       show={show}
@@ -26,39 +25,27 @@ export function Popup({
         fieldComponent={<input value={row.id} disabled />}
       />
 
-      {/* word */}
+      {/* title */}
       <PopupField
-        label="Word"
+        label="Title"
         fieldComponent={
           <input
-            value={row.word}
+            value={row.title}
             disabled={isDelete}
-            onChange={(e) => setCurrentRow({ ...row, word: e.target.value })}
+            onChange={(e) => setCurrentRow({ ...row, title: e.target.value })}
           />
         }
       />
 
-      {/* synomym */}
+      {/* content */}
       <PopupField
-        label="Synomym"
-        fieldComponent={
-          <input
-            value={row.synomym}
-            disabled={isDelete}
-            onChange={(e) => setCurrentRow({ ...row, synomym: e.target.value })}
-          />
-        }
-      />
-
-      {/* note */}
-      <PopupField
-        label="Note"
+        label="Content"
         fieldComponent={
           <RichTextEditorField
             value={row.content} // or row.note
-            onChange={(html) => setCurrentRow({ ...row, note: html })} // or note
+            onChange={(html) => setCurrentRow({ ...row, content: html })} // or note
             disabled={isDelete}
-            placeholder="Type your review here..."
+            placeholder="Content..."
           />
         }
       />

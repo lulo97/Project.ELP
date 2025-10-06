@@ -64,11 +64,10 @@ function generate(sql) {
 
 // --- Example usage ---
 generate(`
-CREATE TABLE "synonyms" (
+CREATE TABLE "posts" (
 	"id"	TEXT,
-	"word"	TEXT NOT NULL CHECK(word <> ''),
-	"synomym"	TEXT NOT NULL CHECK(synomym <> ''),
-	"note"	TEXT,
+	"title"	TEXT NOT NULL CHECK(id <> ''),
+	"content"	TEXT NOT NULL CHECK(content <> ''),
 	PRIMARY KEY("id")
 )
 `);

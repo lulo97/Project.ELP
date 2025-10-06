@@ -15,6 +15,7 @@ import { SpeakingExercise } from "./pages/speaking_exercise/SpeakingExercise";
 import { ReadSentence } from "./pages/read_sentence/ReadSentence";
 import { Synonym } from "./pages/synonym/Synonym";
 import { ReadWordList } from "./pages/read_word_list/ReadWordList";
+import { Post } from "./pages/post/Post"
 
 export const routes = [
   {
@@ -27,6 +28,7 @@ export const routes = [
       { name: "Phrase", path: "phrase", element: <Phrase /> },
       { name: "Idiom", path: "idiom", element: <Idiom /> },
       { name: "Synonym", path: "synonym", element: <Synonym /> },
+      { name: "Post", path: "post", element: <Post /> },
     ],
   },
 
