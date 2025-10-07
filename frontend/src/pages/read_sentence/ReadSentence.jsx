@@ -6,6 +6,8 @@ import { Popup } from "../read/Popup";
 import { useSourceDataForRead } from "../../hooks/useSourceDataForRead";
 import { usePopupForRead } from "../../hooks/usePopupForRead";
 import { splitParagraph } from "../../utils/splitParagraph";
+import { useMemo } from "react";
+import { getStandardizeWord } from "../../utils/standardizeWord";
 
 export function ReadSentence() {
   const location = useLocation();
@@ -55,6 +57,30 @@ export function ReadSentence() {
     }
   }, [sentences]);
 
+  const existWordSet = useMemo(() => {
+    return new Set(existWords.map((w) => getStandardizeWord({ word: w.word })));
+  }, [existWords]);
+
+  const idiomMap = useMemo(() => {
+    const m = new Map();
+    existIdioms.forEach((i) => m.set(i.idiom, i.meaning));
+    return m;
+  }, [existIdioms]);
+
+  const phraseMap = useMemo(() => {
+    const m = new Map();
+    existPhrases.forEach((p) => m.set(p.phrase, p.meaning));
+    return m;
+  }, [existPhrases]);
+
+  const meaningMap = useMemo(() => {
+    const m = new Map();
+    meaningsForTooltip.forEach((mf) => {
+      m.set(getStandardizeWord({ word: mf.word }), mf.meanings);
+    });
+    return m;
+  }, [meaningsForTooltip]);
+
   if (!currentSentence) return <div>No sentence available</div>;
 
   return (
@@ -67,10 +93,10 @@ export function ReadSentence() {
           existIdioms: existIdioms,
           existPhrases: existPhrases,
         })}
-        existWords={existWords}
-        existPhrases={existPhrases}
-        existIdioms={existIdioms}
-        meaningsForTooltip={meaningsForTooltip}
+        existWordSet={existWordSet}
+        idiomMap={idiomMap}
+        phraseMap={phraseMap}
+        meaningMap={meaningMap}
         setCurrentWord={setCurrentWord}
         openPopup={openPopup}
       />
