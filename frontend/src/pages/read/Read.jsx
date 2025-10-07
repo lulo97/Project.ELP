@@ -34,6 +34,29 @@ export function Read() {
   const { currentWord, showPopup, openPopup, handleClose, setCurrentWord } =
     usePopupForRead(resetAll);
 
+  const fetchTranslations = useCallback(async () => {
+    if (!currentSource?.id) return;
+
+    try {
+      const existingTranslatedChunks = await getSourceTranslates({
+        source_id: currentSource.id,
+      });
+
+      setExistTranslatedChunks(existingTranslatedChunks || []);
+
+      if (!existingTranslatedChunks) return;
+
+      const merged = translatedChunks.map((ele, idx) => ({
+        ...ele,
+        translate: existingTranslatedChunks[idx]?.translate || "",
+      }));
+
+      setTranslatedChunks(merged);
+    } catch (err) {
+      console.error("Failed to fetch translations:", err);
+    }
+  }, [currentSource?.id, translatedChunks]);
+
   useEffect(() => {
     if (!currentSource?.source) return;
 
@@ -52,28 +75,6 @@ export function Read() {
     }));
 
     setTranslatedChunks(newTranslatedChunks);
-
-    const fetchTranslations = async () => {
-      try {
-        const existingTranslatedChunks = await getSourceTranslates({
-          source_id: currentSource.id,
-        });
-
-        setExistTranslatedChunks(existingTranslatedChunks);
-
-        if (!existingTranslatedChunks) return;
-
-        // Merge existing translations into new chunks
-        const merged = newTranslatedChunks.map((ele, idx) => ({
-          ...ele,
-          translate: existingTranslatedChunks[idx]?.translate || "",
-        }));
-
-        setTranslatedChunks(merged);
-      } catch (err) {
-        console.error("Failed to fetch translations:", err);
-      }
-    };
 
     fetchTranslations();
   }, [currentSource?.id, currentSource?.source, existIdioms, existPhrases]);
@@ -135,6 +136,7 @@ export function Read() {
             };
 
             await addSourceTranslates({ body: body });
+            fetchTranslations();
           }}
         />
       </div>
