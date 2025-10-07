@@ -22,6 +22,7 @@ const routes = [
     { path: "/api/redis", module: "./redis/index.js" },
     { path: "/api/synonyms", module: "./synonyms/index.js" },
     { path: "/api/posts", module: "./posts/index.js" },
+    { path: "/api/source_translates", module: "./source_translates/index.js" },
 ];
 
 function extractRoutes(routes) {

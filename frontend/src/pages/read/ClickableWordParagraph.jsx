@@ -7,34 +7,34 @@ import { NEW_LINE_CHARACTER } from "../../utils/splitParagraph";
 import { useSelectedText } from "../../hooks/useSelectedText";
 import { getConsts } from "../../utils/const";
 
-function getWordColor(word, existWords) {
-  if (word.type === "idiom") return getConsts().IDIOM_COLOR;
-  if (word.type === "phrase") return getConsts().PHRASE_COLOR;
+function getWordColor(word, existWordSet) {
+  const consts = getConsts();
+  if (word.type === "idiom") return consts.IDIOM_COLOR;
+  if (word.type === "phrase") return consts.PHRASE_COLOR;
   if (word.type === "word") {
-    const exist_word = existWords
-      .map(ele => ele.word)
-      .find(ele => compareStandardize(ele, word.value));
-    return exist_word ? getConsts().WORD_COLOR : "black";
+    const standardized = getStandardizeWord({ word: word.value });
+    return existWordSet.has(standardized) ? consts.WORD_COLOR : "black";
   }
   return "black";
 }
 
-function getTooltipContent(word, existWords, existPhrases, existIdioms, meaningsForTooltip) {
+function getTooltipContent(word, idiomMap, phraseMap, meaningMap) {
   if (word.type === "idiom") {
-    return existIdioms.find(ele => ele.idiom === word.value)?.meaning || "";
+    return idiomMap.get(word.value) || "";
   }
   if (word.type === "phrase") {
-    return existPhrases.find(ele => ele.phrase === word.value)?.meaning || "";
+    return phraseMap.get(word.value) || "";
   }
   if (word.type === "word") {
-    const currentMeaningTooltip = meaningsForTooltip.find(ele =>
-      compareStandardize(ele.word, word.value)
-    );
-    if (currentMeaningTooltip) {
+    const standardized = getStandardizeWord({ word: word.value });
+    const meanings = meaningMap.get(standardized);
+    if (meanings) {
       return (
         <ul>
-          {currentMeaningTooltip.meanings.map(ele => (
-            <li>{`${ele.meaning} (${ele.part_of_speech})`}</li>
+          {meanings.map((ele) => (
+            <li
+              key={ele.meaning}
+            >{`${ele.meaning} (${ele.part_of_speech})`}</li>
           ))}
         </ul>
       );
@@ -51,10 +51,10 @@ function handleDoubleClick(word, setCurrentWord, openPopup) {
 
 export function ClickableWordParagraph({
   currentSource = [{ value: null, type: null }],
-  existWords = [],
-  existPhrases = [],
-  existIdioms = [],
-  meaningsForTooltip = [],
+  existWordSet,
+  idiomMap,
+  phraseMap,
+  meaningMap,
   setCurrentWord = () => {},
   openPopup = () => {},
 }) {
@@ -65,12 +65,25 @@ export function ClickableWordParagraph({
       {currentSource.map((word, index) => {
         if (word.value === NEW_LINE_CHARACTER) return <br key={index} />;
 
-        const color = getWordColor(word, existWords);
-        const tooltipContent = getTooltipContent(word, existWords, existPhrases, existIdioms, meaningsForTooltip);
+        const color = getWordColor(word, existWordSet);
+        const tooltipContent = getTooltipContent(
+          word,
+          idiomMap,
+          phraseMap,
+          meaningMap
+        );
+
+        //return <div>{word.value}</div>
 
         return (
-          <Tooltip key={index} isDisable={selectedText.length !== 0} content={tooltipContent}>
-            {getConsts().SPECIAL_CHARACTERS.includes(word.value) ? null : <>&nbsp;</>}
+          <Tooltip
+            key={index}
+            isDisable={selectedText.length !== 0}
+            content={tooltipContent}
+          >
+            {getConsts().SPECIAL_CHARACTERS.includes(word.value) ? null : (
+              <>&nbsp;</>
+            )}
             <span
               style={{
                 cursor: "pointer",
@@ -78,7 +91,9 @@ export function ClickableWordParagraph({
                 color: color,
                 whiteSpace: "nowrap",
               }}
-              onDoubleClick={() => handleDoubleClick(word, setCurrentWord, openPopup)}
+              onDoubleClick={() =>
+                handleDoubleClick(word, setCurrentWord, openPopup)
+              }
             >
               {word.value}
             </span>
@@ -88,4 +103,3 @@ export function ClickableWordParagraph({
     </div>
   );
 }
-
