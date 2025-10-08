@@ -1,21 +1,27 @@
 import { useMemo, useState } from "react";
 import { FillInBank } from "./FillInBank";
 import { MultipleChoice } from "./MultipleChoice";
+import { GivingExample } from "./GivingExample";
 
 export function Exercise() {
   const [tick, setTick] = useState(0);
 
-  // choose which type of exercise to render
+  // randomly choose one of three exercise types
   const choice = useMemo(() => {
-    return Math.random() < 0.5 ? "fill" : "multi";
+    const types = ["fill", "multi", "example"];
+    return types[Math.floor(Math.random() * types.length)];
   }, [tick]);
 
   return (
     <>
-      {choice === "fill" ? (
+      {choice === "fill" && (
         <FillInBank key={tick} reset={() => setTick(t => t + 1)} />
-      ) : (
+      )}
+      {choice === "multi" && (
         <MultipleChoice key={tick} reset={() => setTick(t => t + 1)} />
+      )}
+      {choice === "example" && (
+        <GivingExample key={tick} reset={() => setTick(t => t + 1)} />
       )}
     </>
   );

@@ -34,6 +34,7 @@ export async function addExample({ row }) {
         },
         body: JSON.stringify(row),
     });
+    return result;
 }
 
 export async function updateExample({ row }) {

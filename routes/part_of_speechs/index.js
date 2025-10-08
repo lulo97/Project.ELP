@@ -21,8 +21,6 @@ async function getPartOfSpeechs(req, res, next) {
         params.push(word);
     }
 
-    console.log({ sql: sql, param: [word] })
-
     const result = await executeSelect({ sql: sql, params: params });
 
     res.json({ data: result, error: null });
