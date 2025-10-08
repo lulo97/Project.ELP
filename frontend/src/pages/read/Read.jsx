@@ -21,7 +21,7 @@ export function Read() {
   // Each item: { chunk: string, translate: string, split: <result of splitParagraph> }
   const [translatedChunks, setTranslatedChunks] = useState([]);
   const [existTranslatedChunks, setExistTranslatedChunks] = useState([]);
-
+  
   const {
     currentSource,
     existWords,
@@ -59,6 +59,13 @@ export function Read() {
 
   useEffect(() => {
     if (!currentSource?.source) return;
+
+    //If current chunks already typing translates then don't call api to reset translate
+    const isEditTranslate = getCompareString(translatedChunks) != getCompareString(existTranslatedChunks);
+
+    if (isEditTranslate) {
+      return;
+    }
 
     const chunks = currentSource.source
       .split("\n")
