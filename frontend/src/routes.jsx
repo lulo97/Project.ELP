@@ -1,3 +1,5 @@
+import React from "react";
+
 import { Example } from "./pages/examples/Example";
 import { Exercise } from "./pages/exercise/Exercise";
 import { Grammar } from "./pages/grammar/Grammar";

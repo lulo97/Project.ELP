@@ -14,77 +14,62 @@ import {
   getSourceTranslates,
 } from "../../services/source_translates";
 
+let STATE = [];
+
 export function Read() {
   const location = useLocation();
   const source_name = new URLSearchParams(location.search).get("source_name");
 
-  // Each item: { chunk: string, translate: string, split: <result of splitParagraph> }
-  const [translatedChunks, setTranslatedChunks] = useState([]);
-  const [existTranslatedChunks, setExistTranslatedChunks] = useState([]);
-  
   const {
     currentSource,
     existWords,
     existPhrases,
     existIdioms,
     meaningsForTooltip,
+    translatedChunks,
+    setTranslatedChunks,
+    existTranslatedChunks,
     resetAll,
   } = useSourceDataForRead(source_name);
 
+  const currentSnapshot = {
+    currentSource,
+    existWords,
+    existPhrases,
+    existIdioms,
+    meaningsForTooltip,
+    translatedChunks,
+    existTranslatedChunks,
+    resetAll,
+  };
+
+  // Push a *clone* of the snapshot for history
+  STATE.push(JSON.parse(JSON.stringify(currentSnapshot)));
+
+  // Compare with the previous render
+  if (STATE.length > 1) {
+    const prev = STATE[STATE.length - 2];
+    const curr = STATE[STATE.length - 1];
+
+    // Shallow comparison summary
+    const diffKeys = Object.keys(curr).filter(
+      (key) => JSON.stringify(curr[key]) !== JSON.stringify(prev[key])
+    );
+
+    if (diffKeys.length > 0) {
+      console.log(
+        `%c[State changed] ${diffKeys.join(", ")}`,
+        "color: red; font-weight: bold;"
+      );
+    } else {
+      console.log("%c[No state change detected]", "color: gray;");
+    }
+  }
+
+  console.log("%cRender snapshot:", "color: orange;", currentSnapshot);
+
   const { currentWord, showPopup, openPopup, handleClose, setCurrentWord } =
     usePopupForRead(resetAll);
-
-  const fetchTranslations = useCallback(async () => {
-    if (!currentSource?.id) return;
-
-    try {
-      const existingTranslatedChunks = await getSourceTranslates({
-        source_id: currentSource.id,
-      });
-
-      setExistTranslatedChunks(existingTranslatedChunks || []);
-
-      if (!existingTranslatedChunks) return;
-
-      const merged = translatedChunks.map((ele, idx) => ({
-        ...ele,
-        translate: existingTranslatedChunks[idx]?.translate || "",
-      }));
-
-      setTranslatedChunks(merged);
-    } catch (err) {
-      console.error("Failed to fetch translations:", err);
-    }
-  }, [currentSource?.id, translatedChunks]);
-
-  useEffect(() => {
-    if (!currentSource?.source) return;
-
-    //If current chunks already typing translates then don't call api to reset translate
-    const isEditTranslate = getCompareString(translatedChunks) != getCompareString(existTranslatedChunks);
-
-    if (isEditTranslate) {
-      return;
-    }
-
-    const chunks = currentSource.source
-      .split("\n")
-      .filter((ele) => ele.trim().length > 0);
-
-    let newTranslatedChunks = chunks.map((chunk) => ({
-      chunk,
-      translate: "",
-      split: splitParagraph({
-        source: chunk,
-        existIdioms,
-        existPhrases,
-      }),
-    }));
-
-    setTranslatedChunks(newTranslatedChunks);
-
-    fetchTranslations();
-  }, [currentSource?.id, currentSource?.source, existIdioms, existPhrases]);
 
   const existWordSet = useMemo(() => {
     return new Set(existWords.map((w) => getStandardizeWord({ word: w.word })));
@@ -121,6 +106,8 @@ export function Read() {
     return JSON.stringify(filtered);
   }
 
+  console.log("-----------------------------------");
+
   return (
     <div className="p-4">
       <div className="flex justify-between mb-4">
@@ -143,7 +130,7 @@ export function Read() {
             };
 
             await addSourceTranslates({ body: body });
-            fetchTranslations();
+            resetAll();
           }}
         />
       </div>

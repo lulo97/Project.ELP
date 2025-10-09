@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Build frontend
-RUN cd frontend && npm install && npm run build
+RUN cd frontend && npm install && node esbuild.config.js
 
 # Stage 2: Run backend
 FROM node:20-alpine

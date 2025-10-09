@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build-start": "cd frontend && npm run build && cd .. && node app.js",
+    "build-start": "cd frontend && node esbuild.config.js && cd .. && node app.js",
     "dev": "nodemon --exec \"npm run build-start\""
   },
   "author": "",
