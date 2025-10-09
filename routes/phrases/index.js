@@ -24,6 +24,7 @@ async function getPhrases(req, res, next) {
     res.locals.data = result;
     next();
   } catch (err) {
+    console.error(err)
     res.locals.error = err.message;
     next();
   }

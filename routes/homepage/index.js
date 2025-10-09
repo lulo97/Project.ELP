@@ -78,6 +78,7 @@ async function get(req, res, next) {
             error: null,
         });
     } catch (err) {
+        console.error(err)
         next(err);
     }
 }

@@ -85,9 +85,6 @@ export function RichTextEditor({
   const style = `flex flex-col h-full ${className}`;
   const overrideStyle = mergeTailwindClasses(style);
 
-  console.log('Input = ', style)
-  console.log('Output = ', overrideStyle)
-
   return (
     // flex flex-col h-full = Flex in column direction, take full height
     <div style={{ fontSize }} className={overrideStyle}>
@@ -123,7 +120,8 @@ export function RichTextEditor({
             setEditorState(newState);
             onChange?.(newState);
           }}
-          placeholder={placeholder}
+          //TODO: FIX
+          //placeholder={placeholder}
           keyBindingFn={keyBindingFn}
           handleKeyCommand={handleKeyCommand}
         />

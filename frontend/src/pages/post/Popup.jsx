@@ -48,7 +48,7 @@ export function Popup({
             placeholder="Content..."
           />
         }
-      />
+    />
     </CommonPopup>
   );
 }

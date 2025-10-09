@@ -23,12 +23,13 @@ JOIN WRITING_QUESTIONS wq ON wa.question_id = wq.id
     }
 
 
-  sql += " ORDER BY CAST(id AS UNSIGNED) desc";
+  sql += " ORDER BY CAST(wa.id AS UNSIGNED) asc";
   const result = await executeSelect({ sql, params });
 
     res.locals.data = result;
     next();
   } catch (err) {
+    console.error(err)
     res.locals.error = err.message;
     next();
   }
