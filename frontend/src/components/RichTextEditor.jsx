@@ -40,7 +40,7 @@ export function RichTextEditor({
   placeholder = "Start typing...",
   className = "",
   fontSize = "0.9rem", // 👈 new prop with default
-  disabled = false
+  disabled = false,
 }) {
   const [editorState, setEditorState] = useState(
     value || EditorState.createEmpty()
@@ -56,9 +56,8 @@ export function RichTextEditor({
 
   // Custom key binding
   const keyBindingFn = (e) => {
-    if (e.key === "Tab") {
-      return "insert-4-spaces";
-    }
+    if (e.key === "Tab") return "insert-4-spaces";
+    if (e.ctrlKey && e.key.toLowerCase() === "b") return "bold";
     return getDefaultKeyBinding(e);
   };
 
@@ -67,18 +66,25 @@ export function RichTextEditor({
     if (command === "insert-4-spaces") {
       const currentContent = editorState.getCurrentContent();
       const selection = editorState.getSelection();
-
-      const newContent = Modifier.insertText(currentContent, selection, "    "); // 4 spaces
+      const newContent = Modifier.insertText(currentContent, selection, "    ");
       const newState = EditorState.push(
         editorState,
         newContent,
         "insert-characters"
       );
-
       setEditorState(newState);
       onChange?.(newState);
       return "handled";
     }
+
+    // ✅ Let Draft.js handle built-in commands like "bold", "italic", etc.
+    const newState = RichUtils.handleKeyCommand(editorState, command);
+    if (newState) {
+      setEditorState(newState);
+      onChange?.(newState);
+      return "handled";
+    }
+
     return "not-handled";
   };
 
@@ -109,9 +115,7 @@ export function RichTextEditor({
         flex-1 = Take remaining space
         overflow-y-auto = Scroll if content overflows vertically
       */}
-      <div
-        className="flex-1 overflow-y-auto border rounded p-2"
-      >
+      <div className="flex-1 overflow-y-auto border rounded p-2">
         <Editor
           readOnly={disabled}
           editorState={editorState}

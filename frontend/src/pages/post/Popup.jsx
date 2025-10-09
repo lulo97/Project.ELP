@@ -46,6 +46,7 @@ export function Popup({
             onChange={(html) => setCurrentRow({ ...row, content: html })} // or note
             disabled={isDelete}
             placeholder="Content..."
+            className="h-screen"
           />
         }
     />
