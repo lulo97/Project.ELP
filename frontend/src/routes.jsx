@@ -18,6 +18,7 @@ import { ReadSentence } from "./pages/read_sentence/ReadSentence";
 import { Synonym } from "./pages/synonym/Synonym";
 import { ReadWordList } from "./pages/read_word_list/ReadWordList";
 import { Post } from "./pages/post/Post"
+import { ViewPost } from "./pages/post/ViewPost";
 
 export const routes = [
   {
@@ -31,9 +32,10 @@ export const routes = [
       { name: "Idiom", path: "idiom", element: <Idiom /> },
       { name: "Synonym", path: "synonym", element: <Synonym /> },
       { name: "Post", path: "post", element: <Post /> },
+      
     ],
   },
-
+  { name: "ViewPost", path: "viewpost", element: <ViewPost />, isNotDisplayOnHeader: true },
   { name: "Read", path: "read", element: <Read />, isNotDisplayOnHeader: true },
   {
     name: "ReadSentence",

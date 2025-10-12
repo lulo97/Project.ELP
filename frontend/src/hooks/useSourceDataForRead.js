@@ -32,14 +32,14 @@ function getCompareString(arr = []) {
 
 export function useSourceDataForRead(source_name) {
   const [currentSource, setCurrentSource] = useState(null);
-  const [existWords, setExistWords] = useState([]);
-  const [existPhrases, setExistPhrases] = useState([]);
-  const [existIdioms, setExistIdioms] = useState([]);
-  const [meaningsForTooltip, setMeaningsForTooltip] = useState([]);
+  const [existWords, setExistWords] = useState(null);
+  const [existPhrases, setExistPhrases] = useState(null);
+  const [existIdioms, setExistIdioms] = useState(null);
+  const [meaningsForTooltip, setMeaningsForTooltip] = useState(null);
 
   // Each item: { chunk: string, translate: string, split: <result of splitParagraph> }
-  const [translatedChunks, setTranslatedChunks] = useState([]);
-  const [existTranslatedChunks, setExistTranslatedChunks] = useState([]);
+  const [translatedChunks, setTranslatedChunks] = useState(null);
+  const [existTranslatedChunks, setExistTranslatedChunks] = useState(null);
 
   async function fetchSource() {
     const result = await fetch(`/api/sources?name=${source_name}`);
@@ -57,10 +57,12 @@ export function useSourceDataForRead(source_name) {
     setExistTranslatedChunks(existingTranslatedChunks || []);
 
     //setState() is not updated same time as async/await so I have to manually passing api result
-    return existingTranslatedChunks || []
+    return existingTranslatedChunks || [];
   }
 
-  async function fetchTranslations(existingTranslatedChunks = existTranslatedChunks) {
+  async function fetchTranslations(
+    existingTranslatedChunks = existTranslatedChunks
+  ) {
     if (!currentSource?.id) return;
 
     try {
@@ -77,7 +79,7 @@ export function useSourceDataForRead(source_name) {
           existPhrases,
         }),
       }));
-      
+
       const merged = newTranslatedChunks.map((ele, idx) => ({
         ...ele,
         translate: existingTranslatedChunks[idx]?.translate || "",
@@ -87,7 +89,7 @@ export function useSourceDataForRead(source_name) {
     } catch (err) {
       console.error("Failed to fetch translations:", err);
     }
-  };
+  }
 
   async function fetchAll() {
     const [words, phrases, idioms, meanings] = await Promise.all([
@@ -117,22 +119,22 @@ export function useSourceDataForRead(source_name) {
 
     const existingTranslatedChunks = await fetchExistTranslatedChunks();
 
-    const isEditTranslate = getCompareString(translatedChunks) != getCompareString(existTranslatedChunks);
+    if (translatedChunks && existTranslatedChunks) {
+      const isEditTranslate =
+        getCompareString(translatedChunks) !=
+        getCompareString(existTranslatedChunks);
 
-    if (isEditTranslate) {
-      return;
-    }
-
-    if (isEditTranslate) {
-      return;
+      if (isEditTranslate) {
+        return;
+      }
     }
 
     await fetchTranslations(existingTranslatedChunks);
   }
 
   useEffect(() => {
-    handleTranslatedChunks()
-  }, [currentSource])
+    handleTranslatedChunks();
+  }, [currentSource]);
 
   useEffect(() => {
     if (source_name) resetAll();
@@ -150,5 +152,4 @@ export function useSourceDataForRead(source_name) {
     resetAll,
     refreshDataOnly,
   };
-
 }

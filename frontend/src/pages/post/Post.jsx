@@ -103,6 +103,17 @@ export function Post() {
         openPopup={openPopup}
         paginationData={paginationData}
         fetchData={fetchRows}
+        additionButtons={[
+          (row) => (
+            <Button
+              className="py-0 h-full"
+              text={"View Post"}
+              onClick={() =>
+                (window.location.href = `/viewpost?id=${row.id}`)
+              }
+            />
+          ),
+        ]}
       />
       <Popup
         title={"Add"}

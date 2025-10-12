@@ -107,13 +107,13 @@ Output = [{ value: "a", type: "word" }, { value: "b", type: "word" }, ...] with 
 export function splitParagraph({ source = "", existPhrases = [], existIdioms = [] }) {
     const rawSource = source.split(" ");
     const rawSourceWithNewLines = splitParagraphContainsNewLines(rawSource);
-    const rawSourceWithSpecialCharaters = splitParagraphContainsSpecialCharacters(
+    const rawSourceWithSpecialCharacters = splitParagraphContainsSpecialCharacters(
         rawSourceWithNewLines
     );
     const rawSourceSplittedWithType = getSplittedSourceWithType({
-        words: rawSourceWithSpecialCharaters,
-        phrases: existPhrases.map((ele) => ele.phrase),
-        idioms: existIdioms.map((ele) => ele.idiom),
+        words: rawSourceWithSpecialCharacters,
+        phrases: existPhrases ? existPhrases.map((ele) => ele.phrase) : [],
+        idioms: existIdioms ? existIdioms.map((ele) => ele.idiom) : [],
     });
     return rawSourceSplittedWithType;
 }

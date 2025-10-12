@@ -30,6 +30,7 @@ export function Read() {
     setTranslatedChunks,
     existTranslatedChunks,
     resetAll,
+    refreshDataOnly,
   } = useSourceDataForRead(source_name);
 
   const currentSnapshot = {
@@ -41,6 +42,7 @@ export function Read() {
     translatedChunks,
     existTranslatedChunks,
     resetAll,
+    refreshDataOnly,
   };
 
   // Push a *clone* of the snapshot for history
@@ -69,25 +71,29 @@ export function Read() {
   console.log("%cRender snapshot:", "color: orange;", currentSnapshot);
 
   const { currentWord, showPopup, openPopup, handleClose, setCurrentWord } =
-    usePopupForRead(resetAll);
+    usePopupForRead(refreshDataOnly);
 
   const existWordSet = useMemo(() => {
+    if (!existWords) return;
     return new Set(existWords.map((w) => getStandardizeWord({ word: w.word })));
   }, [existWords]);
 
   const idiomMap = useMemo(() => {
+    if (!existIdioms) return;
     const m = new Map();
     existIdioms.forEach((i) => m.set(i.idiom, i.meaning));
     return m;
   }, [existIdioms]);
 
   const phraseMap = useMemo(() => {
+    if (!existPhrases) return;
     const m = new Map();
     existPhrases.forEach((p) => m.set(p.phrase, p.meaning));
     return m;
   }, [existPhrases]);
 
   const meaningMap = useMemo(() => {
+    if (!meaningsForTooltip) return;
     const m = new Map();
     meaningsForTooltip.forEach((mf) => {
       m.set(getStandardizeWord({ word: mf.word }), mf.meanings);
@@ -108,16 +114,21 @@ export function Read() {
 
   console.log("-----------------------------------");
 
+  if (!translatedChunks) return <div>Loading...</div>
+
+  const saveTranslateButtonDisable =
+    !translatedChunks ||
+    !existTranslatedChunks ||
+    getCompareString(translatedChunks) ===
+      getCompareString(existTranslatedChunks);
+
   return (
     <div className="p-4">
       <div className="flex justify-between mb-4">
         <h1 className="text-2xl font-bold">Title: {currentSource.name}</h1>
         <Button
           text={"Save translate"}
-          disabled={
-            getCompareString(translatedChunks) ==
-            getCompareString(existTranslatedChunks)
-          }
+          disabled={saveTranslateButtonDisable}
           onClick={async () => {
             const body = {
               source_id: currentSource.id,
