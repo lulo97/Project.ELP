@@ -32,10 +32,11 @@ export function ViewPost() {
     <div className="p-4">
       <div className="flex justify-between mb-4">
         <div className="text-2xl font-bold">{postData.title}</div>
-        <div
-          className="fixed top-[80px] right-0 p-4"
+        {editedContent != postData.content && <div
+          className="fixed top-[60px] right-0 p-4 z-10"
         >
           <Button
+            className="opacity-75"
             text="Save"
             disabled={editedContent == postData.content}
             onClick={async () => {
@@ -52,7 +53,7 @@ export function ViewPost() {
               await fetchData();
             }}
           />
-        </div>
+        </div>}
       </div>
       <RichTextEditorField
         value={editedContent}
