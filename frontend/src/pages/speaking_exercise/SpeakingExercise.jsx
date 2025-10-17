@@ -193,74 +193,92 @@ export function SpeakingExercise() {
   let average_question_score = 0;
   let average_answer_score = 0;
 
-  if (scoreData && scoreData.length > 0) {
-    average_question_score =
-      scoreData.reduce((sum, value) => sum + value.question_score, 0) /
-      scoreData.length;
-    average_question_score = Math.round(average_question_score * 100) / 100;
+  function getQuestionScoreData() {
+    return scoreData.filter((ele) => ele.text == speakingData.question);
+  }
 
+  function getAnswerScoreData() {
+    return scoreData.filter((ele) => ele.text == speakingData.answer);
+  }
+
+  const questionScoreData = getQuestionScoreData();
+  const answerScoreData = getAnswerScoreData();
+
+  if (questionScoreData.length > 0) {
+    average_question_score =
+      questionScoreData.reduce((sum, value) => sum + value.score, 0) /
+      questionScoreData.length;
+    average_question_score = Math.round(average_question_score * 100) / 100;
+  }
+
+  if (answerScoreData.length > 0) {
     average_answer_score =
-      scoreData.reduce((sum, value) => sum + value.answer_score, 0) /
-      scoreData.length;
+      answerScoreData.reduce((sum, value) => sum + value.score, 0) /
+      answerScoreData.length;
     average_answer_score = Math.round(average_answer_score * 100) / 100;
+  }
+
+  async function handleSaveSpeakingScore({
+    speaking_id,
+    score,
+    text,
+    text_listened,
+  }) {
+    const body = {
+      speaking_id: speaking_id,
+      score: score,
+      text: text,
+      text_listened: text_listened,
+    };
+
+    if (!body.speaking_id) {
+      fireMessage({
+        text: "Speaking id cannot be empty!",
+        type: "error",
+      });
+      return;
+    }
+
+    if (body.score == null) {
+      fireMessage({ text: "Scores cannot be empty!", type: "error" });
+      return;
+    }
+
+    if (body.text_listened == null) {
+      fireMessage({
+        text: "Listened text cannot be empty!",
+        type: "error",
+      });
+      return;
+    }
+
+    if (body.text == null) {
+      fireMessage({
+        text: "Text cannot be empty!",
+        type: "error",
+      });
+      return;
+    }
+
+    const result = await addSpeakingScore({ row: body });
+    if (result.error) {
+      fireMessage({
+        text: result.error,
+        type: "error",
+      });
+      return;
+    }
+
+    fireMessage({
+      text: "Success!",
+    });
+
+    refresh();
   }
 
   return (
     <div className="p-6 space-y-8">
-      <div className="flex justify-between">
-        <h1 className="text-2xl font-bold">Speaking Practice</h1>
-        <Button
-          text={"Save"}
-          onClick={async () => {
-            const body = {
-              speaking_id: speaking_id,
-              question_score: scores.question,
-              answer_score: scores.answer,
-              question_listened: spokenTexts.question,
-              answer_listened: spokenTexts.answer,
-            };
-
-            if (!body.speaking_id) {
-              fireMessage({
-                text: "Speaking id cannot be empty!",
-                type: "error",
-              });
-              return;
-            }
-
-            // optional: validate other fields
-            if (body.question_score == null || body.answer_score == null) {
-              fireMessage({ text: "Scores cannot be empty!", type: "error" });
-              return;
-            }
-
-            if (
-              body.question_listened == null ||
-              body.answer_listened == null
-            ) {
-              fireMessage({
-                text: "Listened text cannot be empty!",
-                type: "error",
-              });
-              return;
-            }
-
-            const result = await addSpeakingScore({ row: body });
-
-            if (!result.error) {
-              fireMessage({
-                text: "Save succesfully!",
-              });
-              refresh();
-            } else {
-              fireMessage({
-                text: result.error,
-                type: "error",
-              });
-            }
-          }}
-        />
-      </div>
+      <h1 className="text-2xl font-bold">Speaking Practice</h1>
 
       {ttsLoading && (
         <p className="text-blue-500">Generating audio... please wait</p>
@@ -272,11 +290,9 @@ export function SpeakingExercise() {
           <h2 className="font-semibold text-lg">Question</h2>
           <Tooltip
             content={
-              scoreData && scoreData.length > 0
-                ? scoreData.slice(0, 5).map((ele) => {
-                    return (
-                      <div>{ele.created_time + " | " + ele.question_score}</div>
-                    );
+              questionScoreData && questionScoreData.length > 0
+                ? questionScoreData.slice(0, 5).map((ele) => {
+                    return <div>{ele.created_time + " | " + ele.score}</div>;
                   })
                 : "No data"
             }
@@ -288,20 +304,34 @@ export function SpeakingExercise() {
           </Tooltip>
         </div>
         <p className="mb-2">{speakingData.question}</p>
-        <div className="flex space-x-4">
-          <Button
-            text={isPlaying.question ? "⏹ Stop listen" : "🔊 Listen"}
-            onClick={() => togglePlay("question")}
-          />
-          {!recording || recordTarget !== "question" ? (
+        <div className="flex items-center justify-between">
+          <div className="flex space-x-4">
             <Button
-              text="🎤 Record"
-              onClick={() => startRecording("question")}
+              text={isPlaying.question ? "⏹ Stop listen" : "🔊 Listen"}
+              onClick={() => togglePlay("question")}
             />
-          ) : (
-            <Button text="⏹ Stop" onClick={stopRecording} />
-          )}
+            {!recording || recordTarget !== "question" ? (
+              <Button
+                text="🎤 Record"
+                onClick={() => startRecording("question")}
+              />
+            ) : (
+              <Button text="⏹ Stop" onClick={stopRecording} />
+            )}
+          </div>
+          <Button
+            text="💾 Save"
+            onClick={async () => {
+              await handleSaveSpeakingScore({
+                speaking_id,
+                score: scores.question,
+                text: speakingData.question,
+                text_listened: spokenTexts.question,
+              });
+            }}
+          />
         </div>
+
         {spokenTexts.question && (
           <p className="mt-2">You spoke: {spokenTexts.question}</p>
         )}
@@ -318,11 +348,9 @@ export function SpeakingExercise() {
           <h2 className="font-semibold text-lg">Answer</h2>
           <Tooltip
             content={
-              scoreData && scoreData.length > 0
-                ? scoreData.slice(0, 5).map((ele) => {
-                    return (
-                      <div>{ele.created_time + " | " + ele.answer_score}</div>
-                    );
+              answerScoreData && answerScoreData.length > 0
+                ? answerScoreData.slice(0, 5).map((ele) => {
+                    return <div>{ele.created_time + " | " + ele.score}</div>;
                   })
                 : "No data"
             }
@@ -334,16 +362,32 @@ export function SpeakingExercise() {
           </Tooltip>
         </div>
         <p className="mb-2">{speakingData.answer}</p>
-        <div className="flex space-x-4">
+        <div className="flex items-center justify-between">
+          <div className="flex space-x-4">
+            <Button
+              text={isPlaying.answer ? "⏹ Stop listen" : "🔊 Listen"}
+              onClick={() => togglePlay("answer")}
+            />
+            {!recording || recordTarget !== "answer" ? (
+              <Button
+                text="🎤 Record"
+                onClick={() => startRecording("answer")}
+              />
+            ) : (
+              <Button text="⏹ Stop" onClick={stopRecording} />
+            )}
+          </div>
           <Button
-            text={isPlaying.answer ? "⏹ Stop listen" : "🔊 Listen"}
-            onClick={() => togglePlay("answer")}
+            text="💾 Save"
+            onClick={async () => {
+              await handleSaveSpeakingScore({
+                speaking_id,
+                score: scores.answer,
+                text: speakingData.answer,
+                text_listened: spokenTexts.answer,
+              });
+            }}
           />
-          {!recording || recordTarget !== "answer" ? (
-            <Button text="🎤 Record" onClick={() => startRecording("answer")} />
-          ) : (
-            <Button text="⏹ Stop" onClick={stopRecording} />
-          )}
         </div>
         {spokenTexts.answer && (
           <p className="mt-2">You spoke: {spokenTexts.answer}</p>
