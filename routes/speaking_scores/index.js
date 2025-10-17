@@ -2,13 +2,14 @@ const express = require("express");
 const { executeSelect, execute } = require("../../database/execute.js");
 const { getRandomId } = require("../../utils/getRandomId.js");
 const { paginationMiddleware } = require("../../middleware/paginationMiddleware.js");
+const { getCreatedTimeString } = require("../../utils/getCreatedTimeString.js");
 
 const router = express.Router();
 
 async function getSpeakingScores(req, res, next) {
     const { id, speaking_id, question_score, answer_score, question_listened, answer_listened } = req.query;
 
-    let sql = "SELECT * FROM speaking_scores";
+    let sql = `SELECT *, ${getCreatedTimeString()} FROM speaking_scores`;
     const params = [];
     const conditions = [];
 

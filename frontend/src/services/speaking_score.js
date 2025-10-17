@@ -5,7 +5,7 @@ export async function getSpeakingScore({ speaking_id }) {
     const result = await fetch(`/api/speaking_scores?speaking_id=${speaking_id}`);
     const result_json = await result.json();
     if (result_json.data.length > 0) {
-        return result_json.data[0];
+        return result_json.data;
     }
     return null;
 }

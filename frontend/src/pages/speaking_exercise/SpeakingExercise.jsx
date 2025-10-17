@@ -7,8 +7,12 @@ import { tts } from "../../services/tts";
 import { stt } from "../../services/stt";
 import { removeVietnameseDiacritics } from "../../utils/removeVietnameseDiacritics";
 import { encodeWAV, blobToBase64 } from "../../utils/audioUtils";
-import { addSpeakingScore } from "../../services/speaking_score";
+import {
+  addSpeakingScore,
+  getSpeakingScore,
+} from "../../services/speaking_score";
 import { useMessage } from "../../providers/MessageProvider";
+import { Tooltip } from "../../components/Tooltip";
 
 export function SpeakingExercise() {
   const location = useLocation();
@@ -32,6 +36,7 @@ export function SpeakingExercise() {
     question: false,
     answer: false,
   });
+  const [scoreData, setScoreData] = useState([]);
 
   function refresh() {
     setScores({ question: null, answer: null });
@@ -40,6 +45,7 @@ export function SpeakingExercise() {
     setIsPlaying({ question: false, answer: false });
     setRecording(false);
     setRecordTarget(null);
+    fetchScoreData();
   }
 
   const { fireMessage } = useMessage();
@@ -55,8 +61,14 @@ export function SpeakingExercise() {
     setSpeakingData(result);
   }
 
+  async function fetchScoreData() {
+    const result = await getSpeakingScore({ speaking_id: speaking_id });
+    setScoreData(result || []);
+  }
+
   useEffect(() => {
     fetchSpeakingData();
+    fetchScoreData();
   }, []);
 
   // --- Preload TTS once when data ready ---
@@ -178,6 +190,21 @@ export function SpeakingExercise() {
 
   if (!speaking_id) return <div>No exercise selected!</div>;
 
+  let average_question_score = 0;
+  let average_answer_score = 0;
+
+  if (scoreData && scoreData.length > 0) {
+    average_question_score =
+      scoreData.reduce((sum, value) => sum + value.question_score, 0) /
+      scoreData.length;
+    average_question_score = Math.round(average_question_score * 100) / 100;
+
+    average_answer_score =
+      scoreData.reduce((sum, value) => sum + value.answer_score, 0) /
+      scoreData.length;
+    average_answer_score = Math.round(average_answer_score * 100) / 100;
+  }
+
   return (
     <div className="p-6 space-y-8">
       <div className="flex justify-between">
@@ -241,7 +268,25 @@ export function SpeakingExercise() {
 
       {/* Question */}
       <div className="p-4 border rounded-lg shadow">
-        <h2 className="font-semibold">Question</h2>
+        <div className="flex justify-between">
+          <h2 className="font-semibold text-lg">Question</h2>
+          <Tooltip
+            content={
+              scoreData && scoreData.length > 0
+                ? scoreData.slice(0, 5).map((ele) => {
+                    return (
+                      <div>{ele.created_time + " | " + ele.question_score}</div>
+                    );
+                  })
+                : "No data"
+            }
+            delay={100}
+          >
+            <div className="text-sm text-green-600 font-bold">
+              {average_question_score} / 100
+            </div>
+          </Tooltip>
+        </div>
         <p className="mb-2">{speakingData.question}</p>
         <div className="flex space-x-4">
           <Button
@@ -269,7 +314,25 @@ export function SpeakingExercise() {
 
       {/* Answer */}
       <div className="p-4 border rounded-lg shadow">
-        <h2 className="font-semibold">Answer</h2>
+        <div className="flex justify-between">
+          <h2 className="font-semibold text-lg">Answer</h2>
+          <Tooltip
+            content={
+              scoreData && scoreData.length > 0
+                ? scoreData.slice(0, 5).map((ele) => {
+                    return (
+                      <div>{ele.created_time + " | " + ele.answer_score}</div>
+                    );
+                  })
+                : "No data"
+            }
+            delay={100}
+          >
+            <div className="text-sm text-green-600 font-bold">
+              {average_answer_score} / 100
+            </div>
+          </Tooltip>
+        </div>
         <p className="mb-2">{speakingData.answer}</p>
         <div className="flex space-x-4">
           <Button
