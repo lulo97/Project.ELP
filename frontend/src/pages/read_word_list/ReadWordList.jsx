@@ -7,8 +7,18 @@ import { NEW_LINE_CHARACTER, splitParagraph } from "../../utils/splitParagraph";
 import { getConsts } from "../../utils/const";
 
 function toWordList({ source = "", existPhrases = [], existIdioms = [] }) {
+  let _source = source.toLowerCase();
+
+  for (const character of getConsts().SPECIAL_CHARACTERS) {
+    _source = _source.replaceAll(character, "");
+
+    if (_source.includes(character)) {
+      throw Error(character);
+    }
+  }
+
   const splited_source = splitParagraph({
-    source: source.toLowerCase(),
+    source: _source,
     existPhrases: existPhrases,
     existIdioms: existIdioms,
   });
@@ -75,10 +85,10 @@ export function ReadWordList() {
 
       <ClickableWordParagraph
         currentSource={word_list}
-        existWords={existWords}
-        existPhrases={existPhrases}
-        existIdioms={existIdioms}
-        meaningsForTooltip={meaningsForTooltip}
+        existWords={existWords || []}
+        existPhrases={existPhrases || []}
+        existIdioms={existIdioms || []}
+        meaningsForTooltip={meaningsForTooltip || []}
         setCurrentWord={setCurrentWord}
         openPopup={openPopup}
       />
