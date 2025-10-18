@@ -17,6 +17,9 @@ export function CommonPopup({
 
   if (!show) return null;
 
+  let footerClassname = "px-6 py-3 border-t flex justify-end gap-2";
+  if (isShowConfirmButton) footerClassname = footerClassname.replace("justify-end", "justify-between")
+
   return (
     <div
       onClick={(e) => {
@@ -47,7 +50,7 @@ export function CommonPopup({
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-3 border-t flex justify-end gap-2">
+        <div className={footerClassname}>
           <Button text="Close" onClick={handleClose} />
           {isShowConfirmButton && (
             <Button text="Confirm" onClick={handleConfirm} />
