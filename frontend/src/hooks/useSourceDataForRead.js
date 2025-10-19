@@ -50,22 +50,23 @@ export function useSourceDataForRead(source_name) {
   async function fetchExistTranslatedChunks() {
     if (!currentSource.id) return;
 
-    const existingTranslatedChunks = await getSourceTranslates({
+    const existTranslatedChunks = await getSourceTranslates({
       source_id: currentSource.id,
     });
 
-    setExistTranslatedChunks(existingTranslatedChunks || []);
+    setExistTranslatedChunks(existTranslatedChunks || []);
 
     //setState() is not updated same time as async/await so I have to manually passing api result
-    return existingTranslatedChunks || [];
+    return existTranslatedChunks || [];
   }
 
-  /*
-    Allow passing existingTranslatedChunks to receive data after api call
+  /**
+    Allow passing existTranslatedChunks to receive data after api call
+    
     Not rely on the setState update
   */
   async function fetchTranslations(
-    existingTranslatedChunks = existTranslatedChunks
+    existTranslatedChunks = existTranslatedChunks,
   ) {
     if (!currentSource?.id) return;
 
@@ -85,7 +86,7 @@ export function useSourceDataForRead(source_name) {
       }));
 
       const merged = newTranslatedChunks.map((ele, idx) => {
-        const existTranslated = existingTranslatedChunks.find(trans => trans.chunk == ele.chunk) 
+        const existTranslated = existTranslatedChunks.find(trans => trans.chunk == ele.chunk) 
         return {
           ...ele,
           translate: existTranslated?.translate || "",
@@ -122,9 +123,11 @@ export function useSourceDataForRead(source_name) {
   }
 
   async function handleTranslatedChunks() {
+    if (!existIdioms) return;
+    if (!existPhrases) return;
     if (!currentSource || !currentSource.id) return;
 
-    const existingTranslatedChunks = await fetchExistTranslatedChunks();
+    const existTranslatedChunks = await fetchExistTranslatedChunks();
 
     if (translatedChunks && existTranslatedChunks) {
       const isEditTranslate =
@@ -136,12 +139,12 @@ export function useSourceDataForRead(source_name) {
       }
     }
 
-    await fetchTranslations(existingTranslatedChunks);
+    await fetchTranslations(existTranslatedChunks);
   }
 
   useEffect(() => {
     handleTranslatedChunks();
-  }, [currentSource]);
+  }, [currentSource, existIdioms, existPhrases]);
 
   useEffect(() => {
     if (source_name) resetAll();
