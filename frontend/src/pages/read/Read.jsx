@@ -74,26 +74,26 @@ export function Read() {
     usePopupForRead(refreshDataOnly);
 
   const existWordSet = useMemo(() => {
-    if (!existWords) return;
+    if (!existWords) return new Set();
     return new Set(existWords.map((w) => getStandardizeWord({ word: w.word })));
   }, [existWords]);
 
   const idiomMap = useMemo(() => {
-    if (!existIdioms) return;
+    if (!existIdioms) return new Map();
     const m = new Map();
     existIdioms.forEach((i) => m.set(i.idiom, i.meaning));
     return m;
   }, [existIdioms]);
 
   const phraseMap = useMemo(() => {
-    if (!existPhrases) return;
+    if (!existPhrases) return new Map();
     const m = new Map();
     existPhrases.forEach((p) => m.set(p.phrase, p.meaning));
     return m;
   }, [existPhrases]);
 
   const meaningMap = useMemo(() => {
-    if (!meaningsForTooltip) return;
+    if (!meaningsForTooltip) return new Map();
     const m = new Map();
     meaningsForTooltip.forEach((mf) => {
       m.set(getStandardizeWord({ word: mf.word }), mf.meanings);
