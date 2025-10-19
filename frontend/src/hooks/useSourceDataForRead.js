@@ -60,6 +60,10 @@ export function useSourceDataForRead(source_name) {
     return existingTranslatedChunks || [];
   }
 
+  /*
+    Allow passing existingTranslatedChunks to receive data after api call
+    Not rely on the setState update
+  */
   async function fetchTranslations(
     existingTranslatedChunks = existTranslatedChunks
   ) {
@@ -80,10 +84,13 @@ export function useSourceDataForRead(source_name) {
         }),
       }));
 
-      const merged = newTranslatedChunks.map((ele, idx) => ({
-        ...ele,
-        translate: existingTranslatedChunks[idx]?.translate || "",
-      }));
+      const merged = newTranslatedChunks.map((ele, idx) => {
+        const existTranslated = existingTranslatedChunks.find(trans => trans.chunk == ele.chunk) 
+        return {
+          ...ele,
+          translate: existTranslated?.translate || "",
+        }
+      });
 
       setTranslatedChunks(merged);
     } catch (err) {
