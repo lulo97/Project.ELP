@@ -66,8 +66,10 @@ export function useSourceDataForRead(source_name) {
     Not rely on the setState update
   */
   async function fetchTranslations(
-    existTranslatedChunks = existTranslatedChunks,
+    _existTranslatedChunks,
   ) {
+    const __existTranslatedChunks = _existTranslatedChunks || existTranslatedChunks
+
     if (!currentSource?.id) return;
 
     try {
@@ -86,7 +88,7 @@ export function useSourceDataForRead(source_name) {
       }));
 
       const merged = newTranslatedChunks.map((ele, idx) => {
-        const existTranslated = existTranslatedChunks.find(trans => trans.chunk == ele.chunk) 
+        const existTranslated = __existTranslatedChunks.find(trans => trans.chunk == ele.chunk) 
         return {
           ...ele,
           translate: existTranslated?.translate || "",

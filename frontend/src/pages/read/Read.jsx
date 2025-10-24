@@ -161,6 +161,7 @@ export function Read() {
             <details>
               <summary>Translate</summary>
               <Textarea
+                isFitContent={true}
                 value={ele.translate}
                 onChange={(event) => {
                   setTranslatedChunks((prev) => {
@@ -172,7 +173,7 @@ export function Read() {
                     return next;
                   });
                 }}
-                className="w-full h-32"
+                className="w-full h-fit"
                 placeholder="Enter translate..."
               />
             </details>
