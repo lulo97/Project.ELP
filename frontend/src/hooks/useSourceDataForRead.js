@@ -48,7 +48,7 @@ export function useSourceDataForRead(source_name) {
   }
 
   async function fetchExistTranslatedChunks() {
-    if (!currentSource.id) return;
+    if (!currentSource || !currentSource.id) return;
 
     const existTranslatedChunks = await getSourceTranslates({
       source_id: currentSource.id,
@@ -65,10 +65,8 @@ export function useSourceDataForRead(source_name) {
     
     Not rely on the setState update
   */
-  async function fetchTranslations(
-    _existTranslatedChunks,
-  ) {
-    const __existTranslatedChunks = _existTranslatedChunks || existTranslatedChunks
+  async function fetchTranslations({ _existTranslatedChunks }) {
+    let __existTranslatedChunks = _existTranslatedChunks;
 
     if (!currentSource?.id) return;
 
@@ -88,11 +86,13 @@ export function useSourceDataForRead(source_name) {
       }));
 
       const merged = newTranslatedChunks.map((ele, idx) => {
-        const existTranslated = __existTranslatedChunks.find(trans => trans.chunk == ele.chunk) 
+        const existTranslated = __existTranslatedChunks.find(
+          (trans) => trans.chunk == ele.chunk
+        );
         return {
           ...ele,
           translate: existTranslated?.translate || "",
-        }
+        };
       });
 
       setTranslatedChunks(merged);
@@ -114,9 +114,14 @@ export function useSourceDataForRead(source_name) {
     setMeaningsForTooltip(meanings);
   }
 
-  function resetAll() {
+  async function resetAll() {
     fetchSource();
-    fetchTranslations();
+
+    const existTranslatedChunks = await fetchExistTranslatedChunks();
+
+    fetchTranslations({
+      _existTranslatedChunks: existTranslatedChunks,
+    });
     fetchAll();
   }
 
@@ -141,7 +146,9 @@ export function useSourceDataForRead(source_name) {
       }
     }
 
-    await fetchTranslations(existTranslatedChunks);
+    await fetchTranslations({
+      _existTranslatedChunks: existTranslatedChunks,
+    });
   }
 
   useEffect(() => {
