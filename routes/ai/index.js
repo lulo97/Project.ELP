@@ -1,5 +1,5 @@
 const express = require("express");
-const { sendPrompt } = require("./sendPromt")
+const { sendPrompt } = require("./sendPromt");
 
 const router = express.Router();
 
@@ -20,9 +20,17 @@ Output:`;
 
   const filterWords = ["Output: "];
 
-  filterWords.forEach(ele => {
+  filterWords.forEach((ele) => {
     result = result.replaceAll(ele, "");
-  })
+  });
+
+  try {
+    let arr = JSON.parse(result);
+    arr = arr.filter((item) => item.toLowerCase() !== word.toLowerCase());
+    result = JSON.stringify(arr);
+  } catch (e) {
+    result = "[]";
+  }
 
   return result;
 }
