@@ -12,7 +12,7 @@ export function buildMultipleChoiceQuestion({ data, choice_count = 4 }) {
     const correct = choices[Math.floor(Math.random() * choices.length)];
 
     return {
-        question: `What is the meaning of "${correct.word}"?`,
+        question: `What is the meaning of "${correct.word}" with part of speech is "${correct.part_of_speech}"?`,
         correct_answer: correct.meaning,
         choices: choices.map(c => c.meaning)
     };

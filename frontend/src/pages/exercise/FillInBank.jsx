@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { getFillInBlank } from "../../services/exercise";
 import { Button } from "../../components/Button";
 import { Input } from "../../components/Input";
+import { callAI } from "../../services/ai";
 
 export function FillInBank({ reset }) {
   const [data, setData] = useState(null);
@@ -9,16 +10,27 @@ export function FillInBank({ reset }) {
   const [submitted, setSubmitted] = useState(false);
   const [showHint, setShowHint] = useState(false);
 
-  async function fetchQuestion() {
+  const [synonyms, setSynonym] = useState(null);
+
+  async function fetchData() {
     const result = await getFillInBlank();
     setData(result.data);
     setFillWord("");
     setSubmitted(false);
     setShowHint(false);
+
+    const synonyms_result = await callAI({
+      input: { word: result.data.word },
+      feature: "SYNONYMS",
+    });
+
+    const synonyms = JSON.parse(synonyms_result.data);
+
+    setSynonym(synonyms);
   }
 
   useEffect(() => {
-    fetchQuestion();
+    fetchData();
   }, []);
 
   function getFillWordClass() {
@@ -31,7 +43,7 @@ export function FillInBank({ reset }) {
     return "text-red-600 font-semibold";
   }
 
-  if (!data) {
+  if (!data || !synonyms) {
     return <div>Loading...</div>;
   }
 
@@ -69,6 +81,11 @@ export function FillInBank({ reset }) {
           {showHint && (
             <div className="mt-2 p-2 border rounded bg-gray-50">
               <div className="font-semibold">Hint for meanings of word:</div>
+              <br />
+              <div>
+                <span className="italic">Synonyms:</span> {synonyms.join(", ")}
+              </div>
+              <br />
               <ul className="list-disc pl-5">
                 {data.meanings.map((m, i) => (
                   <li key={i}>

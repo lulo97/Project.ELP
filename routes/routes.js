@@ -24,6 +24,7 @@ const routes = [
     { path: "/api/posts", module: "./posts/index.js" },
     { path: "/api/source_translates", module: "./source_translates/index.js" },
     { path: "/api/word_details", module: "./word_details/index.js" },
+    { path: "/api/ai", module: "./ai/index.js" },
 ];
 
 function extractRoutes(routes) {
