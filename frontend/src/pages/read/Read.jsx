@@ -126,7 +126,11 @@ export function Read() {
     <div className="p-4">
       <div className="flex justify-between mb-4">
         <h1 className="text-2xl font-bold">Title: {currentSource.name}</h1>
+        {!saveTranslateButtonDisable && <div
+          className="fixed top-[60px] right-0 p-4 z-10"
+        >
         <Button
+          className="opacity-75"
           text={"Save translate"}
           disabled={saveTranslateButtonDisable}
           onClick={async () => {
@@ -144,6 +148,7 @@ export function Read() {
             resetAll();
           }}
         />
+        </div>}
       </div>
 
       {translatedChunks.map((ele, idx) => {

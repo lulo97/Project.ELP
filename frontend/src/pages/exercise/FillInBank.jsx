@@ -36,6 +36,7 @@ export function FillInBank({ reset }) {
   const [showHint, setShowHint] = useState(false);
 
   const [synonyms, setSynonym] = useState(null);
+  const [maskedWord, setMaskedWord] = useState("");
 
   async function fetchData() {
     const result = await getFillInBlank();
@@ -52,6 +53,9 @@ export function FillInBank({ reset }) {
     const synonyms = JSON.parse(synonyms_result.data);
 
     setSynonym(synonyms);
+
+    const masked = hideCharacters(result.data.word);
+    setMaskedWord(masked);
   }
 
   useEffect(() => {
@@ -113,7 +117,7 @@ export function FillInBank({ reset }) {
               <br />
               <div>
                 <span className="italic">It look something like this:</span>{" "}
-                {hideCharacters(data.word)}
+                {maskedWord}
               </div>
               <br />
 
