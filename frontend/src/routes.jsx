@@ -19,6 +19,7 @@ import { Synonym } from "./pages/synonym/Synonym";
 import { ReadWordList } from "./pages/read_word_list/ReadWordList";
 import { Post } from "./pages/post/Post"
 import { ViewPost } from "./pages/post/ViewPost";
+import { QuestionGenerator } from "./pages/question_generator/QuestionGenerator";
 
 export const routes = [
   {
@@ -71,4 +72,5 @@ export const routes = [
     element: <SpeakingExercise />,
     isNotDisplayOnHeader: true,
   },
+  { name: "QuestionGenerator", path: "question_generator", element: <QuestionGenerator /> },
 ];
