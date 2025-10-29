@@ -27,7 +27,7 @@ export function QuestionGenerator() {
       <PageTitle title={"Question Generator"} />
       <Textarea
         placeholder="Context..."
-        className="w-full"
+        className="w-full min-h-32"
         isFitContent={true}
         value={context}
         onChange={(event) => setContext(event.target.value)}
@@ -48,6 +48,7 @@ export function QuestionGenerator() {
         onClick={async () => {
           try {
             setLoadingGenerate(true);
+            setAnswer("");
             const question_result = await callAI({
               input: { context },
               feature: "GENERATE_QUESTION",
@@ -61,9 +62,10 @@ export function QuestionGenerator() {
 
       <div className="mb-4">{question}</div>
 
-      <Input
+      <Textarea
         placeholder="Answer..."
-        className="w-full mb-2"
+        className="w-full mb-2 min-h-24"
+        isFitContent={true}
         value={answer}
         onChange={(event) => setAnswer(event.target.value)}
       />
