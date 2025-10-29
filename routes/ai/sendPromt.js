@@ -1,7 +1,25 @@
-async function sendPrompt(prompt) {
+const PARAMS = {
+  DETERMINISTIC: {
+    temperature: 0.2, // lower randomness
+    top_p: 0.85, // focus on high-probability tokens
+  },
+  CREATIVE: {
+    temperature: 0.8, // higher randomness
+    top_p: 0.95,
+    top_k: 50, // allow more token options per step
+  },
+  DETAILED: {
+    temperature: 0.5,
+    top_p: 0.9,
+    max_tokens: 300,
+  },
+};
+
+async function sendPrompt(prompt, params = {}) {
   const url = process.env.AI_HOST + "/v1/chat/completions";
 
-  const body = {
+  // Default parameters
+  const defaultBody = {
     messages: [{ role: "user", content: prompt }],
     stream: false,
     reasoning_format: "auto",
@@ -37,6 +55,9 @@ async function sendPrompt(prompt) {
     timings_per_token: true,
   };
 
+  // Merge user-supplied params with defaults (params take precedence)
+  const body = { ...defaultBody, ...params };
+
   try {
     const res = await fetch(url, {
       method: "POST",
@@ -57,6 +78,4 @@ async function sendPrompt(prompt) {
   }
 }
 
-module.exports = {
-    sendPrompt
-}
+module.exports = { sendPrompt, PARAMS };

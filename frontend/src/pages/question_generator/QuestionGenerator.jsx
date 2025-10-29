@@ -60,7 +60,7 @@ export function QuestionGenerator() {
         }}
       />
 
-      <div className="mb-4">{question}</div>
+      <div className="mb-4"><span className="font-semibold">Question: </span>{question}</div>
 
       <Textarea
         placeholder="Answer..."
@@ -104,6 +104,9 @@ export function QuestionGenerator() {
           </p>
           <p className="text-sm text-gray-700 mt-1">
             <span className="font-medium">Reason:</span> {review.reason}
+          </p>
+          <p className="text-sm text-gray-700 mt-1">
+            <span className="font-medium">Correct Answer:</span> {review.correct_answer}
           </p>
         </div>
       )}
