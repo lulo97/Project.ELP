@@ -14,10 +14,19 @@ async function handleGetQuestion(context) {
 
   let question = "";
   let can_answer = "NO";
+  const badQuestions = [];
 
   // Keep trying until a GOOD question is found
   while (can_answer === "NO") {
     const preset = getRandomPreset();
+
+    // Construct the prompt including previously bad questions
+    const badQuestionsText =
+      badQuestions.length > 0
+        ? `Avoid repeating these previously generated bad questions:\n${badQuestions
+            .map((q) => `- ${q}`)
+            .join("\n")}\n`
+        : "";
 
     const prompt = `Instruction:
 Read the content below carefully and generate one natural, concise question that a person could answer using only the information provided in the text.
@@ -26,24 +35,14 @@ Focus on the main idea, cause, or mystery in the text.
 The question should sound like something a curious human would ask.
 Keep it under 15 words if possible.
 Do not ask for details not mentioned in the context.
+The difficulty level of the question should be: hard
+
+${badQuestionsText}
 
 Good Examples:
 Context: An apple is the round, edible fruit of the apple tree, originating from Central Asia.
 Output: What is an apple?
 Reason: The question asks about the main subject (apple) which is fully described in the context.
-
-Context: Water boils at 100 degrees Celsius at sea level.
-Output: At what temperature does water boil?
-Reason: The question focuses on a fact explicitly stated in the context (boiling point).
-
-Context: The Wright brothers made the first powered flight in 1903 in Kitty Hawk.
-Output: Who made the first powered flight and when?
-Reason: The question asks about information clearly provided in the context, no additional assumptions.
-
-Bad Example:
-Context: At first, nothing worked. Jones noticed some plants turned autumn colors before dying.
-Output: What chemical did Jones discover to kill poison ivy?
-Reason: The question asks for a specific chemical not mentioned in the context, so it cannot be answered.
 
 Context: ${context}
 Output:`;
@@ -56,8 +55,17 @@ Output:`;
 
     if (can_answer === "NO") {
       console.log("Generated question cannot be answered, retrying...");
+      badQuestions.push(question.trim()); // Save bad question for next iteration
     }
   }
+
+  console.log("Found a good question:", question);
+
+  const filterWords = ["Question:", "\n"];
+
+  filterWords.forEach((ele) => {
+    question = question.replaceAll(ele, "");
+  });
 
   return question;
 }

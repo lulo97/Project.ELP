@@ -49,6 +49,8 @@ export function QuestionGenerator() {
           try {
             setLoadingGenerate(true);
             setAnswer("");
+            setQuestion("");
+            setReview(null);
             const question_result = await callAI({
               input: { context },
               feature: "GENERATE_QUESTION",

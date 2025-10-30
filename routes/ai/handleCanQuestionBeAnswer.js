@@ -12,6 +12,8 @@ Output:`;
 
   const result = await sendPrompt(prompt);
 
+  console.log({ question: question, result: result });
+
   if (result.includes("NO")) return "NO";
   return "YES";
 }

@@ -8,6 +8,7 @@ import "./index.css";
 import { MessageProvider } from "./providers/MessageProvider";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import { useDeviceType } from "./hooks/useDeviceType"
 
 function flattenRoutes(routes) {
   const result = [];
@@ -59,6 +60,10 @@ export function NotFoundPage() {
 
 function App() {
   const location = useLocation();
+
+  const device = useDeviceType();
+
+  console.log(device)
 
   return (
     <div>

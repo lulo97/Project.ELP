@@ -48,9 +48,26 @@ Answer: ${answer}
 Output:
 `;
 
-  const result = await sendPrompt(prompt);
+  let result = await sendPrompt(prompt);
 
-  // Safely parse the JSON
+  const filterWords = ["```json", "```"];
+
+  filterWords.forEach((ele) => {
+    result = result.replaceAll(ele, "");
+  });
+
+  function extractFirstSubstring(str, startChar, endChar) {
+    const startIndex = str.indexOf(startChar);
+    if (startIndex === -1) return null;
+
+    const endIndex = str.indexOf(endChar, startIndex + 1);
+    if (endIndex === -1) return null;
+
+    return startChar + str.slice(startIndex + 1, endIndex) + endChar;
+  }
+
+  result = extractFirstSubstring(result, "{", "}");
+
   try {
     const parsed = JSON.parse(result.trim());
     return parsed;
@@ -59,7 +76,7 @@ Output:
     return {
       verdict: "Error",
       reason: "Invalid JSON format from model.",
-      correct_answer: null
+      correct_answer: null,
     };
   }
 }
