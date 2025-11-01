@@ -1,6 +1,7 @@
 const { isQuestionCanBeAnswer } = require("./isQuestionCanBeAnswer");
 const { sendPrompt } = require("../utils/sendPromt");
-const { extractSentenceChunk } = require("../utils/extractSentenceChunk")
+const { extractSentenceChunk } = require("../utils/extractSentenceChunk");
+const { updateEvent } = require("../../events/updateEvent");
 
 const PROMPT = `
 Instruction:
@@ -13,10 +14,16 @@ Reason: The question asks about the main subject (apple) which is fully describe
 
 Context: [context]
 Output:
-`
+`;
 
-async function handleGetQuestion(_context) {
+async function handleGetQuestion(_context, event_id) {
   if (!_context || [null, undefined, ""].includes(_context)) {
+    updateEvent({
+      event_id,
+      status: "COMPLETE",
+      data: "",
+    });
+
     throw Error("Context must not be null!");
   }
 
@@ -31,10 +38,16 @@ async function handleGetQuestion(_context) {
   const badQuestions = [];
 
   while (!can_answer) {
+    console.log("Updating event table");
+    updateEvent({
+      event_id,
+      status: "PROCESSING",
+      data: "Attempt " + badQuestions.length,
+    });
 
-    const prompt = PROMPT.replace('[context]', context);
+    const prompt = PROMPT.replace("[context]", context);
 
-    question = await sendPrompt(prompt, is_random = true);
+    question = await sendPrompt(prompt, (is_random = true));
 
     const result = await isQuestionCanBeAnswer({ context, question });
 
@@ -42,17 +55,31 @@ async function handleGetQuestion(_context) {
 
     can_answer = result.can_answer;
 
+    can_answer = false;
+
     if (!can_answer) {
       console.log("Generated question cannot be answered, retrying...");
       badQuestions.push(question.trim());
     }
 
     if (badQuestions.length >= 5) {
+      updateEvent({
+        event_id,
+        status: "COMPLETE",
+        data: "",
+      });
+
       return "Can't generate question!";
     }
   }
 
   console.log("Found a good question:", question);
+
+  updateEvent({
+    event_id,
+    status: "COMPLETE",
+    data: "",
+  });
 
   const filterWords = ["Question:", "\n"];
 

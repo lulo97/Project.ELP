@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffectEvent } from "react";
 
 import { Layout } from "./layouts/Layout";
 import { HomePage } from "./pages/HomePage";
@@ -8,7 +8,7 @@ import "./index.css";
 import { MessageProvider } from "./providers/MessageProvider";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import { useDeviceType } from "./hooks/useDeviceType"
+import { useDeviceType } from "./hooks/useDeviceType";
 
 function flattenRoutes(routes) {
   const result = [];
@@ -62,8 +62,6 @@ function App() {
   const location = useLocation();
 
   const device = useDeviceType();
-
-  console.log(device)
 
   return (
     <div>

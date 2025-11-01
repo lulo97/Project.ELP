@@ -3,7 +3,9 @@ import { Input } from "../../components/Input";
 import { PageTitle } from "../../components/PageTitle";
 import { Textarea } from "../../components/Textarea";
 import { callAI } from "../../services/ai";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getRandomId } from "../../utils/getRandomId";
+import { useEventSource } from "../../hooks/useEventSource";
 
 export function QuestionGenerator() {
   const [context, setContext] = useState("");
@@ -14,6 +16,19 @@ export function QuestionGenerator() {
 
   const [loadingGenerate, setLoadingGenerate] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
+
+  const [questionEventId, setQuestionEventId] = useState("");
+
+  const { data, error, isConnected } = useEventSource();
+
+  let current_event = null;
+  if (questionEventId) {
+    current_event = data.find((ele) => ele.id == questionEventId);
+
+    if (current_event && current_event.status == "COMPLETE") {
+      setQuestionEventId("");
+    }
+  }
 
   // Simple inline spinner (no external library)
   const spinner = (
@@ -40,7 +55,7 @@ export function QuestionGenerator() {
         text={
           loadingGenerate ? (
             <span className="flex items-center justify-center gap-2">
-              {spinner} Generating...
+              {spinner} Generating... {current_event && "(" + current_event.data + ")"}
             </span>
           ) : (
             "Generate"
@@ -48,14 +63,20 @@ export function QuestionGenerator() {
         }
         onClick={async () => {
           try {
+            const event_id = getRandomId();
+            setQuestionEventId(event_id);
+
             setLoadingGenerate(true);
             setAnswer("");
             setQuestion("");
             setReview(null);
+
             const result = await callAI({
               input: { context },
               feature: "GENERATE_QUESTION",
+              event_id: event_id,
             });
+
             setQuestion(result.data.question);
             setModelAnswer(result.data.answer);
           } finally {
@@ -64,7 +85,10 @@ export function QuestionGenerator() {
         }}
       />
 
-      <div className="mb-4"><span className="font-semibold">Question: </span>{question}</div>
+      <div className="mb-4">
+        <span className="font-semibold">Question: </span>
+        {question}
+      </div>
 
       <Textarea
         placeholder="Answer..."

@@ -3,11 +3,16 @@ const { handleGetSynonyms } = require("./synonym/handleGetSynonyms");
 const { handleGetQuestion } = require("./question/handleGetQuestion");
 const { handleGetReview } = require("./question/handleGetReview");
 const { handleGrammar } = require("./grammar/handleGrammar");
+const { initEvent } = require("../events/initEvent");
 
 const router = express.Router();
 
 async function callAI(req, res, next) {
-  const { input, feature } = req.body;
+  const { input, feature, event_id } = req.body;
+
+  if (event_id) {
+    initEvent(event_id);
+  }
 
   let result = null;
 
@@ -17,7 +22,7 @@ async function callAI(req, res, next) {
   }
 
   if (feature == "GENERATE_QUESTION") {
-    result = await handleGetQuestion(input.context);
+    result = await handleGetQuestion(input.context, event_id);
   }
 
   if (feature == "GENERATE_REVIEW") {
