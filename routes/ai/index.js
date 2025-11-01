@@ -2,6 +2,7 @@ const express = require("express");
 const { handleGetSynonyms } = require("./synonym/handleGetSynonyms");
 const { handleGetQuestion } = require("./question/handleGetQuestion");
 const { handleGetReview } = require("./question/handleGetReview");
+const { handleGrammar } = require("./grammar/handleGrammar");
 
 const router = express.Router();
 
@@ -25,6 +26,10 @@ async function callAI(req, res, next) {
       question: input.question,
       answer: input.answer,
     });
+  }
+
+  if (feature == "GRAMMAR") {
+    result = await handleGrammar(input.text);
   }
 
   if (result == null) {

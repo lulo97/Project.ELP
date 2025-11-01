@@ -14,7 +14,6 @@ const routes = [
     { path: "/api/writing_questions", module: "./writing_questions/index.js" },
     { path: "/api/writing_answers", module: "./writing_answers/index.js" },
     { path: "/api/idioms", module: "./idioms/index.js" },
-    { path: "/api/grammar", module: "./grammar/index.js" },
     { path: "/api/homepage", module: "./homepage/index.js" },
     { path: "/api/stt", module: "./stt/index.js" },
     { path: "/api/speakings", module: "./speakings/index.js" },

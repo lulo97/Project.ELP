@@ -25,9 +25,7 @@ WORKDIR /app
 ENV PORT=3001
 ENV TTS_HOST=http://host.docker.internal:5000
 ENV STT_HOST=http://host.docker.internal:3003
-ENV GRAMMAR_HOST=http://host.docker.internal:3002/v2/check
 ENV REDIS_HOST=redis://host.docker.internal:6379
-ENV OLLAMA_HOST=http://host.docker.internal:5001/api/generate
 ENV AI_HOST=http://host.docker.internal:3004
 
 # Copy only necessary files
