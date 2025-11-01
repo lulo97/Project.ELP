@@ -1,7 +1,7 @@
 const express = require("express");
-const { handleGetSynonyms } = require("./handleGetSynonyms");
-const { handleGetQuestion } = require("./handleGetQuestion");
-const { handleGetReview } = require("./handleGetReview");
+const { handleGetSynonyms } = require("./synonym/handleGetSynonyms");
+const { handleGetQuestion } = require("./question/handleGetQuestion");
+const { handleGetReview } = require("./question/handleGetReview");
 
 const router = express.Router();
 

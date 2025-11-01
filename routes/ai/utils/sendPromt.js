@@ -15,22 +15,18 @@ const PARAMS = {
   },
 };
 
-const PROMPT_PREFIX = `Before answering, work through this step-by-step:
+function getRandomParams() {
+  const keys = Object.keys(PARAMS);
+  const randomKey = keys[Math.floor(Math.random() * keys.length)];
+  return PARAMS[randomKey];
+}
 
-1. UNDERSTAND: What is the core question being asked?
-2. ANALYZE: What are the key factors/components involved?
-3. REASON: What logical connections can I make?
-4. SYNTHESIZE: How do these elements combine?
-5. CONCLUDE: What is the most accurate/helpful response?
-
-Now answer:`
-
-async function sendPrompt(prompt, params = {}) {
+async function sendPrompt(prompt, is_random = false) {
   const url = process.env.AI_HOST + "/v1/chat/completions";
 
   // Default parameters
   const defaultBody = {
-    messages: [{ role: "user", content: PROMPT_PREFIX + prompt }],
+    messages: [{ role: "user", content: prompt }],
     stream: false,
     reasoning_format: "auto",
     temperature: 0.8,
@@ -66,6 +62,10 @@ async function sendPrompt(prompt, params = {}) {
   };
 
   // Merge user-supplied params with defaults (params take precedence)
+  let params = {}
+  if (is_random) {
+    params = getRandomParams()
+  }
   const body = { ...defaultBody, ...params };
 
   try {
@@ -88,4 +88,4 @@ async function sendPrompt(prompt, params = {}) {
   }
 }
 
-module.exports = { sendPrompt, PARAMS };
+module.exports = { sendPrompt };

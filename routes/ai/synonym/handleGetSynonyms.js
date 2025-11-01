@@ -1,4 +1,4 @@
-const { sendPrompt } = require("./sendPromt");
+const { sendPrompt } = require("../utils/sendPromt");
 
 async function handleGetSynonyms(word) {
   const prompt = `You are a helpful AI that outputs synonyms.

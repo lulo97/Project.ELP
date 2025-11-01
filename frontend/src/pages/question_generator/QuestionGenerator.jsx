@@ -9,6 +9,7 @@ export function QuestionGenerator() {
   const [context, setContext] = useState("");
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
+  const [modelAnswer, setModelAnswer] = useState("");
   const [review, setReview] = useState("");
 
   const [loadingGenerate, setLoadingGenerate] = useState(false);
@@ -51,11 +52,12 @@ export function QuestionGenerator() {
             setAnswer("");
             setQuestion("");
             setReview(null);
-            const question_result = await callAI({
+            const result = await callAI({
               input: { context },
               feature: "GENERATE_QUESTION",
             });
-            setQuestion(question_result.data);
+            setQuestion(result.data.question);
+            setModelAnswer(result.data.answer);
           } finally {
             setLoadingGenerate(false);
           }
@@ -86,6 +88,7 @@ export function QuestionGenerator() {
         }
         onClick={async () => {
           try {
+            setReview("");
             setLoadingSubmit(true);
             const review_result = await callAI({
               input: { context, question, answer },
@@ -108,7 +111,7 @@ export function QuestionGenerator() {
             <span className="font-medium">Reason:</span> {review.reason}
           </p>
           <p className="text-sm text-gray-700 mt-1">
-            <span className="font-medium">Correct Answer:</span> {review.correct_answer}
+            <span className="font-medium">Correct Answer:</span> {modelAnswer}
           </p>
         </div>
       )}
