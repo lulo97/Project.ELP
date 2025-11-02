@@ -1,6 +1,6 @@
 const swaggerUi = require('swagger-ui-express');
-const { extractRoutes, routes } = require('./routes/routes.js');
-const pkg = require('./package.json');
+const { extractRoutes, routes } = require('../routes/routes.js');
+const pkg = require('../package.json');
 
 function setupDynamicSwagger(app) {
   // Extract all routes dynamically

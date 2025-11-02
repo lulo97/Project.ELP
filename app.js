@@ -6,7 +6,7 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const { setupDynamicSwagger } = require('./swagger');
+const { setupDynamicSwagger } = require('./utils/setupDynamicSwagger.js');
 
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
