@@ -55,8 +55,6 @@ async function handleGetQuestion(_context, event_id) {
 
     can_answer = result.can_answer;
 
-    can_answer = false;
-
     if (!can_answer) {
       console.log("Generated question cannot be answered, retrying...");
       badQuestions.push(question.trim());

@@ -79,3 +79,6 @@ module.exports = function (app) {
         })
     })
 };
+
+module.exports.routes = routes;
+module.exports.extractRoutes = extractRoutes;

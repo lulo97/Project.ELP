@@ -22,7 +22,7 @@ export function QuestionGenerator() {
   const { data, error, isConnected } = useEventSource();
 
   let current_event = null;
-  if (questionEventId) {
+  if (questionEventId && data) {
     current_event = data.find((ele) => ele.id == questionEventId);
 
     if (current_event && current_event.status == "COMPLETE") {
@@ -37,6 +37,10 @@ export function QuestionGenerator() {
       style={{ borderTopColor: "transparent" }}
     ></span>
   );
+
+  if (!isConnected) return <div>Not connected to server!</div>
+
+  if (error) return <div>{JSON.stringify(error)}</div>
 
   return (
     <div className="p-4">
