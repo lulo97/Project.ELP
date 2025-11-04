@@ -1,6 +1,12 @@
-import { createContext, useContext, useState, useCallback } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useEffect,
+} from "react";
 
-const MessageContext = createContext();
+const MessageContext = createContext(null);
 
 const positionMap = {
   "top-left": "top-5 left-5",
@@ -11,29 +17,40 @@ const positionMap = {
   "bottom-center": "bottom-5 left-1/2 -translate-x-1/2",
 };
 
+// Store global fire function
+let globalFire = null;
+
 export function MessageProvider({ children }) {
   const [messages, setMessages] = useState([]);
 
   const fireMessage = useCallback(
-    ({ type = "success", text, duration = 3000, position = "bottom-right" }) => {
+    ({
+      type = "success",
+      text,
+      duration = 3000,
+      position = "bottom-right",
+    }) => {
       const id = Date.now() + Math.random();
       const pos = positionMap[position] || positionMap["bottom-right"];
 
       const newMessage = { id, type, text, position: pos, visible: false };
       setMessages((prev) => [...prev, newMessage]);
 
+      // Fade in
       setTimeout(() => {
         setMessages((prev) =>
           prev.map((msg) => (msg.id === id ? { ...msg, visible: true } : msg))
         );
       }, 10);
 
+      // Fade out
       setTimeout(() => {
         setMessages((prev) =>
           prev.map((msg) => (msg.id === id ? { ...msg, visible: false } : msg))
         );
       }, duration - 300);
 
+      // Remove
       setTimeout(() => {
         setMessages((prev) => prev.filter((msg) => msg.id !== id));
       }, duration);
@@ -41,20 +58,31 @@ export function MessageProvider({ children }) {
     []
   );
 
+  // Register the global function once
+  useEffect(() => {
+    globalFire = fireMessage;
+    return () => {
+      globalFire = null;
+    };
+  }, [fireMessage]);
+
   return (
     <MessageContext.Provider value={{ fireMessage }}>
       {children}
+
       {messages.map((message) => (
-        // outer fixed wrapper handles placement
         <div
           key={message.id}
           className={`fixed z-50 ${message.position} pointer-events-none`}
           aria-live="polite"
         >
-          {/* inner element has shadow + transform/animation */}
           <div
-            className={`shadow-[#898989] shadow-lg px-4 py-2 rounded transform transition-all duration-300 ease-out pointer-events-auto
-              ${message.visible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}
+            className={`shadow-lg px-4 py-2 rounded transform transition-all duration-300 ease-out pointer-events-auto
+              ${
+                message.visible
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 -translate-y-4"
+              }
               ${
                 {
                   success: "bg-green-500 text-white",
@@ -73,4 +101,17 @@ export function MessageProvider({ children }) {
   );
 }
 
+// Hook (optional)
 export const useMessage = () => useContext(MessageContext);
+
+export const message = (
+  options = {
+    type: "success",
+    text: "Empty message!",
+    duration: 3000,
+    position: "bottom-right",
+  }
+) => {
+  if (globalFire) globalFire(options);
+  else console.warn("⚠️ MessageProvider not mounted yet!");
+};

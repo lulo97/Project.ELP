@@ -1,34 +1,77 @@
-const { getConnection } = require("./getConnection.js");
+const { pool } = require("./pool.js");
 
+//Execute select query
 async function executeSelect({ sql, params = [] }) {
-  if (!sql || [null, undefined, ""].includes(sql)) {
-    throw Error("Sql must not be null!");
+  if (!sql) {
+    throw Error("Sql is null!");
   }
-  
-  const db = await getConnection();
-  return new Promise((resolve, reject) => {
-    db.all(sql, params, (err, rows) => {
-      if (err) reject(err);
-      else resolve(rows);
-    });
-  });
+  const client = await pool.connect();
+  try {
+    const result = await client.query(sql, params);
+    return result.rows;
+  } catch (error) {
+    console.error("❌ SELECT query error:", error);
+    throw error;
+  } finally {
+    client.release();
+  }
 }
 
+//Execute DML query
 async function execute({ sql, params = [] }) {
-  if (!sql || [null, undefined, ""].includes(sql)) {
-    throw Error("Sql must not be null!");
+  if (!sql) {
+    throw Error("Sql is null!");
   }
+  const client = await pool.connect();
+  try {
+    const result = await client.query(sql, params);
+    return {
+      rows: result.rows,
+      rowCount: result.rowCount,
+      command: result.command,
+    };
+  } catch (error) {
+    console.error("❌ DML query error:", error);
+    throw error;
+  } finally {
+    client.release();
+  }
+}
 
-  const db = await getConnection();
-  return new Promise((resolve, reject) => {
-    db.run(sql, params, function (err) {
-      if (err) reject(err);
-      else resolve({ lastID: this.lastID, changes: this.changes });
-    });
-  });
+/**
+ * Executes a list of SQL commands inside a transaction.
+ * @param {Array<{sql: string, params?: any[]}>} queries
+ * @returns {Promise<Array>} results for each query
+ */
+async function executeTransaction(queries = []) {
+  const client = await pool.connect();
+  const results = [];
+
+  try {
+    await client.query('BEGIN');
+
+    for (const { sql, params = [] } of queries) {
+      const result = await client.query(sql, params);
+      results.push({
+        command: result.command,
+        rowCount: result.rowCount,
+        rows: result.rows,
+      });
+    }
+
+    await client.query('COMMIT');
+    return results;
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('❌ Transaction rolled back due to error:', error.message);
+    throw error;
+  } finally {
+    client.release();
+  }
 }
 
 module.exports = {
-  executeSelect,
   execute,
+  executeSelect,
+  executeTransaction
 };

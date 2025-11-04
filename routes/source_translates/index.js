@@ -1,6 +1,6 @@
 const express = require("express");
 const { executeSelect, execute } = require("../../database/execute.js");
-const { executeTransaction } = require("../../database/executeTransaction.js")
+const { executeTransaction } = require("../../database/execute.js")
 const { getRandomId } = require("../../utils/getRandomId.js");
 const { paginationMiddleware } = require("../../middleware/paginationMiddleware.js");
 

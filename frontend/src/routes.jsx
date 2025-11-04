@@ -20,6 +20,7 @@ import { ReadWordList } from "./pages/read_word_list/ReadWordList";
 import { Post } from "./pages/post/Post"
 import { ViewPost } from "./pages/post/ViewPost";
 import { QuestionGenerator } from "./pages/question_generator/QuestionGenerator";
+import { SignUp } from "./pages/signup/SignUp";
 
 export const routes = [
   {
@@ -73,4 +74,5 @@ export const routes = [
     isNotDisplayOnHeader: true,
   },
   { name: "QuestionGenerator", path: "question_generator", element: <QuestionGenerator /> },
+  { name: "SignUp", path: "signup", element: <SignUp /> },
 ];

@@ -11,12 +11,14 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "bcryptjs": "^3.0.3",
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
     "install": "^0.13.0",
+    "jsonwebtoken": "^9.0.2",
     "npm": "^11.6.0",
+    "pg": "^8.16.3",
     "redis": "^5.8.2",
-    "sqlite3": "^5.1.7",
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
