@@ -48,7 +48,7 @@ async function executeTransaction(queries = []) {
   const results = [];
 
   try {
-    await client.query('BEGIN');
+    await client.query("BEGIN");
 
     for (const { sql, params = [] } of queries) {
       const result = await client.query(sql, params);
@@ -59,11 +59,11 @@ async function executeTransaction(queries = []) {
       });
     }
 
-    await client.query('COMMIT');
+    await client.query("COMMIT");
     return results;
   } catch (error) {
-    await client.query('ROLLBACK');
-    console.error('❌ Transaction rolled back due to error:', error.message);
+    await client.query("ROLLBACK");
+    console.error("❌ Transaction rolled back due to error:", error.message);
     throw error;
   } finally {
     client.release();
@@ -73,5 +73,5 @@ async function executeTransaction(queries = []) {
 module.exports = {
   execute,
   executeSelect,
-  executeTransaction
+  executeTransaction,
 };

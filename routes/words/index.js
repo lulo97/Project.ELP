@@ -1,74 +1,123 @@
 const express = require("express");
-const { executeSelect, execute } = require("../../database/execute.js");
+const { executeProcedure } = require("../../database/executeProcedure.js");
 const { getRandomId } = require("../../utils/getRandomId.js");
-const { paginationMiddleware } = require("../../middleware/paginationMiddleware.js")
+const {
+  paginationMiddleware,
+} = require("../../middleware/paginationMiddleware.js");
+const { verifyToken } = require("../../middleware/verifyToken.js");
 
 const router = express.Router();
 
+// -------------------- GET WORDS --------------------
 async function getWords(req, res, next) {
   try {
-    const { word, where_options } = req.query;
+    const { word } = req.query;
+    const user_id = req.user?.id || req.query.user_id || null;
 
-    //[{ field: "word", comparison_operation: "=" }]
-    let _where_options = where_options ? JSON.parse(where_options) : []
+    const result = await executeProcedure("prc_crud_words", [
+      { name: "p_id", value: null },
+      { name: "p_word", type: "CURSOR", value: word },
+      { name: "p_user_id", value: user_id },
+      { name: "p_action", value: "READ" },
+      { name: "p_rows", type: "CURSOR", value: "p_rows" },
+      { name: "p_error", type: "p_error", value: null },
+    ]);
 
-    let sql = "SELECT * FROM WORDS";
-    const params = [];
-
-    if (word) {
-      const option = _where_options.find(ele => ele.field == 'word')
-
-      if (option && option.comparison_operation == '=') {
-        sql += " WHERE word = ?";
-        params.push(`${word}`);
-      } else {
-        sql += " WHERE word LIKE ?";
-        params.push(`%${word}%`);
-      }
+    if (result.p_error) {
+      res.locals.error = result.p_error;
+      res.locals.data = [];
+    } else {
+      res.locals.error = null;
+      res.locals.data = result.p_rows;
     }
 
-    sql += " ORDER BY CAST(id AS UNSIGNED) desc";
-
-    const result = await executeSelect({ sql, params });
-
-    res.locals.data = result;
     next();
   } catch (err) {
-    console.error(err)
+    console.error("❌ getWords error:", err);
+    res.locals.data = [];
     res.locals.error = err.message;
     next();
   }
 }
 
-async function addWord(req, res, next) {
-  const { word } = req.body;
-  const id = getRandomId();
-  const sql = "INSERT INTO WORDS (id, word) VALUES (?, ?)";
-  const result = await execute({ sql: sql, params: [id, word] })
-  res.json({ data: result, error: null });
+// -------------------- ADD WORD --------------------
+async function addWord(req, res) {
+  try {
+    const { word } = req.body;
+    const user_id = req.user?.id || req.body.user_id || null;
+    const id = getRandomId();
+
+    const { p_error } = await executeProcedure("elp.prc_crud_words", [
+      id, // p_id
+      word, // p_word
+      user_id, // p_user_id
+      "CREATE", // p_action
+    ]);
+
+    if (p_error) {
+      return res.status(400).json({ error: p_error, data: null });
+    }
+
+    res.json({ error: null, data: { id, word } });
+  } catch (err) {
+    console.error("❌ addWord error:", err);
+    res.status(500).json({ error: err.message, data: null });
+  }
 }
 
-async function updateWord(req, res, next) {
-  const { id } = req.params;
-  const { word } = req.body;
-  const sql = "UPDATE WORDS SET word = ? WHERE id = ?";
-  const result = await execute({ sql: sql, params: [word, id] })
-  res.json({ data: result, error: null });
+// -------------------- UPDATE WORD --------------------
+async function updateWord(req, res) {
+  try {
+    const { id } = req.params;
+    const { word } = req.body;
+    const user_id = req.user?.id || req.body.user_id || null;
+
+    const { p_error } = await executeProcedure("elp.prc_crud_words", [
+      id, // p_id
+      word, // p_word
+      user_id, // p_user_id
+      "UPDATE", // p_action
+    ]);
+
+    if (p_error) {
+      return res.status(400).json({ error: p_error, data: null });
+    }
+
+    res.json({ error: null, data: { id, word } });
+  } catch (err) {
+    console.error("❌ updateWord error:", err);
+    res.status(500).json({ error: err.message, data: null });
+  }
 }
 
-async function deleteWord(req, res, next) {
-  const { id } = req.params;
-  const sql = "DELETE FROM WORDS WHERE id = ?";
-  const result = await execute({ sql: sql, params: [id] })
-  res.json({ data: result, error: null });
+// -------------------- DELETE WORD --------------------
+async function deleteWord(req, res) {
+  try {
+    const { id } = req.params;
+    const user_id = req.user?.id || req.body.user_id || null;
+
+    const { p_error } = await executeProcedure("elp.prc_crud_words", [
+      id, // p_id
+      null, // p_word
+      user_id, // p_user_id
+      "DELETE", // p_action
+    ]);
+
+    if (p_error) {
+      return res.status(400).json({ error: p_error, data: null });
+    }
+
+    res.json({ error: null, data: { id } });
+  } catch (err) {
+    console.error("❌ deleteWord error:", err);
+    res.status(500).json({ error: err.message, data: null });
+  }
 }
 
-router.get("/", getWords, paginationMiddleware);
-
-router.post("/", addWord);
-
-router.put("/:id", updateWord);
-
-router.delete("/:id", deleteWord);
+// -------------------- ROUTES --------------------
+router.get("/", verifyToken, getWords, paginationMiddleware);
+router.post("/", verifyToken, addWord);
+router.put("/:id", verifyToken, updateWord);
+router.delete("/:id", verifyToken, deleteWord);
 
 module.exports = router;

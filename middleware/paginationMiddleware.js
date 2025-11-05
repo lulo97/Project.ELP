@@ -1,6 +1,13 @@
 function paginationMiddleware(req, res, next) {
   const { data, error } = res.locals;
 
+  if (error) {
+    return res.json({
+      data: null,
+      error: error,
+    });
+  }
+
   let { pageIndex = 1, pageSize } = req.query;
 
   let _data = [...data];

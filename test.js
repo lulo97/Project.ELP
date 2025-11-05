@@ -1,15 +1,13 @@
-(async () => {
-  const redis = require("redis");
-  const client = redis.createClient({ url: "redis://localhost:6379" });
+const { executeProcedure } = require("./database/executeProcedure.js");
 
-  client.on("error", (err) => console.error("Redis error:", err));
+async function main() {
+  const out = await executeProcedure("prc_test", [
+    { name: "p_id", type: "text", value: "123" },
+    { name: "p_rows", type: "CURSOR", value: "cur_rows" },
+    { name: "p_error", type: "text", value: null },
+  ]);
 
-  await client.connect();
-  console.log("Connected!");
+  console.log(out);
+}
 
-  console.log("PING:", await client.ping());
-  await client.set("foo", "bar");
-  console.log("GET foo:", await client.get("foo"));
-
-  await client.quit();
-})();
+main();
