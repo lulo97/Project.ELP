@@ -23,7 +23,7 @@ let globalFire = null;
 export function MessageProvider({ children }) {
   const [messages, setMessages] = useState([]);
 
-  const fireMessage = useCallback(
+  const message = useCallback(
     ({
       type = "success",
       text,
@@ -60,14 +60,14 @@ export function MessageProvider({ children }) {
 
   // Register the global function once
   useEffect(() => {
-    globalFire = fireMessage;
+    globalFire = message;
     return () => {
       globalFire = null;
     };
-  }, [fireMessage]);
+  }, [message]);
 
   return (
-    <MessageContext.Provider value={{ fireMessage }}>
+    <MessageContext.Provider value={{ message }}>
       {children}
 
       {messages.map((message) => (
@@ -100,9 +100,6 @@ export function MessageProvider({ children }) {
     </MessageContext.Provider>
   );
 }
-
-// Hook (optional)
-export const useMessage = () => useContext(MessageContext);
 
 export const message = (
   options = {

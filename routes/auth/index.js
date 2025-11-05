@@ -27,8 +27,6 @@ async function signUp(req, res) {
     params: [getRandomId(), username, password_hash],
   });
 
-  console.log(result)
-
   const p_error = result.rows[0]?.p_error;
 
   if (p_error) {
@@ -38,12 +36,42 @@ async function signUp(req, res) {
   res.status(201).json({ error: null, data: null });
 }
 
-function logIn(req, res) {}
+async function logIn(req, res) {
+  const { username, password } = req.body;
 
-function logOut(req, res) {}
+  const users = await execute({ sql: "SELECT * FROM users" });
+  const user = users.rows.find((u) => u.username === username);
+
+  if (!user) return res.status(400).json({ message: "User not exist!" });
+
+  const valid = await bcrypt.compare(password, user.password_hash);
+  if (!valid) return res.status(400).json({ message: "Password incorrect!" });
+
+  const token = jwt.sign({ username }, process.env.JWT_SECRET, {
+    expiresIn: "1h",
+  });
+  res.json({ data: { token }, error: null });
+}
+
+function getUserByToken(req, res, next) {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+
+  if (!token) {
+    return res.status(200).json({ error: "No token provided", data: null });
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) {
+      return res.status(200).json({ error: "Invalid or expired token", data: null });
+    }
+
+    return res.status(200).json({ error: null, data: { user: user } })
+  });
+}
 
 router.post("/signup", signUp);
 router.post("/login", logIn);
-router.post("/logout", logOut);
+router.get("/getuserbytoken", getUserByToken);
 
 module.exports = router;

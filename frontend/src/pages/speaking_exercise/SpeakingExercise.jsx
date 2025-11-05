@@ -11,7 +11,7 @@ import {
   addSpeakingScore,
   getSpeakingScore,
 } from "../../services/speaking_score";
-import { useMessage } from "../../providers/MessageProvider";
+import { message } from "../../providers/MessageProvider";
 import { Tooltip } from "../../components/Tooltip";
 
 export function SpeakingExercise() {
@@ -47,8 +47,6 @@ export function SpeakingExercise() {
     setRecordTarget(null);
     fetchScoreData();
   }
-
-  const { fireMessage } = useMessage();
 
   const audioContextRef = useRef(null);
   const mediaStreamRef = useRef(null);
@@ -232,7 +230,7 @@ export function SpeakingExercise() {
     };
 
     if (!body.speaking_id) {
-      fireMessage({
+      message({
         text: "Speaking id cannot be empty!",
         type: "error",
       });
@@ -240,12 +238,12 @@ export function SpeakingExercise() {
     }
 
     if (body.score == null) {
-      fireMessage({ text: "Scores cannot be empty!", type: "error" });
+      message({ text: "Scores cannot be empty!", type: "error" });
       return;
     }
 
     if (body.text_listened == null) {
-      fireMessage({
+      message({
         text: "Listened text cannot be empty!",
         type: "error",
       });
@@ -253,7 +251,7 @@ export function SpeakingExercise() {
     }
 
     if (body.text == null) {
-      fireMessage({
+      message({
         text: "Text cannot be empty!",
         type: "error",
       });
@@ -262,14 +260,14 @@ export function SpeakingExercise() {
 
     const result = await addSpeakingScore({ row: body });
     if (result.error) {
-      fireMessage({
+      message({
         text: result.error,
         type: "error",
       });
       return;
     }
 
-    fireMessage({
+    message({
       text: "Success!",
     });
 

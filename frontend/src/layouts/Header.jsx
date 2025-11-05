@@ -1,7 +1,35 @@
+import { useEffect, useState } from "react";
+import { Avatar } from "../components/Avatar";
 import { routes } from "../routes";
 import { getConsts } from "../utils/const";
+import { getUserByToken } from "../services/auth";
+import { Button } from "../components/Button";
+import Dropdown from "../components/Dropdown";
 
 export function Header() {
+  const [userName, setUsername] = useState("");
+
+  async function fetchData() {
+    const user = await getUserByToken();
+    if (!user || !user.username) return;
+    setUsername(user.username);
+  }
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const avatarMenu = [
+    {
+      key: "1",
+      content: "Log out",
+      onClick: () => {
+        localStorage.removeItem("token");
+        window.location.href = "/";
+      },
+    },
+  ];
+
   return (
     <header className="flex items-center justify-between px-8 py-4 bg-white/70 backdrop-blur-md shadow-md sticky top-0 z-50">
       {/* Logo */}
@@ -21,25 +49,21 @@ export function Header() {
 
           // Dropdown menu
           if (ele.children) {
+            const menu = ele.children.map((item) => ({
+              key: item.name,
+              content: item.name,
+              onClick: () => {
+                window.location.href = item.path;
+              },
+            }));
+
             return (
-              <div key={index} className="relative group">
+              <Dropdown menu={menu} align="left">
                 <button className="flex items-center text-gray-700 hover:text-indigo-600 font-medium transition-colors">
                   {ele.name}
                   <span className="ml-1">▼</span>
                 </button>
-
-                <div className="absolute top-full left-0 hidden group-hover:block bg-white shadow-lg rounded-lg py-2 w-40 z-50">
-                  {ele.children.map((child, cIndex) => (
-                    <a
-                      key={cIndex}
-                      href={child.path}
-                      className="block px-4 py-2 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors"
-                    >
-                      {child.name}
-                    </a>
-                  ))}
-                </div>
-              </div>
+              </Dropdown>
             );
           }
 
@@ -55,6 +79,32 @@ export function Header() {
           );
         })}
       </nav>
+
+      {/* Avatar */}
+      {userName && (
+        <Dropdown menu={avatarMenu} align="left">
+          <Avatar name={userName} />
+        </Dropdown>
+      )}
+
+      {/* Buttons */}
+      {!userName && (
+        <div>
+          <Button
+            className="mr-2"
+            text={"Log in"}
+            onClick={() => {
+              window.location.href = "/login";
+            }}
+          />
+          <Button
+            text={"Sign up"}
+            onClick={() => {
+              window.location.href = "/signup";
+            }}
+          />
+        </div>
+      )}
     </header>
   );
 }

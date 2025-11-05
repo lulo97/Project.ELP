@@ -11,10 +11,9 @@ import {
   addWritingAnswer,
   updateWritingAnswer,
 } from "../../services/writing_answer";
-import { useMessage } from "../../providers/MessageProvider";
+import { message } from "../../providers/MessageProvider";
 
 export function Answer({ row, refresh, className = "" }) {
-  const { fireMessage } = useMessage();
 
   const ORIGINAL_ANSWER = {
     id: row?.id ?? "",
@@ -56,12 +55,12 @@ export function Answer({ row, refresh, className = "" }) {
 
   async function saveAnswer() {
     if (!answerData.answer?.trim()) {
-      fireMessage({ text: "Answer cannot be empty!" });
+      message({ text: "Answer cannot be empty!" });
       return;
     }
 
     if (!answerData.question_id?.trim()) {
-      fireMessage({ text: "Question ID cannot be empty!" });
+      message({ text: "Question ID cannot be empty!" });
       return;
     }
 
@@ -76,9 +75,9 @@ export function Answer({ row, refresh, className = "" }) {
     }
 
     if (result.error) {
-      fireMessage({ text: "Error saving answer: " + result.error });
+      message({ text: "Error saving answer: " + result.error });
     } else {
-      fireMessage({ text: "Answer saved successfully!" });
+      message({ text: "Answer saved successfully!" });
       refresh();
     }
   }
@@ -98,9 +97,9 @@ export function Answer({ row, refresh, className = "" }) {
     const result = await deleteWritingAnswer({ row: answerData });
 
     if (result.error) {
-      fireMessage({ text: "Error deleting answer: " + result.error });
+      message({ text: "Error deleting answer: " + result.error });
     } else {
-      fireMessage({ text: "Answer deleted successfully!" });
+      message({ text: "Answer deleted successfully!" });
       refresh(); // fetch latest from backend
     }
   }

@@ -3,14 +3,12 @@ import { useLocation } from "react-router-dom";
 import { addPost, getAllPosts, updatePost } from "../../services/posts";
 import { RichTextEditorField } from "../../components/RichTextEditorField";
 import { Button } from "../../components/Button";
-import { useMessage } from "../../providers/MessageProvider";
+import { message } from "../../providers/MessageProvider";
 
 export function ViewPost() {
   //id, title, content
   const [postData, setPostData] = useState(null);
   const [editedContent, setEditedContent] = useState(null);
-
-  const { fireMessage } = useMessage();
 
   const location = useLocation();
   const id = new URLSearchParams(location.search).get("id");
@@ -44,11 +42,11 @@ export function ViewPost() {
               const result = await updatePost({ row: body });
 
               if (result.error) {
-                fireMessage({ type: "error", text: result.error });
+                message({ type: "error", text: result.error });
                 return;
               }
 
-              fireMessage({ text: "Success" });
+              message({ text: "Success" });
 
               await fetchData();
             }}

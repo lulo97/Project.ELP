@@ -21,10 +21,11 @@ import { Post } from "./pages/post/Post"
 import { ViewPost } from "./pages/post/ViewPost";
 import { QuestionGenerator } from "./pages/question_generator/QuestionGenerator";
 import { SignUp } from "./pages/signup/SignUp";
+import { LogIn } from "./pages/login/Login";
 
 export const routes = [
   {
-    name: "Database",
+    name: "Library",
     children: [
       { name: "Word", path: "word", element: <Word /> },
       { name: "Source", path: "source", element: <Source /> },
@@ -74,5 +75,6 @@ export const routes = [
     isNotDisplayOnHeader: true,
   },
   { name: "QuestionGenerator", path: "question_generator", element: <QuestionGenerator /> },
-  { name: "SignUp", path: "signup", element: <SignUp /> },
+  { name: "SignUp", path: "signup", element: <SignUp />, isNotDisplayOnHeader: true },
+  { name: "Login", path: "login", element: <LogIn />, isNotDisplayOnHeader: true, },
 ];
