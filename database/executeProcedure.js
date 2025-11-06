@@ -6,6 +6,9 @@ const out = await executeProcedure("prc_test", [
     { name: "p_rows", type: "CURSOR", value: "cur_rows" },
     { name: "p_error", type: "text", value: null },
 ]);
+
+Declare INOUT in PostgreSQL procedure to output variables
+Passing { type: "CURSOR" } to output rows
 */
 async function executeProcedure(
   procedureName,
@@ -33,6 +36,10 @@ async function executeProcedure(
     const output = {};
 
     async function processCursorOutput(p_cursor_name) {
+      if (!p_cursor_name) {
+        throw Error("Cursor name is null!")
+      }
+
       let p_rows = [];
       try {
         const result = await client.query(`FETCH ALL FROM ${p_cursor_name};`);
@@ -46,9 +53,9 @@ async function executeProcedure(
     }
 
     for (const [key, value] of Object.entries(result.rows[0])) {
-      const type = params.find((p) => p.name == key).type;
+      const current_param = params.find((p) => p.name == key);
 
-      if (type == "CURSOR") {
+      if (current_param.type == "CURSOR" && current_param.value) {
         output[key] = await processCursorOutput(value);
       } else {
         output[key] = value;

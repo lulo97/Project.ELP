@@ -1,3 +1,4 @@
+// where_options = [{ field: "word", comparison_operation: "=" }]
 export async function getWord({ word, where_options }) {
   if (!word) {
     throw Error("Word can't be null!");
@@ -8,7 +9,7 @@ export async function getWord({ word, where_options }) {
     }`,
     {
       headers: {
-        authorization: localStorage.getItem("token"),
+        authorization: "Bearer " + localStorage.getItem("token"),
       },
     }
   );
@@ -39,9 +40,12 @@ export async function addWord({ row }) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      authorization: "Bearer " + localStorage.getItem("token"),
     },
     body: JSON.stringify(row),
   });
+  const result_json = await result.json();
+  return result_json;
 }
 
 export async function updateWord({ row }) {
@@ -49,13 +53,22 @@ export async function updateWord({ row }) {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
+      authorization: "Bearer " + localStorage.getItem("token"),
     },
     body: JSON.stringify(row),
   });
+  const result_json = await result.json();
+  return result_json;
 }
 
 export async function deleteWord({ row }) {
   const result = await fetch(`/api/words/${row.id}`, {
     method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      authorization: "Bearer " + localStorage.getItem("token"),
+    },
   });
+  const result_json = await result.json();
+  return result_json;
 }

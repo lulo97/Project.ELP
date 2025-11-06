@@ -5,6 +5,7 @@ const {
   paginationMiddleware,
 } = require("../../middleware/paginationMiddleware.js");
 const { verifyToken } = require("../../middleware/verifyToken.js");
+const { getUsernameFromToken } = require("../../utils/getUsernameFromToken.js");
 
 const router = express.Router();
 
@@ -12,15 +13,16 @@ const router = express.Router();
 async function getWords(req, res, next) {
   try {
     const { word } = req.query;
-    const user_id = req.user?.id || req.query.user_id || null;
+    const username = await getUsernameFromToken(req.headers["authorization"]);
 
     const result = await executeProcedure("prc_crud_words", [
-      { name: "p_id", value: null },
-      { name: "p_word", type: "CURSOR", value: word },
-      { name: "p_user_id", value: user_id },
-      { name: "p_action", value: "READ" },
-      { name: "p_rows", type: "CURSOR", value: "p_rows" },
-      { name: "p_error", type: "p_error", value: null },
+      { name: "p_id", type: "text", value: null },
+      { name: "p_word", type: "text", value: word || null },
+      { name: "p_username", type: "text", value: username },
+      { name: "p_action", type: "text", value: "READ" },
+      { name: "p_rows", type: "CURSOR", value: "cursor_" + getRandomId() },
+      { name: "p_error", type: "text", value: null },
+      { name: "p_json_params", type: "text", value: null },
     ]);
 
     if (result.p_error) {
@@ -28,7 +30,7 @@ async function getWords(req, res, next) {
       res.locals.data = [];
     } else {
       res.locals.error = null;
-      res.locals.data = result.p_rows;
+      res.locals.data = result.p_rows || [];
     }
 
     next();
@@ -44,18 +46,21 @@ async function getWords(req, res, next) {
 async function addWord(req, res) {
   try {
     const { word } = req.body;
-    const user_id = req.user?.id || req.body.user_id || null;
+    const username = await getUsernameFromToken(req.headers["authorization"]);
     const id = getRandomId();
 
-    const { p_error } = await executeProcedure("elp.prc_crud_words", [
-      id, // p_id
-      word, // p_word
-      user_id, // p_user_id
-      "CREATE", // p_action
+    const result = await executeProcedure("prc_crud_words", [
+      { name: "p_id", type: "text", value: id },
+      { name: "p_word", type: "text", value: word },
+      { name: "p_username", type: "text", value: username },
+      { name: "p_action", type: "text", value: "CREATE" },
+      { name: "p_rows", type: "CURSOR", value: null },
+      { name: "p_error", type: "text", value: null },
+      { name: "p_json_params", type: "text", value: null },
     ]);
 
-    if (p_error) {
-      return res.status(400).json({ error: p_error, data: null });
+    if (result.p_error) {
+      return res.status(400).json({ error: result.p_error, data: null });
     }
 
     res.json({ error: null, data: { id, word } });
@@ -70,17 +75,20 @@ async function updateWord(req, res) {
   try {
     const { id } = req.params;
     const { word } = req.body;
-    const user_id = req.user?.id || req.body.user_id || null;
+    const username = await getUsernameFromToken(req.headers["authorization"]);
 
-    const { p_error } = await executeProcedure("elp.prc_crud_words", [
-      id, // p_id
-      word, // p_word
-      user_id, // p_user_id
-      "UPDATE", // p_action
+    const result = await executeProcedure("prc_crud_words", [
+      { name: "p_id", type: "text", value: id },
+      { name: "p_word", type: "text", value: word },
+      { name: "p_username", type: "text", value: username },
+      { name: "p_action", type: "text", value: "UPDATE" },
+      { name: "p_rows", type: "CURSOR", value: null },
+      { name: "p_error", type: "text", value: null },
+      { name: "p_json_params", type: "text", value: null },
     ]);
 
-    if (p_error) {
-      return res.status(400).json({ error: p_error, data: null });
+    if (result.p_error) {
+      return res.status(400).json({ error: result.p_error, data: null });
     }
 
     res.json({ error: null, data: { id, word } });
@@ -94,17 +102,20 @@ async function updateWord(req, res) {
 async function deleteWord(req, res) {
   try {
     const { id } = req.params;
-    const user_id = req.user?.id || req.body.user_id || null;
+    const username = await getUsernameFromToken(req.headers["authorization"]);
 
-    const { p_error } = await executeProcedure("elp.prc_crud_words", [
-      id, // p_id
-      null, // p_word
-      user_id, // p_user_id
-      "DELETE", // p_action
+    const result = await executeProcedure("prc_crud_words", [
+      { name: "p_id", type: "text", value: id },
+      { name: "p_word", type: "text", value: null },
+      { name: "p_username", type: "text", value: username },
+      { name: "p_action", type: "text", value: "DELETE" },
+      { name: "p_rows", type: "CURSOR", value: null },
+      { name: "p_error", type: "text", value: null },
+      { name: "p_json_params", type: "text", value: null },
     ]);
 
-    if (p_error) {
-      return res.status(400).json({ error: p_error, data: null });
+    if (result.p_error) {
+      return res.status(400).json({ error: result.p_error, data: null });
     }
 
     res.json({ error: null, data: { id } });

@@ -12,6 +12,7 @@ import { Button } from "../../components/Button";
 import { Input } from "../../components/Input";
 import { SearchTable } from "../../components/SearchTable";
 import { Popup as PopupDetail } from "../read/Popup";
+import { message } from "../../providers/MessageProvider";
 
 const EMPTY_ROW = { id: "", word: "" };
 
@@ -50,18 +51,24 @@ export function Word() {
   }
 
   async function handleConfirm({ action }) {
+    let result;
     if (action === "ADD") {
-      await addWord({ row: currentRow });
+      result = await addWord({ row: currentRow });
+      console.log(result)
     }
     if (action === "EDIT") {
-      await updateWord({ row: currentRow });
+      result = await updateWord({ row: currentRow });
     }
     if (action === "DELETE") {
-      await deleteWord({ row: currentRow });
+      result = await deleteWord({ row: currentRow });
     }
 
     fetchRows();
     setShowPopup(false);
+
+    if (result.error) {
+      message({ type: "error", text: result.error })
+    }
   }
 
   function handleClose() {
