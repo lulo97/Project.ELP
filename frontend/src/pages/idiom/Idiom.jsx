@@ -9,6 +9,7 @@ import {
 } from "../../services/idioms";
 import { PageTitle } from "../../components/PageTitle";
 import { Button } from "../../components/Button";
+import { message } from "../../providers/MessageProvider"
 
 const EMPTY_ROW = { id: "", idiom: "", meaning: "", example: "" };
 
@@ -34,18 +35,22 @@ export function Idiom() {
   }
 
   async function handleConfirm({ action }) {
+    let result = null;
+
     if (action === "ADD") {
-      await addIdiom({ row: currentRow });
+      result = await addIdiom({ row: currentRow });
     }
     if (action === "EDIT") {
-      await updateIdiom({ row: currentRow });
+      result = await updateIdiom({ row: currentRow });
     }
     if (action === "DELETE") {
-      await deleteIdiom({ row: currentRow });
+      result = await deleteIdiom({ row: currentRow });
     }
 
     fetchRows();
     setShowPopup(false);
+
+    if (result.error) message({ type: "error", text: result.error })
   }
 
   function handleClose() {
