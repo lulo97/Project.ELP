@@ -11,6 +11,7 @@ import { getPartOfSpeechs } from "../../services/part_of_speech";
 import { PageTitle } from "../../components/PageTitle";
 import { Button } from "../../components/Button";
 import { SearchTable } from "../../components/SearchTable";
+import { message } from "../../providers/MessageProvider"
 
 const EMPTY_ROW = { id: "", meaning: "", word: "", part_of_speech: "" };
 
@@ -59,20 +60,24 @@ export function Meaning() {
   }
 
   async function handleConfirm({ action }) {
+    let result;
     if (action == "ADD") {
-      await addMeaning({ row: currentRow });
+      result = await addMeaning({ row: currentRow });
+      console.log(result)
     }
 
     if (action == "EDIT") {
-      await updateMeaning({ row: currentRow });
+      result = await updateMeaning({ row: currentRow });
     }
 
     if (action == "DELETE") {
-      await deleteMeaning({ row: currentRow });
+      result = await deleteMeaning({ row: currentRow });
     }
 
     fetchRows();
     setShowPopup(false);
+
+    if (result.error) message({ type: "error", text: result.error });
   }
 
   function handleClose() {
