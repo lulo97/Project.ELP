@@ -10,6 +10,7 @@ import {
 import { getPartOfSpeechs } from "../../services/part_of_speech";
 import { PageTitle } from "../../components/PageTitle";
 import { Button } from "../../components/Button";
+import { message } from "../../providers/MessageProvider";
 
 const EMPTY_ROW = { id: "", example: "", word: "", part_of_speech: "" };
 
@@ -20,9 +21,22 @@ export function Example() {
   const [action, setAction] = useState("ADD");
   const [partOfSpeechs, setPartOfSpeechs] = useState([]);
   const [paginationData, setPaginationData] = useState({});
+  const [searchValues, setSearchValues] = useState([
+    { id: "word", placeholder: "Search by word", value: "" },
+  ]);
+  
+  async function fetchRows(
+    { pageIndex, pageSize } = {
+      pageIndex: paginationData.pageIndex || null,
+      pageSize: paginationData.pageSize || 5,
+    }
+  ) {
+    const params = searchValues.reduce((acc, ele) => {
+      acc[ele.id] = ele.value;
+      return acc;
+    }, {});
 
-  async function fetchRows({ pageIndex, pageSize } = { pageIndex: null, pageSize: 5 }) {
-    const result = await getAllExamples({ pageIndex, pageSize });
+    const result = await getAllExamples({ pageIndex, pageSize, ...params });
     setRows(result.data);
     setPaginationData(result.pagination);
   }
@@ -39,20 +53,26 @@ export function Example() {
   }
 
   async function handleConfirm({ action }) {
+    let result = null;
+
     if (action == "ADD") {
-      await addExample({ row: currentRow });
+      result = await addExample({ row: currentRow });
     }
 
     if (action == "EDIT") {
-      await updateExample({ row: currentRow });
+      result = await updateExample({ row: currentRow });
     }
 
     if (action == "DELETE") {
-      await deleteExample({ row: currentRow });
+      result = await deleteExample({ row: currentRow });
     }
 
     fetchRows();
     setShowPopup(false);
+
+    if (result.error) {
+      message({ type: "error", text: result.error });
+    }
   }
 
   function handleClose() {
