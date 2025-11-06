@@ -1,113 +1,140 @@
 const express = require("express");
-const { executeSelect, execute } = require("../../database/execute.js");
+const { executeProcedure } = require("../../database/executeProcedure.js");
 const { getRandomId } = require("../../utils/getRandomId.js");
 const { paginationMiddleware } = require("../../middleware/paginationMiddleware.js");
+const { verifyToken } = require("../../middleware/verifyToken.js");
+const { getUsernameFromToken } = require("../../utils/getUsernameFromToken.js");
 
 const router = express.Router();
 
-// GET: Read with filters + pagination
+// -------------------- GET SYNONYMS --------------------
 async function getSynonyms(req, res, next) {
   try {
-    const { id, word, synomym, note, pageIndex, pageSize } = req.query;
+    const { word } = req.query;
+    const username = await getUsernameFromToken(req.headers["authorization"]);
 
-    let sql = "SELECT * FROM synonyms";
-    const params = [];
-    const conditions = [];
+    const result = await executeProcedure("prc_crud_synonyms", [
+      { name: "p_id", type: "text", value: null },
+      { name: "p_word", type: "text", value: word || null },
+      { name: "p_synonym", type: "text", value: null },
+      { name: "p_note", type: "text", value: null },
+      { name: "p_username", type: "text", value: username },
+      { name: "p_action", type: "text", value: "READ" },
+      { name: "p_rows", type: "CURSOR", value: "cursor_" + getRandomId() },
+      { name: "p_error", type: "text", value: null },
+      { name: "p_json_params", type: "text", value: null },
+    ]);
 
-    if (id) {
-      conditions.push("id LIKE ?");
-      params.push('%' + id + '%');
-    }
-    if (word) {
-      conditions.push("word LIKE ?");
-      params.push('%' + word + '%');
-    }
-    if (synomym) {
-      conditions.push("synomym LIKE ?");
-      params.push('%' + synomym + '%');
-    }
-    if (note) {
-      conditions.push("note LIKE ?");
-      params.push('%' + note + '%');
-    }
-
-    if (conditions.length > 0) {
-      sql += " WHERE " + conditions.join(" AND ");
+    if (result.p_error) {
+      res.locals.error = result.p_error;
+      res.locals.data = [];
+    } else {
+      res.locals.error = null;
+      res.locals.data = result.p_rows || [];
     }
 
-    sql += " ORDER BY CAST(id AS UNSIGNED) desc";
-    const result = await executeSelect({ sql, params });
-    res.locals.data = result;
-    res.locals.error = null;
     next();
-  } catch (error) {
-    next(error);
+  } catch (err) {
+    console.error("❌ getSynonyms error:", err);
+    res.locals.data = [];
+    res.locals.error = err.message;
+    next();
   }
 }
 
-// POST: Create
-async function addSynonyms(req, res) {
+// -------------------- ADD SYNONYM --------------------
+async function addSynonym(req, res) {
   try {
-    const { word, synomym, note } = req.body;
+    const { word, synonym, note } = req.body;
+    const username = await getUsernameFromToken(req.headers["authorization"]);
     const id = getRandomId();
 
-    const sql = `
-      INSERT INTO synonyms (id, word, synomym, note)
-      VALUES (?, ?, ?, ?)
-    `;
+    const result = await executeProcedure("prc_crud_synonyms", [
+      { name: "p_id", type: "text", value: id },
+      { name: "p_word", type: "text", value: word },
+      { name: "p_synonym", type: "text", value: synonym },
+      { name: "p_note", type: "text", value: note },
+      { name: "p_username", type: "text", value: username },
+      { name: "p_action", type: "text", value: "CREATE" },
+      { name: "p_rows", type: "CURSOR", value: null },
+      { name: "p_error", type: "text", value: null },
+      { name: "p_json_params", type: "text", value: null },
+    ]);
 
-    const result = await execute({
-      sql,
-      params: [id, word, synomym, note]
-    });
+    if (result.p_error) {
+      return res.status(400).json({ error: result.p_error, data: null });
+    }
 
-    res.json({ data: result, error: null });
-  } catch (error) {
-    res.status(500).json({ data: null, error: error.message });
+    res.json({ error: null, data: { id, word, synonym, note } });
+  } catch (err) {
+    console.error("❌ addSynonym error:", err);
+    res.status(500).json({ error: err.message, data: null });
   }
 }
 
-// PUT: Update
-async function updateSynonyms(req, res) {
+// -------------------- UPDATE SYNONYM --------------------
+async function updateSynonym(req, res) {
   try {
     const { id } = req.params;
-    const { word, synomym, note } = req.body;
+    const { word, synonym, note } = req.body;
+    const username = await getUsernameFromToken(req.headers["authorization"]);
 
-    const sql = `
-      UPDATE synonyms
-      SET word = ?, synomym = ?, note = ?
-      WHERE id = ?
-    `;
+    const result = await executeProcedure("prc_crud_synonyms", [
+      { name: "p_id", type: "text", value: id },
+      { name: "p_word", type: "text", value: word },
+      { name: "p_synonym", type: "text", value: synonym },
+      { name: "p_note", type: "text", value: note },
+      { name: "p_username", type: "text", value: username },
+      { name: "p_action", type: "text", value: "UPDATE" },
+      { name: "p_rows", type: "CURSOR", value: null },
+      { name: "p_error", type: "text", value: null },
+      { name: "p_json_params", type: "text", value: null },
+    ]);
 
-    const result = await execute({
-      sql,
-      params: [word, synomym, note, id]
-    });
+    if (result.p_error) {
+      return res.status(400).json({ error: result.p_error, data: null });
+    }
 
-    res.json({ data: result, error: null });
-  } catch (error) {
-    res.status(500).json({ data: null, error: error.message });
+    res.json({ error: null, data: { id, word, synonym, note } });
+  } catch (err) {
+    console.error("❌ updateSynonym error:", err);
+    res.status(500).json({ error: err.message, data: null });
   }
 }
 
-// DELETE
-async function deleteSynonyms(req, res) {
+// -------------------- DELETE SYNONYM --------------------
+async function deleteSynonym(req, res) {
   try {
     const { id } = req.params;
+    const username = await getUsernameFromToken(req.headers["authorization"]);
 
-    const sql = "DELETE FROM synonyms WHERE id = ?";
-    const result = await execute({ sql, params: [id] });
+    const result = await executeProcedure("prc_crud_synonyms", [
+      { name: "p_id", type: "text", value: id },
+      { name: "p_word", type: "text", value: null },
+      { name: "p_synonym", type: "text", value: null },
+      { name: "p_note", type: "text", value: null },
+      { name: "p_username", type: "text", value: username },
+      { name: "p_action", type: "text", value: "DELETE" },
+      { name: "p_rows", type: "CURSOR", value: null },
+      { name: "p_error", type: "text", value: null },
+      { name: "p_json_params", type: "text", value: null },
+    ]);
 
-    res.json({ data: result, error: null });
-  } catch (error) {
-    res.status(500).json({ data: null, error: error.message });
+    if (result.p_error) {
+      return res.status(400).json({ error: result.p_error, data: null });
+    }
+
+    res.json({ error: null, data: { id } });
+  } catch (err) {
+    console.error("❌ deleteSynonym error:", err);
+    res.status(500).json({ error: err.message, data: null });
   }
 }
 
-// Routes
-router.get("/", getSynonyms, paginationMiddleware);
-router.post("/", addSynonyms);
-router.put("/:id", updateSynonyms);
-router.delete("/:id", deleteSynonyms);
+// -------------------- ROUTES --------------------
+router.get("/", verifyToken, getSynonyms, paginationMiddleware);
+router.post("/", verifyToken, addSynonym);
+router.put("/:id", verifyToken, updateSynonym);
+router.delete("/:id", verifyToken, deleteSynonym);
 
 module.exports = router;

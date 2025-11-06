@@ -38,14 +38,14 @@ export function Popup({
         }
       />
 
-      {/* synomym */}
+      {/* synonym */}
       <PopupField
-        label="Synomym"
+        label="Synonym"
         fieldComponent={
           <input
-            value={row.synomym}
+            value={row.synonym}
             disabled={isDelete}
-            onChange={(e) => setCurrentRow({ ...row, synomym: e.target.value })}
+            onChange={(e) => setCurrentRow({ ...row, synonym: e.target.value })}
           />
         }
       />
@@ -55,8 +55,8 @@ export function Popup({
         label="Note"
         fieldComponent={
           <RichTextEditorField
-            value={row.content} // or row.note
-            onChange={(html) => setCurrentRow({ ...row, note: html })} // or note
+            value={row.note}
+            onChange={(html) => setCurrentRow({ ...row, note: html })}
             disabled={isDelete}
             placeholder="Type your review here..."
           />

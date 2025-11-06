@@ -1,92 +1,71 @@
-// Auto-generated service for synonyms
-
+// -------------------- GET SINGLE SYNONYM --------------------
 export async function getSynonym({ word }) {
   if (!word) {
-    throw new Error("word can't be null or undefined.");
+    throw new Error("Word can't be null!");
   }
 
-  const result = await fetch(`/api/synonyms?word=${word}`);
-  const result_json = await result.json();
-
-  if (result_json.data.length > 0) {
-    return result_json.data[0];
-  }
-
-  return null;
-}
-
-export async function getAllSynonyms({ id, word, synomym, note , pageIndex, pageSize }) {
-  const params = new URLSearchParams();
-
-  params.append("pageIndex", pageIndex || "");
-  params.append("pageSize", pageSize || "");
-  params.append("id", id || "");
-  params.append("word", word || "");
-  params.append("synomym", synomym || "");
-  params.append("note", note || "");
-
-  const result = await fetch(`/api/synonyms?${params.toString()}`);
-  return await result.json();
-}
-
-export async function getSynonymsBySynomym({ synomym, pageIndex, pageSize }) {
-  if ([null, undefined, ""].includes(synomym)) {
-    throw new Error("synomym is required.");
-  }
-
-  const params = new URLSearchParams({
-    synomym: synomym,
-    pageIndex: pageIndex ?? "",
-    pageSize: pageSize ?? "",
+  const res = await fetch(`/api/synonyms?word=${encodeURIComponent(word)}`, {
+    headers: {
+      authorization: "Bearer " + localStorage.getItem("token"),
+    },
   });
 
-  const result = await fetch(`/api/synonyms?${params.toString()}`);
-  return await result.json();
+  const result_json = await res.json();
+  return result_json.data.length > 0 ? result_json.data[0] : null;
 }
 
-export async function getSynonymsByNote({ note, pageIndex, pageSize }) {
-  if ([null, undefined, ""].includes(note)) {
-    throw new Error("note is required.");
-  }
-
+// -------------------- GET ALL SYNONYMS --------------------
+export async function getAllSynonyms({ pageIndex = "", pageSize = "" }) {
   const params = new URLSearchParams({
-    note: note,
-    pageIndex: pageIndex ?? "",
-    pageSize: pageSize ?? "",
+    pageIndex: pageIndex || "",
+    pageSize: pageSize || "",
   });
 
-  const result = await fetch(`/api/synonyms?${params.toString()}`);
-  return await result.json();
+  const res = await fetch(`/api/synonyms?${params.toString()}`, {
+    headers: {
+      authorization: "Bearer " + localStorage.getItem("token"),
+    },
+  });
+
+  return res.json();
 }
 
+// -------------------- ADD SYNONYM --------------------
 export async function addSynonym({ row }) {
-  const result = await fetch("/api/synonyms", {
+  const res = await fetch("/api/synonyms", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      authorization: "Bearer " + localStorage.getItem("token"),
     },
     body: JSON.stringify(row),
   });
 
-  return await result.json();
+  return res.json();
 }
 
+// -------------------- UPDATE SYNONYM --------------------
 export async function updateSynonym({ row }) {
-  const result = await fetch(`/api/synonyms/${row.id}`, {
+  const res = await fetch(`/api/synonyms/${row.id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
+      authorization: "Bearer " + localStorage.getItem("token"),
     },
     body: JSON.stringify(row),
   });
 
-  return await result.json();
+  return res.json();
 }
 
+// -------------------- DELETE SYNONYM --------------------
 export async function deleteSynonym({ row }) {
-  const result = await fetch(`/api/synonyms/${row.id}`, {
+  const res = await fetch(`/api/synonyms/${row.id}`, {
     method: "DELETE",
+    headers: {
+      authorization: "Bearer " + localStorage.getItem("token"),
+    },
   });
 
-  return await result.json();
+  return res.json();
 }

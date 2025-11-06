@@ -31,6 +31,8 @@ async function executeProcedure(
 
     const callQuery = `CALL ${procedureName}(${placeholders});`;
 
+    console.log(JSON.stringify({ callQuery, params: params.map(ele => ele.value) }))
+
     const result = await client.query(callQuery, params.map(ele => ele.value));
 
     const output = {};

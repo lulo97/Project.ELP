@@ -10,8 +10,9 @@ import {
 import { PageTitle } from "../../components/PageTitle";
 import { Button } from "../../components/Button";
 import { SearchTable } from "../../components/SearchTable";
+import { message } from "../../providers/MessageProvider"
 
-const EMPTY_ROW = { id: "", word: "", synomym: "", note: "" };
+const EMPTY_ROW = { id: "", word: "", synonym: "", note: "" };
 
 export function Synonym() {
   const [rows, setRows] = useState([]);
@@ -21,7 +22,7 @@ export function Synonym() {
   const [paginationData, setPaginationData] = useState({});
   const [searchValues, setSearchValues] = useState([
     { id: "word", placeholder: "Search by Word", value: "" },
-          { id: "synomym", placeholder: "Search by Synomym", value: "" },
+          { id: "synonym", placeholder: "Search by Synonym", value: "" },
           { id: "note", placeholder: "Search by Note", value: "" }
   ]);
 
@@ -43,20 +44,24 @@ export function Synonym() {
   }
 
   async function handleConfirm({ action }) {
+    let result = null;
+
     if (action == "ADD") {
-      await addSynonym({ row: currentRow });
+      result = await addSynonym({ row: currentRow });
     }
 
     if (action == "EDIT") {
-      await updateSynonym({ row: currentRow });
+      result = await updateSynonym({ row: currentRow });
     }
 
     if (action == "DELETE") {
-      await deleteSynonym({ row: currentRow });
+      result = await deleteSynonym({ row: currentRow });
     }
 
     fetchRows();
     setShowPopup(false);
+
+    if (result.error) message({ type: "error", text: result.error })
   }
 
   function handleClose() {
@@ -90,7 +95,7 @@ export function Synonym() {
         columns={[
           { id: "id", name: "Id" },
           { id: "word", name: "Word" },
-          { id: "synomym", name: "Synomym" },
+          { id: "synonym", name: "Synonym" },
           { id: "note", name: "Note" }
         ]}
         rows={rows}
