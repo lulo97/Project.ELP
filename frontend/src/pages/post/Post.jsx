@@ -10,6 +10,7 @@ import {
 import { PageTitle } from "../../components/PageTitle";
 import { Button } from "../../components/Button";
 import { SearchTable } from "../../components/SearchTable";
+import { message } from "../../providers/MessageProvider";
 
 const EMPTY_ROW = { id: "", title: "", content: "" };
 
@@ -21,18 +22,23 @@ export function Post() {
   const [paginationData, setPaginationData] = useState({});
   const [searchValues, setSearchValues] = useState([
     {
-        id: "title",
-        placeholder: "Search by Title",
-        value: ""
-      },
-  {
-        id: "content",
-        placeholder: "Search by Content",
-        value: ""
-      }
+      id: "title",
+      placeholder: "Search by Title",
+      value: "",
+    },
+    {
+      id: "content",
+      placeholder: "Search by Content",
+      value: "",
+    },
   ]);
 
-  async function fetchRows({ pageIndex, pageSize } = { pageIndex: paginationData.pageIndex || null, pageSize: paginationData.pageSize || 5 }) {
+  async function fetchRows(
+    { pageIndex, pageSize } = {
+      pageIndex: paginationData.pageIndex || null,
+      pageSize: paginationData.pageSize || 5,
+    }
+  ) {
     const params = searchValues.reduce((acc, ele) => {
       acc[ele.id] = ele.value;
       return acc;
@@ -50,20 +56,24 @@ export function Post() {
   }
 
   async function handleConfirm({ action }) {
+    let result = null;
+
     if (action == "ADD") {
-      await addPost({ row: currentRow });
+      result = await addPost({ row: currentRow });
     }
 
     if (action == "EDIT") {
-      await updatePost({ row: currentRow });
+      result = await updatePost({ row: currentRow });
     }
 
     if (action == "DELETE") {
-      await deletePost({ row: currentRow });
+      result = await deletePost({ row: currentRow });
     }
 
     fetchRows();
     setShowPopup(false);
+
+    if (result.error) message({ type: "error", text: result.error });
   }
 
   function handleClose() {
@@ -97,7 +107,7 @@ export function Post() {
         columns={[
           { id: "id", name: "Id" },
           { id: "title", name: "Title" },
-          { id: "content", name: "Content" }
+          { id: "content", name: "Content" },
         ]}
         rows={rows}
         openPopup={openPopup}
@@ -108,9 +118,7 @@ export function Post() {
             <Button
               className="py-0 h-full"
               text={"View Post"}
-              onClick={() =>
-                (window.location.href = `/viewpost?id=${row.id}`)
-              }
+              onClick={() => (window.location.href = `/viewpost?id=${row.id}`)}
             />
           ),
         ]}

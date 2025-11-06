@@ -3,7 +3,13 @@ import { Table } from "../../components/Table";
 import { Popup } from "./Popup";
 import { PageTitle } from "../../components/PageTitle";
 import { Button } from "../../components/Button";
-import { getAllSources } from "../../services/source";
+import {
+  addSource,
+  deleteSource,
+  getAllSources,
+  updateSource,
+} from "../../services/source";
+import { message } from "../../providers/MessageProvider";
 
 const EMPTY_ROW = { id: "", name: "", source: "" };
 
@@ -29,34 +35,23 @@ export function Source() {
   }
 
   async function handleConfirm({ action }) {
+    let result = null;
     if (action == "ADD") {
-      const result = await fetch("/api/sources", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(currentRow),
-      });
+      result = await addSource({ row: currentRow });
     }
 
     if (action == "EDIT") {
-      const result = await fetch(`/api/sources/${currentRow.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(currentRow),
-      });
+      result = await updateSource({ row: currentRow });
     }
 
     if (action == "DELETE") {
-      const result = await fetch(`/api/sources/${currentRow.id}`, {
-        method: "DELETE",
-      });
+      result = await deleteSource({ row: currentRow });
     }
 
     fetchRows();
     setShowPopup(false);
+
+    if (result.error) message({ type: "error", text: result.error });
   }
 
   function handleClose() {

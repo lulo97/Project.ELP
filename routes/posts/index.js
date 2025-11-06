@@ -1,110 +1,136 @@
 const express = require("express");
-const { executeSelect, execute } = require("../../database/execute.js");
+const { executeProcedure } = require("../../database/executeProcedure.js");
 const { getRandomId } = require("../../utils/getRandomId.js");
 const { paginationMiddleware } = require("../../middleware/paginationMiddleware.js");
+const { verifyToken } = require("../../middleware/verifyToken.js");
+const { getUsernameFromToken } = require("../../utils/getUsernameFromToken.js");
 
 const router = express.Router();
 
-// GET: Read with filters + pagination
+// -------------------- GET POSTS --------------------
 async function getPosts(req, res, next) {
   try {
-    const { id, title, content, pageIndex, pageSize } = req.query;
+    const { title } = req.query;
+    const username = await getUsernameFromToken(req.headers["authorization"]);
 
-    let sql = "SELECT * FROM posts";
-    const params = [];
-    const conditions = [];
+    const result = await executeProcedure("prc_crud_posts", [
+      { name: "p_id", type: "text", value: null },
+      { name: "p_title", type: "text", value: title || null },
+      { name: "p_content", type: "text", value: null },
+      { name: "p_username", type: "text", value: username },
+      { name: "p_action", type: "text", value: "READ" },
+      { name: "p_rows", type: "CURSOR", value: "cursor_" + getRandomId() },
+      { name: "p_error", type: "text", value: null },
+      { name: "p_json_params", type: "text", value: null },
+    ]);
 
-    if (id) {
-      conditions.push("id LIKE ?");
-      params.push('%' + id + '%');
+    if (result.p_error) {
+      res.locals.error = result.p_error;
+      res.locals.data = [];
+    } else {
+      res.locals.error = null;
+      res.locals.data = result.p_rows || [];
     }
-    if (title) {
-      conditions.push("title LIKE ?");
-      params.push('%' + title + '%');
-    }
-    if (content) {
-      conditions.push("content LIKE ?");
-      params.push('%' + content + '%');
-    }
 
-    if (conditions.length > 0) {
-      sql += " WHERE " + conditions.join(" AND ");
-    }
-
-    sql += " ORDER BY CAST(id AS UNSIGNED) desc";
-
-    const result = await executeSelect({ sql, params });
-    res.locals.data = result;
-    res.locals.error = null;
     next();
-  } catch (error) {
-    next(error);
+  } catch (err) {
+    console.error("❌ getPosts error:", err);
+    res.locals.data = [];
+    res.locals.error = err.message;
+    next();
   }
 }
 
-// POST: Create
-async function addPosts(req, res) {
+// -------------------- ADD POST --------------------
+async function addPost(req, res) {
   try {
     const { title, content } = req.body;
+    const username = await getUsernameFromToken(req.headers["authorization"]);
     const id = getRandomId();
 
-    const sql = `
-      INSERT INTO posts (id, title, content)
-      VALUES (?, ?, ?)
-    `;
+    const result = await executeProcedure("prc_crud_posts", [
+      { name: "p_id", type: "text", value: id },
+      { name: "p_title", type: "text", value: title },
+      { name: "p_content", type: "text", value: content },
+      { name: "p_username", type: "text", value: username },
+      { name: "p_action", type: "text", value: "CREATE" },
+      { name: "p_rows", type: "CURSOR", value: null },
+      { name: "p_error", type: "text", value: null },
+      { name: "p_json_params", type: "text", value: null },
+    ]);
 
-    const result = await execute({
-      sql,
-      params: [id, title, content]
-    });
+    if (result.p_error) {
+      return res.status(400).json({ error: result.p_error, data: null });
+    }
 
-    res.json({ data: result, error: null });
-  } catch (error) {
-    res.status(500).json({ data: null, error: error.message });
+    res.json({ error: null, data: { id, title, content } });
+  } catch (err) {
+    console.error("❌ addPost error:", err);
+    res.status(500).json({ error: err.message, data: null });
   }
 }
 
-// PUT: Update
-async function updatePosts(req, res) {
+// -------------------- UPDATE POST --------------------
+async function updatePost(req, res) {
   try {
     const { id } = req.params;
     const { title, content } = req.body;
+    const username = await getUsernameFromToken(req.headers["authorization"]);
 
-    const sql = `
-      UPDATE posts
-      SET title = ?, content = ?
-      WHERE id = ?
-    `;
+    const result = await executeProcedure("prc_crud_posts", [
+      { name: "p_id", type: "text", value: id },
+      { name: "p_title", type: "text", value: title },
+      { name: "p_content", type: "text", value: content },
+      { name: "p_username", type: "text", value: username },
+      { name: "p_action", type: "text", value: "UPDATE" },
+      { name: "p_rows", type: "CURSOR", value: null },
+      { name: "p_error", type: "text", value: null },
+      { name: "p_json_params", type: "text", value: null },
+    ]);
 
-    const result = await execute({
-      sql,
-      params: [title, content, id]
-    });
+    if (result.p_error) {
+      return res.status(400).json({ error: result.p_error, data: null });
+    }
 
-    res.json({ data: result, error: null });
-  } catch (error) {
-    res.status(500).json({ data: null, error: error.message });
+    res.json({ error: null, data: { id, title, content } });
+  } catch (err) {
+    console.error("❌ updatePost error:", err);
+    res.status(500).json({ error: err.message, data: null });
   }
 }
 
-// DELETE
-async function deletePosts(req, res) {
+// -------------------- DELETE POST --------------------
+async function deletePost(req, res) {
   try {
     const { id } = req.params;
+    const username = await getUsernameFromToken(req.headers["authorization"]);
 
-    const sql = "DELETE FROM posts WHERE id = ?";
-    const result = await execute({ sql, params: [id] });
+    const result = await executeProcedure("prc_crud_posts", [
+      { name: "p_id", type: "text", value: id },
+      { name: "p_title", type: "text", value: null },
+      { name: "p_content", type: "text", value: null },
+      { name: "p_username", type: "text", value: username },
+      { name: "p_action", type: "text", value: "DELETE" },
+      { name: "p_rows", type: "CURSOR", value: null },
+      { name: "p_error", type: "text", value: null },
+      { name: "p_json_params", type: "text", value: null },
+    ]);
 
-    res.json({ data: result, error: null });
-  } catch (error) {
-    res.status(500).json({ data: null, error: error.message });
+    if (result.p_error) {
+      return res.status(400).json({ error: result.p_error, data: null });
+    }
+
+    res.json({ error: null, data: { id } });
+  } catch (err) {
+    console.error("❌ deletePost error:", err);
+    res.status(500).json({ error: err.message, data: null });
   }
 }
 
-// Routes
-router.get("/", getPosts, paginationMiddleware);
-router.post("/", addPosts);
-router.put("/:id", updatePosts);
-router.delete("/:id", deletePosts);
+// -------------------- ROUTES --------------------
+router.get("/", verifyToken, getPosts, paginationMiddleware);
+router.post("/", verifyToken, addPost);
+router.put("/:id", verifyToken, updatePost);
+router.delete("/:id", verifyToken, deletePost);
 
 module.exports = router;
