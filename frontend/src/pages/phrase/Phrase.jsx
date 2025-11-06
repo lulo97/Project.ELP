@@ -9,6 +9,7 @@ import {
 } from "../../services/phrases";
 import { PageTitle } from "../../components/PageTitle";
 import { Button } from "../../components/Button";
+import { message } from "../../providers/MessageProvider";
 
 const EMPTY_ROW = { id: "", phrase: "", meaning: "", example: "" };
 
@@ -34,18 +35,22 @@ export function Phrase() {
   }
 
   async function handleConfirm({ action }) {
+    let result = null;
+
     if (action === "ADD") {
-      await addPhrase({ row: currentRow });
+      result = await addPhrase({ row: currentRow });
     }
     if (action === "EDIT") {
-      await updatePhrase({ row: currentRow });
+      result = await updatePhrase({ row: currentRow });
     }
     if (action === "DELETE") {
-      await deletePhrase({ row: currentRow });
+      result = await deletePhrase({ row: currentRow });
     }
 
     fetchRows();
     setShowPopup(false);
+
+    if (result.error) message({ type: "error", text: result.error })
   }
 
   function handleClose() {

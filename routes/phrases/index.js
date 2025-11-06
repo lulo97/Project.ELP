@@ -1,64 +1,140 @@
 const express = require("express");
-const { executeSelect, execute } = require("../../database/execute.js");
+const { executeProcedure } = require("../../database/executeProcedure.js");
 const { getRandomId } = require("../../utils/getRandomId.js");
-const { paginationMiddleware } = require("../../middleware/paginationMiddleware.js")
+const { paginationMiddleware } = require("../../middleware/paginationMiddleware.js");
+const { verifyToken } = require("../../middleware/verifyToken.js");
+const { getUsernameFromToken } = require("../../utils/getUsernameFromToken.js");
 
 const router = express.Router();
 
+// -------------------- GET PHRASES --------------------
 async function getPhrases(req, res, next) {
   try {
-    const { phrases } = req.query;
+    const { phrase } = req.query;
+    const username = await getUsernameFromToken(req.headers["authorization"]);
 
-    let sql = "SELECT * FROM PHRASES";
-    const params = [];
+    const result = await executeProcedure("prc_crud_phrases", [
+      { name: "p_id", type: "text", value: null },
+      { name: "p_phrase", type: "text", value: phrase || null },
+      { name: "p_meaning", type: "text", value: null },
+      { name: "p_example", type: "text", value: null },
+      { name: "p_username", type: "text", value: username },
+      { name: "p_action", type: "text", value: "READ" },
+      { name: "p_rows", type: "CURSOR", value: "cursor_" + getRandomId() },
+      { name: "p_error", type: "text", value: null },
+      { name: "p_json_params", type: "text", value: null },
+    ]);
 
-    if (phrases) {
-      sql += " WHERE phrases = ?";
-      params.push(phrases);
+    if (result.p_error) {
+      res.locals.error = result.p_error;
+      res.locals.data = [];
+    } else {
+      res.locals.error = null;
+      res.locals.data = result.p_rows || [];
     }
 
-
-  sql += " ORDER BY CAST(id AS UNSIGNED) desc";
-  const result = await executeSelect({ sql, params });
-
-    res.locals.data = result;
     next();
   } catch (err) {
-    console.error(err)
+    console.error("❌ getPhrases error:", err);
+    res.locals.data = [];
     res.locals.error = err.message;
     next();
   }
 }
 
-async function addPhrases(req, res, next) {
+// -------------------- ADD PHRASE --------------------
+async function addPhrase(req, res) {
+  try {
     const { phrase, meaning, example } = req.body;
+    const username = await getUsernameFromToken(req.headers["authorization"]);
     const id = getRandomId();
-    const sql = "INSERT INTO PHRASES (id, phrase, meaning, example) VALUES (?, ?, ?, ?)";
-    const result = await execute({ sql: sql, params: [id, phrase, meaning, example]})
-    res.json({ data: result, error: null }); 
+
+    const result = await executeProcedure("prc_crud_phrases", [
+      { name: "p_id", type: "text", value: id },
+      { name: "p_phrase", type: "text", value: phrase },
+      { name: "p_meaning", type: "text", value: meaning },
+      { name: "p_example", type: "text", value: example },
+      { name: "p_username", type: "text", value: username },
+      { name: "p_action", type: "text", value: "CREATE" },
+      { name: "p_rows", type: "CURSOR", value: null },
+      { name: "p_error", type: "text", value: null },
+      { name: "p_json_params", type: "text", value: null },
+    ]);
+
+    if (result.p_error) {
+      return res.status(400).json({ error: result.p_error, data: null });
+    }
+
+    res.json({ error: null, data: { id, phrase, meaning, example } });
+  } catch (err) {
+    console.error("❌ addPhrase error:", err);
+    res.status(500).json({ error: err.message, data: null });
+  }
 }
 
-async function updatePhrases(req, res, next) {
+// -------------------- UPDATE PHRASE --------------------
+async function updatePhrase(req, res) {
+  try {
     const { id } = req.params;
     const { phrase, meaning, example } = req.body;
-    const sql = "UPDATE PHRASES SET phrase = ?, meaning = ?, example = ? WHERE id = ?";
-    const result = await execute({ sql: sql, params: [phrase, meaning, example, id]})
-    res.json({ data: result, error: null }); 
+    const username = await getUsernameFromToken(req.headers["authorization"]);
+
+    const result = await executeProcedure("prc_crud_phrases", [
+      { name: "p_id", type: "text", value: id },
+      { name: "p_phrase", type: "text", value: phrase },
+      { name: "p_meaning", type: "text", value: meaning },
+      { name: "p_example", type: "text", value: example },
+      { name: "p_username", type: "text", value: username },
+      { name: "p_action", type: "text", value: "UPDATE" },
+      { name: "p_rows", type: "CURSOR", value: null },
+      { name: "p_error", type: "text", value: null },
+      { name: "p_json_params", type: "text", value: null },
+    ]);
+
+    if (result.p_error) {
+      return res.status(400).json({ error: result.p_error, data: null });
+    }
+
+    res.json({ error: null, data: { id, phrase, meaning, example } });
+  } catch (err) {
+    console.error("❌ updatePhrase error:", err);
+    res.status(500).json({ error: err.message, data: null });
+  }
 }
 
-async function deletePhrases(req, res, next) {
+// -------------------- DELETE PHRASE --------------------
+async function deletePhrase(req, res) {
+  try {
     const { id } = req.params;
-    const sql = "DELETE FROM PHRASES WHERE id = ?";
-    const result = await execute({ sql: sql, params: [id]})
-    res.json({ data: result, error: null }); 
+    const username = await getUsernameFromToken(req.headers["authorization"]);
+
+    const result = await executeProcedure("prc_crud_phrases", [
+      { name: "p_id", type: "text", value: id },
+      { name: "p_phrase", type: "text", value: null },
+      { name: "p_meaning", type: "text", value: null },
+      { name: "p_example", type: "text", value: null },
+      { name: "p_username", type: "text", value: username },
+      { name: "p_action", type: "text", value: "DELETE" },
+      { name: "p_rows", type: "CURSOR", value: null },
+      { name: "p_error", type: "text", value: null },
+      { name: "p_json_params", type: "text", value: null },
+    ]);
+
+    if (result.p_error) {
+      return res.status(400).json({ error: result.p_error, data: null });
+    }
+
+    res.json({ error: null, data: { id } });
+  } catch (err) {
+    console.error("❌ deletePhrase error:", err);
+    res.status(500).json({ error: err.message, data: null });
+  }
 }
 
-router.get("/", getPhrases, paginationMiddleware);
-
-router.post("/", addPhrases);
-
-router.put("/:id", updatePhrases);
-
-router.delete("/:id", deletePhrases);
+// -------------------- ROUTES --------------------
+router.get("/", verifyToken, getPhrases, paginationMiddleware);
+router.post("/", verifyToken, addPhrase);
+router.put("/:id", verifyToken, updatePhrase);
+router.delete("/:id", verifyToken, deletePhrase);
 
 module.exports = router;
