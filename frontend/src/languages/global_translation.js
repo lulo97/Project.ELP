@@ -42,5 +42,13 @@ export const global_translation = {
   Page: {
     vi: "Trang",
     end: "Page",
-  }
+  },
+  SearchBy: {
+    vi: "Tìm kiếm theo {label}",
+    en: "Search by {label}",
+  },
+  Search: {
+    vi: "Tìm kiếm",
+    en: "Search",
+  },
 };

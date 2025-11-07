@@ -21,9 +21,9 @@ export function Synonym() {
   const [action, setAction] = useState("ADD");
   const [paginationData, setPaginationData] = useState({});
   const [searchValues, setSearchValues] = useState([
-    { id: "word", placeholder: "Search by Word", value: "" },
-          { id: "synonym", placeholder: "Search by Synonym", value: "" },
-          { id: "note", placeholder: "Search by Note", value: "" }
+    { id: "word", label: "Word", value: "" },
+          { id: "synonym", label: "Synonym", value: "" },
+          { id: "note", label: "Note", value: "" }
   ]);
 
   async function fetchRows({ pageIndex, pageSize } = { pageIndex: paginationData.pageIndex || null, pageSize: paginationData.pageSize || 5 }) {

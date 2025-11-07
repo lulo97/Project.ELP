@@ -23,7 +23,7 @@ export function Word() {
   const [action, setAction] = useState("ADD");
   const [paginationData, setPaginationData] = useState({});
   const [searchValues, setSearchValues] = useState([
-    { id: "word", placeholder: "Search by word", value: "" },
+    { id: "word", label: "Word", value: "" },
   ]);
   const [showPopupDetail, setShowPopupDetail] = useState(false);
   const [selectedWord, setSelectedWord] = useState(EMPTY_ROW);

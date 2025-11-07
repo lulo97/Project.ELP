@@ -23,11 +23,11 @@ export function Meaning() {
   const [partOfSpeechs, setPartOfSpeechs] = useState([]);
   const [paginationData, setPaginationData] = useState({});
   const [searchValues, setSearchValues] = useState([
-    { id: "meaning", placeholder: "Search by meaning", value: "" },
-    { id: "word", placeholder: "Search by word", value: "" },
+    { id: "meaning", label: "Meaning", value: "" },
+    { id: "word", label: "Word", value: "" },
     {
       id: "part_of_speech",
-      placeholder: "Search by part of speech",
+      label: "Part of speech",
       value: "",
     },
   ]);

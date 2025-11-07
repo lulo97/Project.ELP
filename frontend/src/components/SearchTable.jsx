@@ -1,3 +1,4 @@
+import { getTranslation } from "../utils/getTranslation";
 import { Button } from "./Button";
 import { Input } from "./Input";
 import { useState } from "react";
@@ -9,7 +10,7 @@ export function SearchTable({ searchValues, setSearchValues, fetchRows }) {
         return (
           <div key={data.id} className="flex flex-col">
             <label className="mb-1 text-sm font-medium text-gray-700">
-              {data.label || data.placeholder}
+              {data.label}
             </label>
             <Input
               value={data.value}
@@ -21,14 +22,14 @@ export function SearchTable({ searchValues, setSearchValues, fetchRows }) {
                 );
                 setSearchValues(newSearchValues);
               }}
-              placeholder={data.placeholder}
+              placeholder={getTranslation("SearchBy").replace("{label}", data.label)}
             />
           </div>
         );
       })}
       <div className="flex items-end">
         <Button
-          text="Search"
+          text={getTranslation("Search")}
           onClick={() => {
             fetchRows();
           }}

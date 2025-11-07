@@ -47,7 +47,7 @@ export function ${compName}() {
       .filter(ele => ele !== "id")
       .map(c => `{
         id: "${c}",
-        placeholder: "Search by ${toTitleCase(c)}",
+        name: "${toTitleCase(c)}",
         value: ""
       }`)
       .join(",\n  ")}

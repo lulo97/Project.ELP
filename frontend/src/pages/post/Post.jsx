@@ -23,12 +23,12 @@ export function Post() {
   const [searchValues, setSearchValues] = useState([
     {
       id: "title",
-      placeholder: "Search by Title",
+      label: "Title",
       value: "",
     },
     {
       id: "content",
-      placeholder: "Search by Content",
+      label: "Content",
       value: "",
     },
   ]);

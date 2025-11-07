@@ -22,7 +22,7 @@ import { ViewPost } from "./pages/post/ViewPost";
 import { QuestionGenerator } from "./pages/question_generator/QuestionGenerator";
 import { SignUp } from "./pages/signup/SignUp";
 import { LogIn } from "./pages/login/Login";
-import { ViewSources } from "./pages/source/ViewSources";
+import { ViewSources } from "./pages/view_sources/ViewSources";
 
 export const routes = [
   {

@@ -22,7 +22,7 @@ export function Example() {
   const [partOfSpeechs, setPartOfSpeechs] = useState([]);
   const [paginationData, setPaginationData] = useState({});
   const [searchValues, setSearchValues] = useState([
-    { id: "word", placeholder: "Search by word", value: "" },
+    { id: "word", label: "Word", value: "" },
   ]);
   
   async function fetchRows(
