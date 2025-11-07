@@ -17,7 +17,7 @@ import { SpeakingExercise } from "./pages/speaking_exercise/SpeakingExercise";
 import { ReadSentence } from "./pages/read_sentence/ReadSentence";
 import { Synonym } from "./pages/synonym/Synonym";
 import { ReadWordList } from "./pages/read_word_list/ReadWordList";
-import { Post } from "./pages/post/Post"
+import { Post } from "./pages/post/Post";
 import { ViewPost } from "./pages/post/ViewPost";
 import { QuestionGenerator } from "./pages/question_generator/QuestionGenerator";
 import { SignUp } from "./pages/signup/SignUp";
@@ -35,10 +35,63 @@ export const routes = [
       { name: "Idiom", path: "idiom", element: <Idiom /> },
       { name: "Synonym", path: "synonym", element: <Synonym /> },
       { name: "Post", path: "post", element: <Post /> },
-      
     ],
   },
-  { name: "ViewPost", path: "viewpost", element: <ViewPost />, isNotDisplayOnHeader: true },
+
+  {
+    name: "Features",
+    children: [
+      { name: "Exercise", path: "exercise", element: <Exercise /> },
+      {
+        name: "QuestionGenerator",
+        path: "question_generator",
+        element: <QuestionGenerator />,
+      },
+    ],
+  },
+
+  {
+    name: "Reading",
+    children: [],
+  },
+  {
+    name: "Listening",
+    children: [],
+  },
+  {
+    name: "Writing",
+    children: [
+      { name: "Grammar", path: "grammar", element: <Grammar /> },
+      {
+        name: "WritingQuestion",
+        path: "writing_question",
+        element: <WritingQuestion />,
+      },
+    ],
+  },
+  {
+    name: "Speaking",
+    children: [
+      {
+        name: "SpeechToText",
+        path: "speech_to_text",
+        element: <SpeechToText />,
+      },
+      { name: "Speaking", path: "speaking", element: <Speaking /> },
+      {
+        name: "SpeakingExercise",
+        path: "speaking_exercise",
+        element: <SpeakingExercise />,
+        isNotDisplayOnHeader: true,
+      },
+    ],
+  },
+  {
+    name: "ViewPost",
+    path: "viewpost",
+    element: <ViewPost />,
+    isNotDisplayOnHeader: true,
+  },
   { name: "Read", path: "read", element: <Read />, isNotDisplayOnHeader: true },
   {
     name: "ReadSentence",
@@ -53,28 +106,23 @@ export const routes = [
     isNotDisplayOnHeader: true,
   },
 
-  { name: "Exercise", path: "exercise", element: <Exercise /> },
-  {
-    name: "WritingQuestion",
-    path: "writing_question",
-    element: <WritingQuestion />,
-  },
   {
     name: "Writing",
     path: "writing",
     element: <Writing />,
     isNotDisplayOnHeader: true,
   },
-  { name: "Grammar", path: "grammar", element: <Grammar /> },
-  { name: "SpeechToText", path: "speech_to_text", element: <SpeechToText /> },
-  { name: "Speaking", path: "speaking", element: <Speaking /> },
+
   {
-    name: "SpeakingExercise",
-    path: "speaking_exercise",
-    element: <SpeakingExercise />,
+    name: "SignUp",
+    path: "signup",
+    element: <SignUp />,
     isNotDisplayOnHeader: true,
   },
-  { name: "QuestionGenerator", path: "question_generator", element: <QuestionGenerator /> },
-  { name: "SignUp", path: "signup", element: <SignUp />, isNotDisplayOnHeader: true },
-  { name: "Login", path: "login", element: <LogIn />, isNotDisplayOnHeader: true, },
+  {
+    name: "Login",
+    path: "login",
+    element: <LogIn />,
+    isNotDisplayOnHeader: true,
+  },
 ];

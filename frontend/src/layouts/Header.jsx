@@ -5,9 +5,16 @@ import { getConsts } from "../utils/const";
 import { getUserByToken } from "../services/auth";
 import { Button } from "../components/Button";
 import Dropdown from "../components/Dropdown";
+import { OutlinedButton } from "../components/OutlinedButton";
+import { translation } from "./Header.Translation";
+import { getTranslation } from "../utils/getTranslation";
 
 export function Header() {
   const [userName, setUsername] = useState("");
+
+  const [language, setLanguage] = useState(
+    localStorage.getItem("language") || "vi"
+  );
 
   async function fetchData() {
     const user = await getUserByToken();
@@ -17,7 +24,16 @@ export function Header() {
 
   useEffect(() => {
     fetchData();
+    if (!localStorage.getItem("language")) {
+      localStorage.setItem("language", "vi");
+      setLanguage("vi");
+    }
   }, []);
+
+  function handleChangeLanguage(language) {
+    setLanguage(language);
+    localStorage.setItem("language", language);
+  }
 
   const avatarMenu = [
     {
@@ -60,8 +76,7 @@ export function Header() {
             return (
               <Dropdown menu={menu} align="left">
                 <button className="flex items-center text-gray-700 hover:text-indigo-600 font-medium transition-colors">
-                  {ele.name}
-                  <span className="ml-1">▼</span>
+                  {getTranslation(ele.name, translation)}
                 </button>
               </Dropdown>
             );
@@ -87,24 +102,40 @@ export function Header() {
         </Dropdown>
       )}
 
-      {/* Buttons */}
-      {!userName && (
+      <div className="flex gap-4 items-center">
+        {/* Buttons */}
+        {!userName && (
+          <div>
+            <Button
+              className="mr-2"
+              text={getTranslation("Login", translation)}
+              onClick={() => {
+                window.location.href = "/login";
+              }}
+            />
+            <OutlinedButton
+              text={getTranslation("SignUp", translation)}
+              onClick={() => {
+                window.location.href = "/signup";
+              }}
+            />
+          </div>
+        )}
+
+        {/* Language */}
         <div>
-          <Button
-            className="mr-2"
-            text={"Log in"}
-            onClick={() => {
-              window.location.href = "/login";
-            }}
-          />
-          <Button
-            text={"Sign up"}
-            onClick={() => {
-              window.location.href = "/signup";
-            }}
-          />
+          {language == "vi" && (
+            <button onClick={() => handleChangeLanguage("en")}>
+              <span class="fi fi-vn text-2xl"></span>
+            </button>
+          )}
+          {language == "en" && (
+            <button onClick={() => handleChangeLanguage("vi")}>
+              <span class="fi fi-gb text-2xl"></span>
+            </button>
+          )}
         </div>
-      )}
+      </div>
     </header>
   );
 }
