@@ -9,12 +9,8 @@ import { OutlinedButton } from "../components/OutlinedButton";
 import { translation } from "./Header.Translation";
 import { getTranslation } from "../utils/getTranslation";
 
-export function Header() {
+export function Header({ language, handleChangeLanguage }) {
   const [userName, setUsername] = useState("");
-
-  const [language, setLanguage] = useState(
-    localStorage.getItem("language") || "vi"
-  );
 
   async function fetchData() {
     const user = await getUserByToken();
@@ -24,16 +20,7 @@ export function Header() {
 
   useEffect(() => {
     fetchData();
-    if (!localStorage.getItem("language")) {
-      localStorage.setItem("language", "vi");
-      setLanguage("vi");
-    }
   }, []);
-
-  function handleChangeLanguage(language) {
-    setLanguage(language);
-    localStorage.setItem("language", language);
-  }
 
   const avatarMenu = [
     {

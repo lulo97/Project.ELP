@@ -12,7 +12,7 @@ export function SignUp() {
 
   async function handleSignUp() {
     if (password !== confirm) {
-      message({ text: "Passwords do not match", type: "error"});
+      message({ text: "Passwords do not match", type: "error" });
       return;
     }
 
@@ -30,56 +30,75 @@ export function SignUp() {
         throw new Error(result.error || "Sign up failed");
       }
 
-      message({ text: "Account created successfully!"});
+      message({ text: "Account created successfully!" });
       setUsername("");
       setPassword("");
       setConfirm("");
     } catch (err) {
-      message({ text: err.message, type: "error"});
+      message({ text: err.message, type: "error" });
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className="p-4 space-y-3">
-      <PopupField
-        label="Username"
-        fieldComponent={
-          <Input
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+    <div className="flex items-center justify-center mt-24 px-4">
+      <div className="w-full max-w-md rounded-2xl bg-white/70 backdrop-blur-lg shadow-xl p-8 space-y-6 border border-gray-100">
+        <h2 className="text-2xl font-semibold text-center text-gray-800">
+          Create Your Account
+        </h2>
+
+        <div className="space-y-4">
+          <PopupField
+            label="Username"
+            fieldComponent={
+              <Input
+                placeholder="Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+            }
           />
-        }
-      />
-      <PopupField
-        label="Password"
-        fieldComponent={
-          <Input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+          <PopupField
+            label="Password"
+            fieldComponent={
+              <Input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            }
           />
-        }
-      />
-      <PopupField
-        label="Confirm Password"
-        fieldComponent={
-          <Input
-            type="password"
-            placeholder="Confirm Password"
-            value={confirm}
-            onChange={(e) => setConfirm(e.target.value)}
+          <PopupField
+            label="Confirm Password"
+            fieldComponent={
+              <Input
+                type="password"
+                placeholder="Confirm Password"
+                value={confirm}
+                onChange={(e) => setConfirm(e.target.value)}
+              />
+            }
           />
-        }
-      />
-      <Button
-        text={loading ? "Signing up..." : "Sign Up"}
-        onClick={handleSignUp}
-        disabled={loading}
-      />
+        </div>
+
+        <div className="pt-4">
+          <Button
+            text={loading ? "Signing up..." : "Sign Up"}
+            onClick={handleSignUp}
+            disabled={loading}
+            className="w-full py-2 text-lg font-medium text-white rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
+          />
+        </div>
+
+        <p className="text-center text-sm text-gray-500">
+          Already have an account?{" "}
+          <a href="/login" className="text-indigo-600 hover:underline">
+            Log in
+          </a>
+        </p>
+      </div>
     </div>
   );
 }

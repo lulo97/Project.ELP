@@ -26,6 +26,7 @@ import { LogIn } from "./pages/login/Login";
 export const routes = [
   {
     name: "Library",
+    isAuth: true,
     children: [
       { name: "Word", path: "word", element: <Word /> },
       { name: "Source", path: "source", element: <Source /> },
