@@ -13,7 +13,10 @@ export function Header({ language, handleChangeLanguage }) {
   const [userName, setUsername] = useState("");
 
   async function fetchData() {
-    const user = await getUserByToken();
+    const show_error = ["/login", "/signup", "/"].includes(
+      window.location.pathname
+    );
+    const user = await getUserByToken(!show_error);
     if (!user || !user.username) return;
     setUsername(user.username);
   }
@@ -34,7 +37,7 @@ export function Header({ language, handleChangeLanguage }) {
   ];
 
   return (
-    <header className="flex items-center justify-between px-8 py-4 bg-white/70 backdrop-blur-md shadow-md sticky top-0 z-50">
+    <header className="flex items-center justify-between px-8 py-4 bg-white/70 backdrop-blur-md shadow-md sticky top-0 z-50 h-[10vh]">
       {/* Logo */}
       <div
         className="text-2xl font-bold text-indigo-600 cursor-pointer hover:scale-105 transition-transform"
@@ -50,11 +53,13 @@ export function Header({ language, handleChangeLanguage }) {
         {routes.map((ele, index) => {
           if (ele.isNotDisplayOnHeader) return null;
 
+          if (ele.isAuth && !userName) return null;
+
           // Dropdown menu
           if (ele.children) {
             const menu = ele.children.map((item) => ({
               key: item.name,
-              content: item.name,
+              content: getTranslation(item.name, translation),
               onClick: () => {
                 window.location.href = item.path;
               },
@@ -82,14 +87,14 @@ export function Header({ language, handleChangeLanguage }) {
         })}
       </nav>
 
-      {/* Avatar */}
-      {userName && (
-        <Dropdown menu={avatarMenu} align="left">
-          <Avatar name={userName} />
-        </Dropdown>
-      )}
-
       <div className="flex gap-4 items-center">
+        {/* Avatar */}
+        {userName && (
+          <Dropdown menu={avatarMenu} align="left">
+            <Avatar name={userName} />
+          </Dropdown>
+        )}
+
         {/* Buttons */}
         {!userName && (
           <div>

@@ -33,7 +33,7 @@ export function LogIn() {
       const result = await response.json();
 
       if (result.error) {
-        throw new Error(getTranslation("LoginFailed", translation));
+        throw new Error(result.error);
       }
 
       // Store token or user info if returned

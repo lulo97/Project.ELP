@@ -10,6 +10,8 @@ import {
   updateSource,
 } from "../../services/source";
 import { message } from "../../providers/MessageProvider";
+import { translation } from "./Source.Translation";
+import { getTranslation } from "../../utils/getTranslation";
 
 const EMPTY_ROW = { id: "", name: "", source: "" };
 
@@ -66,13 +68,14 @@ export function Source() {
   return (
     <div className="p-4">
       <div className="justify-between items-center mb-6">
-        <PageTitle title={"Source Manager"} />
+        <PageTitle title={getTranslation("Title", translation)} />
         <Button
-          text={"Add"}
+          text={getTranslation("Add")}
           onClick={() => openPopup({ currentRow: EMPTY_ROW, action: "ADD" })}
         />
       </div>
       <Table
+        translation={translation}
         columns={["Id", "Name", "Source"]}
         rows={rows}
         openPopup={openPopup}
@@ -80,7 +83,7 @@ export function Source() {
           (row) => (
             <Button
               className="py-0 h-full"
-              text={"Read"}
+              text={getTranslation("Read")}
               onClick={() =>
                 (window.location.href = `/read?source_name=${row.name}`)
               }
@@ -89,7 +92,7 @@ export function Source() {
           (row) => (
             <Button
               className="py-0 h-full"
-              text={"Read Sentence"}
+              text={getTranslation("ReadSentence", translation)}
               onClick={() =>
                 (window.location.href = `/read_sentence?source_name=${row.name}`)
               }
@@ -98,7 +101,7 @@ export function Source() {
           (row) => (
             <Button
               className="py-0 h-full"
-              text={"Word List"}
+              text={getTranslation("WordList", translation)}
               onClick={() =>
                 (window.location.href = `/read_word_list?source_name=${row.name}`)
               }

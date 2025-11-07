@@ -4,8 +4,10 @@ import { isObject } from "../utils/isObject";
 import { Button } from "./Button";
 import { Pagination } from "./Pagination";
 import { Fragment } from "react";
+import { getTranslation } from "../utils/getTranslation";
 
 export function Table({
+  translation = {},
   columns = [],
   rows = [],
   openPopup = () => {},
@@ -21,15 +23,17 @@ export function Table({
             {columns.map((col) =>
               isObject(col) ? (
                 <th key={col.id} className="px-4 py-3 border-b">
-                  {col.name}
+                  {col.name != "Id" && getTranslation(col.name, translation)}
+                  {col.name == "Id" && getTranslation(col.name)}
                 </th>
               ) : (
                 <th key={col} className="px-4 py-3 border-b">
-                  {col}
+                  {col != "Id" && getTranslation(col, translation)}
+                  {col == "Id" && getTranslation(col)}
                 </th>
               )
             )}
-            <th className="px-4 py-3 border-b">Actions</th>
+            <th className="px-4 py-3 border-b">{getTranslation("Actions")}</th>
           </tr>
         </thead>
 
@@ -77,14 +81,14 @@ export function Table({
                     <div className="flex h-full items-center space-x-2">
                       <Button
                         className="py-0 h-full"
-                        text="Edit"
+                        text={getTranslation("Edit")}
                         onClick={() =>
                           openPopup({ currentRow: row, action: "EDIT" })
                         }
                       />
                       <Button
                         className="py-0 h-full"
-                        text="Delete"
+                        text={getTranslation("Delete")}
                         onClick={() =>
                           openPopup({ currentRow: row, action: "DELETE" })
                         }

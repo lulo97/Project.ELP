@@ -42,10 +42,10 @@ async function logIn(req, res) {
   const users = await execute({ sql: "SELECT * FROM users" });
   const user = users.rows.find((u) => u.username === username);
 
-  if (!user) return res.status(400).json({ message: "User not exist!" });
+  if (!user) return res.status(400).json({ error: "User not exist!", data: null });
 
   const valid = await bcrypt.compare(password, user.password_hash);
-  if (!valid) return res.status(400).json({ message: "Password incorrect!" });
+  if (!valid) return res.status(400).json({ error: "Password incorrect!", data: null });
 
   const token = jwt.sign({ username }, process.env.JWT_SECRET, {
     expiresIn: "1h",

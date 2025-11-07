@@ -1,4 +1,6 @@
-export async function getUserByToken() {
+import { message } from "../providers/MessageProvider";
+
+export async function getUserByToken(show_error = false) {
   if (!localStorage.getItem("token")) return null;
 
   const result = await fetch("/api/auth/getuserbytoken", {
@@ -12,6 +14,7 @@ export async function getUserByToken() {
   const result_json = await result.json();
 
   if (result_json.error) {
+    if (show_error) message({ type: "error", text: result_json.error })
     return null;
   }
 

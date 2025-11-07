@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { getTranslation } from "../utils/getTranslation";
 
 function getPageNumbers(totalPages, currentPage) {
   const pages = [];
@@ -68,7 +69,10 @@ export function Pagination({
   const pages = getPageNumbers(paginationData.totalPages, selectedPage);
 
   let start = (selectedPage - 1) * paginationData.pageSize + 1;
-  let end = Math.min(selectedPage * paginationData.pageSize, paginationData.totalCount);
+  let end = Math.min(
+    selectedPage * paginationData.pageSize,
+    paginationData.totalCount
+  );
 
   if (paginationData.totalCount === 0) {
     start = 0;
@@ -91,7 +95,10 @@ export function Pagination({
     <div className="flex justify-between items-center p-4 border-t bg-white flex-wrap gap-3">
       {/* Left info */}
       <span className="text-sm text-gray-600">
-        Showing {start} to {end} of {paginationData.totalCount} entries
+        {getTranslation("PaginationInfo")
+          .replace("{start}", start)
+          .replace("{end}", end)
+          .replace("{totalCount}", paginationData.totalCount)}
       </span>
 
       {/* Right pagination controls */}
@@ -101,7 +108,7 @@ export function Pagination({
           className="px-3 py-1 border rounded-md text-gray-600 hover:bg-gray-100 disabled:opacity-50"
           disabled={selectedPage === 1}
         >
-          Prev
+          {getTranslation("Prev")}
         </button>
 
         {pages.map((num, idx) => {
@@ -134,17 +141,20 @@ export function Pagination({
           className="px-3 py-1 border rounded-md text-gray-600 hover:bg-gray-100 disabled:opacity-50"
           disabled={selectedPage === paginationData.totalPages}
         >
-          Next
+          {getTranslation("Next")}
         </button>
 
         {/* Input for direct page jump */}
-        <form onSubmit={handleInputSubmit} className="ml-2 flex items-center space-x-1">
+        <form
+          onSubmit={handleInputSubmit}
+          className="ml-2 flex items-center space-x-1"
+        >
           <input
             type="number"
             min={1}
             max={paginationData.totalPages}
-            placeholder="Page #"
-            className="w-16 px-2 py-1 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder={getTranslation("Page")}
+            className="text-center px-2 py-1 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
           />
@@ -152,7 +162,7 @@ export function Pagination({
             type="submit"
             className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600"
           >
-            Go
+            {getTranslation("Go")}
           </button>
         </form>
       </div>

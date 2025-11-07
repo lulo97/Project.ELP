@@ -1,7 +1,10 @@
+import { global_translation } from "../languages/global_translation";
+
 export function getTranslation(key = "", translation = {}) {
-  if (!translation || Object.keys(translation).length === 0) {
-    throw new Error("Translation is empty!");
-  }
+  let _translation = translation;
+
+  if (!_translation || Object.keys(_translation).length == 0)
+    _translation = global_translation;
 
   if (!key) {
     throw new Error("Key is empty!");
@@ -9,16 +12,16 @@ export function getTranslation(key = "", translation = {}) {
 
   const language = localStorage.getItem("language") || "vi";
 
-  if (!translation.hasOwnProperty(key)) {
+  if (!_translation.hasOwnProperty(key)) {
     console.error(`Key "${key}" does not exist in translation!`);
     return key;
   }
 
-  const translated = translation[key][language];
+  const translated = _translation[key][language];
 
   if (!translated) {
     console.warn(`Missing translation for "${key}" in language "${language}"`);
-    return translation[key].en || key;
+    return _translation[key].en || key;
   }
 
   return translated;

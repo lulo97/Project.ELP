@@ -22,6 +22,7 @@ import { ViewPost } from "./pages/post/ViewPost";
 import { QuestionGenerator } from "./pages/question_generator/QuestionGenerator";
 import { SignUp } from "./pages/signup/SignUp";
 import { LogIn } from "./pages/login/Login";
+import { ViewSources } from "./pages/source/ViewSources";
 
 export const routes = [
   {
@@ -53,7 +54,9 @@ export const routes = [
 
   {
     name: "Reading",
-    children: [],
+    children: [
+      { name: "ViewSources", path: "view_sources", element: <ViewSources /> },
+    ],
   },
   {
     name: "Listening",

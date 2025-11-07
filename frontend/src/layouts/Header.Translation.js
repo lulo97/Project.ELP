@@ -1,7 +1,7 @@
 export const translation = {
   Library: { vi: "Thư viện", en: "Library" },
   Word: { vi: "Từ vựng", en: "Word" },
-  Source: { vi: "Nguồn", en: "Source" },
+  Source: { vi: "Nguồn tài liệu", en: "Source" },
   Meaning: { vi: "Nghĩa", en: "Meaning" },
   Example: { vi: "Ví dụ", en: "Example" },
   Phrase: { vi: "Cụm từ", en: "Phrase" },
@@ -14,6 +14,8 @@ export const translation = {
   QuestionGenerator: { vi: "Tạo câu hỏi", en: "Question Generator" },
 
   Reading: { vi: "Đọc hiểu", en: "Reading" },
+  ViewSources: { vi: "Đọc tài liệu", en: "View sources" },
+
   Listening: { vi: "Nghe hiểu", en: "Listening" },
 
   Writing: { vi: "Viết", en: "Writing" },
