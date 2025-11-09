@@ -48,7 +48,10 @@ function handleDoubleClick({ unit, setState }) {
   setState((state) => {
     return {
       ...state,
-      current_word: standardize_word,
+      word_row: {
+        ...state.word_row,
+        word: standardize_word,
+      },
       open_popup: true,
       action: "ADD",
     };

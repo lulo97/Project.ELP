@@ -15,11 +15,9 @@ export async function getSourceTranslates({ source_id }) {
 export async function addSourceTranslates({ body }) {
   const result = await fetch("/api/source_translates", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
     body: JSON.stringify(body),
     headers: {
+      "Content-Type": "application/json",
       authorization: "Bearer " + localStorage.getItem("token"),
     },
   });

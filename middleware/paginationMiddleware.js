@@ -10,6 +10,8 @@ function paginationMiddleware(req, res, next) {
 
   let { pageIndex = 1, pageSize } = req.query;
 
+  if (pageIndex.toString() == 'null') pageIndex = 1;
+
   let _data = [...data];
 
   if (!pageIndex) {

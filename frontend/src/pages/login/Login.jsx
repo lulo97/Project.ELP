@@ -11,8 +11,6 @@ export function LogIn() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  console.log("Login")
-
   async function handleLogin() {
     if (!username || !password) {
       message({
@@ -50,7 +48,15 @@ export function LogIn() {
       setUsername("");
       setPassword("");
 
-      window.location.href = "/";
+      const previousLocations = JSON.parse(
+        localStorage.getItem("locations") || "[]"
+      );
+
+      if (previousLocations.length >= 2) {
+        window.location.href = previousLocations[previousLocations.length - 2].path;
+      } else {
+        window.location.href = "/";
+      }
     } catch (err) {
       message({ text: err.message, type: "error" });
     } finally {

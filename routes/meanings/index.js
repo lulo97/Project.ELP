@@ -38,6 +38,8 @@ async function getMeanings(req, res, next) {
       res.locals.data = result.p_rows || [];
     }
 
+    console.log(result.p_rows)
+
     next();
   } catch (err) {
     console.error("❌ getMeanings error:", err);

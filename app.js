@@ -1,6 +1,8 @@
 const express = require('express');
 const path = require('path');
 const { initData } = require('./redis/initData');
+const bodyParser = require('body-parser');
+
 require('dotenv').config();
 
 const app = express();

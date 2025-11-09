@@ -6,6 +6,8 @@ import { ClickableWordParagraph } from "../read_new/ClickableWordParagraph";
 import { PageTitle } from "../../components/PageTitle";
 import { Button } from "../../components/Button";
 import { addSourceTranslates } from "../../services/source_translates";
+import { TranslateDetail } from "./TranslateDetail";
+import { Popup } from "./Popup";
 
 export const EMPTY_STATE = {
   words: [],
@@ -19,9 +21,13 @@ export const EMPTY_STATE = {
     name: null,
     user_id: null,
   },
-  current_word: null,
+  word_row: {
+    id: null,
+    word: null,
+    user_id: null,
+  },
   open_popup: false,
-  chunks_original: [],
+  original_chunks: [],
   chunks: [],
 };
 
@@ -47,45 +53,81 @@ export function Read() {
     fetchData();
   }, []);
 
-  if (!state.source_row.id) return <div>Loading...</div>;
-
   function isChunksEdit() {
-    const string_original_chunks = JSON.stringify(state.chunks_original.toSorted());
+    const string_original_chunks = JSON.stringify(
+      state.original_chunks.toSorted()
+    );
     const string_chunks = JSON.stringify(state.chunks.toSorted());
     return string_original_chunks == string_chunks;
   }
 
-  const saveTranslateButtonDisable = isChunksEdit();
+  async function handleSaveChunks() {
+    const body = {
+      source_id: state.source_row.id,
+      chunks: state.chunks
+        .filter((ele) => ele.translate)
+        .map((ele) => ({
+          chunk: ele.chunk,
+          translate: ele.translate,
+        })),
+    };
+
+    await addSourceTranslates({ body: body });
+    await fetchData();
+  }
+
+  function handleSaveTranslateChunk({ idx, translate }) {
+    const new_chunks = [...state.chunks];
+
+    new_chunks[idx] = {
+      ...new_chunks[idx],
+      translate: translate,
+    };
+
+    setState((old_state) => {
+      return {
+        ...old_state,
+        chunks: new_chunks,
+      };
+    });
+  }
+
+  if (!state.source_row.id) return <div>Loading...</div>;
 
   return (
     <div className="p-4 min-h-[90vh]">
       <div className="flex justify-between mb-4">
         <PageTitle title={`Title: ${state.source_row.name}`} />
-        {!saveTranslateButtonDisable && (
+        {!isChunksEdit() && (
           <div className="fixed top-[60px] right-0 p-4 z-10">
             <Button
               className="opacity-75"
               text={"Save translate"}
-              onClick={async () => {
-                const body = {
-                  source_id: currentSource.id,
-                  chunks: state.chunks
-                    .filter((ele) => ele.translate)
-                    .map((ele) => ({
-                      chunk: ele.chunk,
-                      translate: ele.translate,
-                    })),
-                };
-
-                await addSourceTranslates({ body: body });
-                await fetchData();
-              }}
+              onClick={handleSaveChunks}
             />
           </div>
         )}
       </div>
 
-      <ClickableWordParagraph state={state} setState={setState} />
+      {state.chunks.map((ele, idx) => {
+        return (
+          <div key={ele.chunk + "-" + idx}>
+            <ClickableWordParagraph
+              chunk={ele.chunk}
+              state={state}
+              setState={setState}
+            />
+            <TranslateDetail
+              translate={ele.translate}
+              idx={idx}
+              handleSaveTranslateChunk={handleSaveTranslateChunk}
+            />
+            <br />
+          </div>
+        );
+      })}
+
+      {state.open_popup && <Popup state={state} setState={setState} />}
     </div>
   );
 }

@@ -109,6 +109,9 @@ export const message = (
     position: "bottom-right",
   }
 ) => {
+  if (options.type == 'error') {
+    console.error(options.text);
+  }
   if (globalFire) globalFire(options);
   else console.warn("⚠️ MessageProvider not mounted yet!");
 };

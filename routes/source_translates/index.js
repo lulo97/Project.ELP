@@ -44,21 +44,22 @@ async function getSourceTranslates(req, res, next) {
 // -------------------- CREATE / REPLACE SOURCE TRANSLATES --------------------
 async function saveSourceTranslates(req, res) {
   try {
+    console.log(req.body);
     const { source_id, chunks } = req.body; // chunks = array of { id, chunk, translate }
     const username = await getUsernameFromToken(req.headers["authorization"]);
 
-    if (!Array.isArray(chunks) || chunks.length === 0) {
-      return res.status(400).json({ error: "chunks must be a non-empty array", data: null });
+    if (!Array.isArray(chunks)) {
+      return res.status(400).json({ error: "chunks must be an array", data: null });
     }
 
-    chunks = chunks.map(ele => {
+    const _chunks = [ ...chunks ].map(ele => {
         ele.id = getRandomId();
         return ele;
     })
 
     const result = await executeProcedure("prc_crud_source_translates", [
       { name: "p_id", type: "text", value: null },
-      { name: "p_chunks", type: "text", value: JSON.stringify(chunks) },
+      { name: "p_chunks", type: "text", value: JSON.stringify(_chunks) },
       { name: "p_source_id", type: "text", value: source_id },
       { name: "p_username", type: "text", value: username },
       { name: "p_action", type: "text", value: "CREATE" },
