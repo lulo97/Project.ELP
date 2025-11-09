@@ -17,7 +17,7 @@ const translation = {
 
 const PAGE_SIZE = 5;
 
-const DocumentCard = forwardRef(({ name, source, create_at }, ref) => {
+const DocumentCard = forwardRef(({ id, name, source, create_at }, ref) => {
   const buttonStyle = "py-1 w-full whitespace-nowrap";
   return (
     <div
@@ -35,20 +35,20 @@ const DocumentCard = forwardRef(({ name, source, create_at }, ref) => {
         <Button
           className={buttonStyle}
           text={getTranslation("Read")}
-          onClick={() => (window.location.href = `/read?source_name=${name}`)}
+          onClick={() => (window.location.href = `/read?source_id=${id}`)}
         />
         <Button
           className={buttonStyle}
           text={getTranslation("ReadSentence", translation)}
           onClick={() =>
-            (window.location.href = `/read_sentence?source_name=${name}`)
+            (window.location.href = `/read_sentence?source_id=${id}`)
           }
         />
         <Button
           className={buttonStyle}
           text={getTranslation("WordList", translation)}
           onClick={() =>
-            (window.location.href = `/read_word_list?source_name=${name}`)
+            (window.location.href = `/read_word_list?source_id=${id}`)
           }
         />
       </div>
@@ -63,7 +63,7 @@ export function ViewSources() {
   ]);
   const [paginationData, setPaginationData] = useState({});
   const firstCardRef = useRef(null);
-  
+
   async function fetchData(
     { pageIndex, pageSize } = {
       pageIndex: paginationData.pageIndex || null,
@@ -107,6 +107,7 @@ export function ViewSources() {
           return (
             <DocumentCard
               ref={index === 0 ? firstCardRef : null}
+              id={ele.id}
               name={ele.name}
               source={ele.source}
               create_at={getTimeFromId(ele.id)}

@@ -1,63 +1,88 @@
 const express = require("express");
-const { executeSelect, execute } = require("../../database/execute.js");
-const { executeTransaction } = require("../../database/execute.js")
+const { executeProcedure } = require("../../database/executeProcedure.js");
 const { getRandomId } = require("../../utils/getRandomId.js");
 const { paginationMiddleware } = require("../../middleware/paginationMiddleware.js");
+const { verifyToken } = require("../../middleware/verifyToken.js");
+const { getUsernameFromToken } = require("../../utils/getUsernameFromToken.js");
 
 const router = express.Router();
 
-// GET: Read with filters + pagination
+// -------------------- GET SOURCE TRANSLATES --------------------
 async function getSourceTranslates(req, res, next) {
-    try {
-        const { source_id } = req.query;
+  try {
+    const { source_id } = req.query;
+    const username = await getUsernameFromToken(req.headers["authorization"]);
 
-        let sql = "SELECT * FROM source_translates WHERE source_id = ?";
+    const result = await executeProcedure("prc_crud_source_translates", [
+      { name: "p_id", type: "text", value: null },
+      { name: "p_chunks", type: "text", value: null },
+      { name: "p_source_id", type: "text", value: source_id || null },
+      { name: "p_username", type: "text", value: username },
+      { name: "p_action", type: "text", value: "READ" },
+      { name: "p_rows", type: "CURSOR", value: "cursor_" + getRandomId() },
+      { name: "p_error", type: "text", value: null },
+      { name: "p_json_params", type: "text", value: null },
+    ]);
 
-        const result = await executeSelect({ sql, params: [source_id] });
-        res.locals.data = result;
-        res.locals.error = null;
-        next();
-    } catch (error) {
-        console.log("Error:", error)
-        next(error);
+    if (result.p_error) {
+      res.locals.error = result.p_error;
+      res.locals.data = [];
+    } else {
+      res.locals.error = null;
+      res.locals.data = result.p_rows || [];
     }
+
+    next();
+  } catch (err) {
+    console.error("❌ getSourceTranslates error:", err);
+    res.locals.data = [];
+    res.locals.error = err.message;
+    next();
+  }
 }
 
-// POST: Create
-async function addSourceTranslates(req, res) {
-    try {
-        const { source_id, translatedChunks } = req.body;
+// -------------------- CREATE / REPLACE SOURCE TRANSLATES --------------------
+async function saveSourceTranslates(req, res) {
+  try {
+    const { source_id, chunks } = req.body; // chunks = array of { id, chunk, translate }
+    const username = await getUsernameFromToken(req.headers["authorization"]);
 
-        if (!source_id) return res.status(400).json({ data: null, error: "source_id required" });
-        if (!Array.isArray(translatedChunks)) return res.status(400).json({ data: null, error: "translatedChunks must be an array" });
-
-        const statements = [];
-
-        statements.push({ sql: "DELETE FROM source_translates WHERE source_id = ?", params: [source_id] });
-
-        if (translatedChunks.length > 0) {
-            const placeholders = translatedChunks.map(() => "(?, ?, ?, ?)").join(", ");
-            
-            const insertSql = `INSERT INTO source_translates (id, chunk, translate, source_id) VALUES ${placeholders}`;
-
-            const params = [];
-            for (const c of translatedChunks) {
-                params.push(getRandomId(), c.chunk ?? "", c.translate ?? "", source_id);
-            }
-
-            statements.push({ sql: insertSql, params });
-        }
-
-        await executeTransaction({ statements });
-
-        return res.status(201).json({ data: null, error: null });
-    } catch (err) {
-        return res.status(500).json({ data: null, error: err.message || "Internal server error" });
+    if (!Array.isArray(chunks) || chunks.length === 0) {
+      return res.status(400).json({ error: "chunks must be a non-empty array", data: null });
     }
+
+    chunks = chunks.map(ele => {
+        ele.id = getRandomId();
+        return ele;
+    })
+
+    const result = await executeProcedure("prc_crud_source_translates", [
+      { name: "p_id", type: "text", value: null },
+      { name: "p_chunks", type: "text", value: JSON.stringify(chunks) },
+      { name: "p_source_id", type: "text", value: source_id },
+      { name: "p_username", type: "text", value: username },
+      { name: "p_action", type: "text", value: "CREATE" },
+      { name: "p_rows", type: "CURSOR", value: null },
+      { name: "p_error", type: "text", value: null },
+      { name: "p_json_params", type: "text", value: null },
+    ]);
+
+    if (result.p_error) {
+      return res.status(400).json({ error: result.p_error, data: null });
+    }
+
+    res.json({
+      error: null,
+      data: { source_id, chunks },
+    });
+  } catch (err) {
+    console.error("❌ saveSourceTranslates error:", err);
+    res.status(500).json({ error: err.message, data: null });
+  }
 }
 
-// Routes
-router.get("/", getSourceTranslates, paginationMiddleware);
-router.post("/", addSourceTranslates);
+// -------------------- ROUTES --------------------
+router.get("/", verifyToken, getSourceTranslates);
+router.post("/", verifyToken, saveSourceTranslates);
 
 module.exports = router;
