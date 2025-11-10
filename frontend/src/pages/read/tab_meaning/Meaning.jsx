@@ -73,7 +73,7 @@ export function Meaning({
         fetchData={fetchExistingRows}
       />
       <Popup
-        title={"Add"}
+        title={"Add meaning"}
         show={showPopup}
         row={currentRow}
         setCurrentRow={setCurrentRow}

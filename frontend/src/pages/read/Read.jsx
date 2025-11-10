@@ -1,198 +1,133 @@
 import { useLocation } from "react-router-dom";
-import { ClickableWordParagraph } from "./ClickableWordParagraph";
-import { Popup } from "./Popup";
-import { useSourceDataForRead } from "../../hooks/useSourceDataForRead";
-import { usePopupForRead } from "../../hooks/usePopupForRead";
-import { splitParagraph } from "../../utils/splitParagraph";
-import { Textarea } from "../../components/Textarea";
-import { Button } from "../../components/Button";
 import { useEffect, useState, useCallback } from "react";
-import { useMemo } from "react";
-import { getStandardizeWord } from "../../utils/standardizeWord";
-import {
-  addSourceTranslates,
-  getSourceTranslates,
-} from "../../services/source_translates";
+import { getReadData } from "../../services/read";
+import { message } from "../../providers/MessageProvider";
+import { ClickableWordParagraph } from "../read/ClickableWordParagraph";
+import { PageTitle } from "../../components/PageTitle";
+import { Button } from "../../components/Button";
+import { addSourceTranslates } from "../../services/source_translates";
+import { TranslateDetail } from "./TranslateDetail";
+import { Popup } from "./Popup";
 
-let STATE = [];
+export const EMPTY_STATE = {
+  words: [],
+  idioms: [],
+  phrases: [],
+  meanings: [],
+  source_translates: [],
+  source_row: {
+    id: null,
+    source: null,
+    name: null,
+    user_id: null,
+  },
+  word_row: {
+    id: null,
+    word: null,
+    user_id: null,
+  },
+  open_popup: false,
+  original_chunks: [],
+  chunks: [],
+};
 
 export function Read() {
-  const location = useLocation();
-  const source_name = new URLSearchParams(location.search).get("source_name");
+  const source_id = new URLSearchParams(useLocation().search).get("source_id");
 
-  const {
-    currentSource,
-    existWords,
-    existPhrases,
-    existIdioms,
-    meaningsForTooltip,
-    translatedChunks,
-    setTranslatedChunks,
-    existTranslatedChunks,
-    resetAll,
-    refreshDataOnly,
-  } = useSourceDataForRead(source_name);
+  const [state, setState] = useState(EMPTY_STATE);
 
-  const currentSnapshot = {
-    currentSource,
-    existWords,
-    existPhrases,
-    existIdioms,
-    meaningsForTooltip,
-    translatedChunks,
-    existTranslatedChunks,
-    resetAll,
-    refreshDataOnly,
-  };
+  async function fetchData() {
+    const result = await getReadData({ source_id: source_id });
 
-  // Push a *clone* of the snapshot for history
-  STATE.push(JSON.parse(JSON.stringify(currentSnapshot)));
+    if (result.error) message({ type: "error", text: result.error });
 
-  // Compare with the previous render
-  if (STATE.length > 1) {
-    const prev = STATE[STATE.length - 2];
-    const curr = STATE[STATE.length - 1];
-
-    // Shallow comparison summary
-    const diffKeys = Object.keys(curr).filter(
-      (key) => JSON.stringify(curr[key]) !== JSON.stringify(prev[key])
-    );
-
-    if (diffKeys.length > 0) {
-      console.log(
-        `%c[State changed] ${diffKeys.join(", ")}`,
-        "color: red; font-weight: bold;"
-      );
-    } else {
-      console.log("%c[No state change detected]", "color: gray;");
-    }
-  }
-
-  console.log("%cRender snapshot:", "color: orange;", currentSnapshot);
-
-  const { currentWord, showPopup, openPopup, handleClose, setCurrentWord } =
-    usePopupForRead(refreshDataOnly);
-
-  const existWordSet = useMemo(() => {
-    if (!existWords) return new Set();
-    return new Set(existWords.map((w) => getStandardizeWord({ word: w.word })));
-  }, [existWords]);
-
-  const idiomMap = useMemo(() => {
-    if (!existIdioms) return new Map();
-    const m = new Map();
-    existIdioms.forEach((i) => m.set(i.idiom, i.meaning));
-    return m;
-  }, [existIdioms]);
-
-  const phraseMap = useMemo(() => {
-    if (!existPhrases) return new Map();
-    const m = new Map();
-    existPhrases.forEach((p) => m.set(p.phrase, p.meaning));
-    return m;
-  }, [existPhrases]);
-
-  const meaningMap = useMemo(() => {
-    if (!meaningsForTooltip) return new Map();
-    const m = new Map();
-    meaningsForTooltip.forEach((mf) => {
-      m.set(getStandardizeWord({ word: mf.word }), mf.meanings);
+    setState((state) => {
+      return {
+        ...state,
+        ...result.data,
+      };
     });
-    return m;
-  }, [meaningsForTooltip]);
-
-  if (!source_name) return <div>No source selected!</div>;
-  if (!currentSource) return <div>Can't find source = {source_name}</div>;
-
-  function getCompareString(arr = []) {
-    const filtered = arr
-      .map((ele) => ele.translate?.trim() || "")
-      .filter((text) => text.length > 0);
-
-    return JSON.stringify(filtered);
   }
 
-  console.log("-----------------------------------");
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-  if (!translatedChunks) return <div>Loading...</div>
+  function isChunksEdit() {
+    const string_original_chunks = JSON.stringify(
+      state.original_chunks.toSorted()
+    );
+    const string_chunks = JSON.stringify(state.chunks.toSorted());
+    return string_original_chunks == string_chunks;
+  }
 
-  const saveTranslateButtonDisable =
-    !translatedChunks ||
-    !existTranslatedChunks ||
-    getCompareString(translatedChunks) ===
-      getCompareString(existTranslatedChunks);
+  async function handleSaveChunks() {
+    const body = {
+      source_id: state.source_row.id,
+      chunks: state.chunks
+        .filter((ele) => ele.translate)
+        .map((ele) => ({
+          chunk: ele.chunk,
+          translate: ele.translate,
+        })),
+    };
+
+    await addSourceTranslates({ body: body });
+    await fetchData();
+  }
+
+  function handleSaveTranslateChunk({ idx, translate }) {
+    const new_chunks = [...state.chunks];
+
+    new_chunks[idx] = {
+      ...new_chunks[idx],
+      translate: translate,
+    };
+
+    setState((old_state) => {
+      return {
+        ...old_state,
+        chunks: new_chunks,
+      };
+    });
+  }
+
+  if (!state.source_row.id) return <div>Loading...</div>;
 
   return (
-    <div className="p-4">
+    <div className="p-4 min-h-[90vh]">
       <div className="flex justify-between mb-4">
-        <h1 className="text-2xl font-bold">Title: {currentSource.name}</h1>
-        {!saveTranslateButtonDisable && <div
-          className="fixed top-[60px] right-0 p-4 z-10"
-        >
-        <Button
-          className="opacity-75"
-          text={"Save translate"}
-          disabled={saveTranslateButtonDisable}
-          onClick={async () => {
-            const body = {
-              source_id: currentSource.id,
-              translatedChunks: translatedChunks
-                .filter((ele) => ele.translate)
-                .map((ele) => ({
-                  chunk: ele.chunk,
-                  translate: ele.translate,
-                })),
-            };
-
-            await addSourceTranslates({ body: body });
-            resetAll();
-          }}
-        />
-        </div>}
+        <PageTitle title={`Title: ${state.source_row.name}`} />
+        {!isChunksEdit() && (
+          <div className="fixed top-[60px] right-0 p-4 z-10">
+            <Button
+              className="opacity-75"
+              text={"Save translate"}
+              onClick={handleSaveChunks}
+            />
+          </div>
+        )}
       </div>
 
-      {translatedChunks.map((ele, idx) => {
+      {state.chunks.map((ele, idx) => {
         return (
           <div key={ele.chunk + "-" + idx}>
             <ClickableWordParagraph
-              currentSource={ele.split}
-              existWordSet={existWordSet}
-              idiomMap={idiomMap}
-              phraseMap={phraseMap}
-              meaningMap={meaningMap}
-              setCurrentWord={setCurrentWord}
-              openPopup={openPopup}
+              chunk={ele.chunk}
+              state={state}
+              setState={setState}
             />
-            <details>
-              <summary>Translate</summary>
-              <Textarea
-                isFitContent={true}
-                value={ele.translate}
-                onChange={(event) => {
-                  setTranslatedChunks((prev) => {
-                    const next = prev.slice();
-                    next[idx] = {
-                      ...next[idx],
-                      translate: event.target.value,
-                    };
-                    return next;
-                  });
-                }}
-                className="w-full h-fit"
-                placeholder="Enter translate..."
-              />
-            </details>
+            <TranslateDetail
+              translate={ele.translate}
+              idx={idx}
+              handleSaveTranslateChunk={handleSaveTranslateChunk}
+            />
             <br />
           </div>
         );
       })}
 
-      <Popup
-        show={showPopup}
-        title="Add"
-        word={currentWord}
-        handleClose={handleClose}
-      />
+      {state.open_popup && <Popup state={state} setState={setState} />}
     </div>
   );
 }

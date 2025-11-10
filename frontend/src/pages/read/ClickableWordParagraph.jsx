@@ -1,37 +1,37 @@
 import {
-  compareStandardize,
   getStandardizeWord,
 } from "../../utils/standardizeWord";
 import { Tooltip } from "../../components/Tooltip";
-import { NEW_LINE_CHARACTER } from "../../utils/splitParagraph";
+import { NEW_LINE_CHARACTER, splitParagraph } from "../../utils/splitParagraph";
 import { useSelectedText } from "../../hooks/useSelectedText";
 import { getConsts } from "../../utils/const";
+import { EMPTY_STATE } from "../read/Read";
 
-function getWordColor(word, existWordSet) {
+function getWordColor({ unit, words }) {
   const consts = getConsts();
-  if (word.type === "idiom") return consts.IDIOM_COLOR;
-  if (word.type === "phrase") return consts.PHRASE_COLOR;
-  if (word.type === "word") {
-    const standardized = getStandardizeWord({ word: word.value });
-    return existWordSet.has(standardized) ? consts.WORD_COLOR : "black";
+  if (unit.type === "idiom") return consts.IDIOM_COLOR;
+  if (unit.type === "phrase") return consts.PHRASE_COLOR;
+  if (unit.type === "word") {
+    const standardized = getStandardizeWord({ word: unit.value });
+    return words.map(ele => ele.word).includes(standardized) ? consts.WORD_COLOR : "black";
   }
   return "black";
 }
 
-function getTooltipContent(word, idiomMap, phraseMap, meaningMap) {
-  if (word.type === "idiom") {
-    return idiomMap.get(word.value) || "";
+function getTooltipContent({ unit, idioms, phrases, meanings }) {
+  if (unit.type === "idiom") {
+    return idioms.includes(word.value) || "";
   }
-  if (word.type === "phrase") {
-    return phraseMap.get(word.value) || "";
+  if (unit.type === "phrase") {
+    return phrases.includes(word.value) || "";
   }
-  if (word.type === "word") {
-    const standardized = getStandardizeWord({ word: word.value });
-    const meanings = meaningMap.get(standardized);
-    if (meanings) {
+  if (unit.type === "word") {
+    const word_standardized = getStandardizeWord({ word: unit.value });
+    const word_meanings = meanings.filter((ele) => ele.word == word_standardized);
+    if (word_meanings && word_meanings.length > 0) {
       return (
         <ul>
-          {meanings.map((ele) => (
+          {word_meanings.map((ele) => (
             <li
               key={ele.meaning}
             >{`${ele.meaning} (${ele.part_of_speech})`}</li>
@@ -43,37 +43,45 @@ function getTooltipContent(word, idiomMap, phraseMap, meaningMap) {
   return "";
 }
 
-function handleDoubleClick(word, setCurrentWord, openPopup) {
-  const standardize_word = getStandardizeWord({ word: word.value });
-  setCurrentWord(standardize_word);
-  openPopup({ word: standardize_word, action: "ADD" });
+function handleDoubleClick({ unit, setState }) {
+  const standardize_word = getStandardizeWord({ word: unit.value });
+  setState((state) => {
+    return {
+      ...state,
+      word_row: {
+        ...state.word_row,
+        word: standardize_word,
+      },
+      open_popup: true,
+      action: "ADD",
+    };
+  });
 }
 
 export function ClickableWordParagraph({
-  currentSource = [{ value: null, type: null }],
-  existWordSet,
-  idiomMap,
-  phraseMap,
-  meaningMap,
-  setCurrentWord = () => {},
-  openPopup = () => {},
+  state = EMPTY_STATE,
+  setState = () => {},
 }) {
   const selectedText = useSelectedText();
 
+  const units = splitParagraph({
+    source: state.source_row.source,
+    existPhrases: state.phrases,
+    existIdioms: state.idioms,
+  });
+
   return (
     <div style={{ wordWrap: "break-word" }}>
-      {currentSource.map((word, index) => {
-        if (word.value === NEW_LINE_CHARACTER) return <br key={index} />;
+      {units.map((unit, index) => {
+        if (unit.value === NEW_LINE_CHARACTER) return <br key={index} />;
 
-        const color = getWordColor(word, existWordSet);
-        const tooltipContent = getTooltipContent(
-          word,
-          idiomMap,
-          phraseMap,
-          meaningMap
-        );
-
-        //return <div>{word.value}</div>
+        const color = getWordColor({ unit: unit, words: state.words});
+        const tooltipContent = getTooltipContent({
+          unit: unit,
+          idioms: state.idioms,
+          phrases: state.phrases,
+          meanings: state.meanings,
+        });
 
         return (
           <Tooltip
@@ -81,7 +89,7 @@ export function ClickableWordParagraph({
             isDisable={selectedText.length !== 0}
             content={tooltipContent}
           >
-            {getConsts().SPECIAL_CHARACTERS.includes(word.value) ? null : (
+            {getConsts().SPECIAL_CHARACTERS.includes(unit.value) ? null : (
               <>&nbsp;</>
             )}
             <span
@@ -92,10 +100,10 @@ export function ClickableWordParagraph({
                 whiteSpace: "nowrap",
               }}
               onDoubleClick={() =>
-                handleDoubleClick(word, setCurrentWord, openPopup)
+                handleDoubleClick({ unit: unit, setState: setState })
               }
             >
-              {word.value}
+              {unit.value}
             </span>
           </Tooltip>
         );

@@ -76,7 +76,7 @@ export function Example({
         additionButtons={[(row) => <CommonAudio text={row.example} />]}
       />
       <Popup
-        title={"Add"}
+        title={"Add example"}
         show={showPopup}
         row={currentRow}
         setCurrentRow={setCurrentRow}

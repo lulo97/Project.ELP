@@ -5,43 +5,49 @@ import { VerticalTab } from "../../components/VerticalTab.jsx";
 import { TabWord } from "./tab_word/TabWord.jsx";
 import { TabMeaning } from "./tab_meaning/TabMeaning.jsx";
 import { TabExample } from "./tab_example/TabExample.jsx";
+import { EMPTY_STATE } from "./Read.jsx";
+import { message } from "../../providers/MessageProvider.jsx";
 
-export function Popup({ show, title, word, handleClose }) {
-  const [wordData, setWordData] = useState(null);
+export function Popup({ state = EMPTY_STATE, setState = () => {} }) {
   const [currentTabId, setCurrentTabId] = useState("word");
-  const [meaningData, setMeaningData] = useState({
-    word: word,
-    meaning: "",
-    part_of_speech: "",
-  });
 
-  async function fetchWordData() {
-    if ([null, undefined, ""].includes(word)) return;
+  async function fetchData() {
     const result = await getWord({
-      word: word,
+      word: state.word_row.word,
       where_options: [{ field: "word", comparison_operation: "=" }],
     });
-    setWordData(result);
+
+    if (result.error) {
+      message({ type: "error", text: result.error });
+      return;
+    }
+
+    setState((old_state) => {
+      return {
+        ...old_state,
+        current_word: result.data,
+      };
+    });
   }
 
   useEffect(() => {
-    fetchWordData();
-
-    if (!meaningData.word) {
-      setMeaningData({ ...meaningData, word: word });
-    }
-  }, [word]);
-
-  if (!word) return null;
+    fetchData();
+  }, []);
 
   return (
     <CommonPopup
-      show={show}
-      title={title}
+      show={state.open_popup}
+      title={"Add word details"}
       overWrittenBoxStyle={{ display: "flex", flexDirection: "column" }}
       handleClose={() => {
         setCurrentTabId("word");
-        handleClose();
+
+        setState((old_state) => {
+          return {
+            ...old_state,
+            open_popup: false,
+          };
+        });
       }}
       isShowConfirmButton={false}
       height="90%"
@@ -71,16 +77,16 @@ export function Popup({ show, title, word, handleClose }) {
           />
 
           {currentTabId == "word" && (
-            <TabWord
-              word={word}
-              wordData={wordData}
-              fetchWordData={fetchWordData}
-            />
+            <TabWord state={state} fetchData={fetchData} />
           )}
 
-          {currentTabId == "meaning" && <TabMeaning word={word} />}
+          {currentTabId == "meaning" && (
+            <TabMeaning word={state.word_row.word} />
+          )}
 
-          {currentTabId == "example" && <TabExample word={word} />}
+          {currentTabId == "example" && (
+            <TabExample word={state.word_row.word} />
+          )}
         </div>
       </div>
     </CommonPopup>

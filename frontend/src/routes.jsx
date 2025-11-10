@@ -6,7 +6,7 @@ import { Grammar } from "./pages/grammar/Grammar";
 import { Idiom } from "./pages/idiom/Idiom";
 import { Meaning } from "./pages/meaning/Meaning";
 import { Phrase } from "./pages/phrase/Phrase";
-import { Read } from "./pages/read_new/Read";
+import { Read } from "./pages/read/Read";
 import { Source } from "./pages/source/Source";
 import { Word } from "./pages/word/Word";
 import { Writing } from "./pages/writing/Writing";
