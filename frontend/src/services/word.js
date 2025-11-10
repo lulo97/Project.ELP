@@ -13,11 +13,7 @@ export async function getWord({ word, where_options }) {
       },
     }
   );
-  const result_json = await result.json();
-  if (result_json.data.length > 0) {
-    return result_json.data[0];
-  }
-  return null;
+  return await result.json();;
 }
 
 export async function getAllWords({ pageIndex, pageSize, word }) {

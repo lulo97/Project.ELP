@@ -34,7 +34,7 @@ export function TabWord({
     <div style={{ flexGrow: "1" }}>
       <div className="flex gap-4">
         <Button
-          disabled={!state.word_row.id}
+          disabled={!!state.word_row.id}
           text={"Add word"}
           onClick={handleAdd}
           className="mb-4"

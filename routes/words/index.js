@@ -12,8 +12,9 @@ const router = express.Router();
 // -------------------- GET WORDS --------------------
 async function getWords(req, res, next) {
   try {
-    const { word } = req.query;
+    const { word, where_options } = req.query;
     const username = await getUsernameFromToken(req.headers["authorization"]);
+    const p_json_params = where_options ? JSON.stringify(where_options) : "";
 
     const result = await executeProcedure("prc_crud_words", [
       { name: "p_id", type: "text", value: null },
@@ -22,7 +23,7 @@ async function getWords(req, res, next) {
       { name: "p_action", type: "text", value: "READ" },
       { name: "p_rows", type: "CURSOR", value: "cursor_" + getRandomId() },
       { name: "p_error", type: "text", value: null },
-      { name: "p_json_params", type: "text", value: null },
+      { name: "p_json_params", type: "text", value: p_json_params },
     ]);
 
     if (result.p_error) {

@@ -44,12 +44,13 @@ function getTooltipContent({ unit, idioms, phrases, meanings }) {
 }
 
 function handleDoubleClick({ unit, setState }) {
+  console.log("handleDoubleClick:", unit)
   const standardize_word = getStandardizeWord({ word: unit.value });
   setState((state) => {
     return {
       ...state,
       word_row: {
-        ...state.word_row,
+        ...EMPTY_STATE.word_row,
         word: standardize_word,
       },
       open_popup: true,

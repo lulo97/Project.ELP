@@ -22,17 +22,29 @@ export function Popup({ state = EMPTY_STATE, setState = () => {} }) {
       return;
     }
 
-    setState((old_state) => {
-      return {
-        ...old_state,
-        current_word: result.data,
-      };
-    });
+    const existing_word = result.data.length == 0 ? null : result.data[0];
+
+    if (existing_word) {
+      setState((old_state) => {
+        return {
+          ...old_state,
+          word_row: existing_word,
+        };
+      });
+    }
   }
 
   useEffect(() => {
     fetchData();
   }, []);
+
+  const tabNames = [
+    { id: "word", name: "Word", disable: false },
+    { id: "meaning", name: "Meaning", disable: !state.word_row.id },
+    { id: "example", name: "Example", disable: !state.word_row.id },
+  ];
+
+  console.log(state.word_row, tabNames);
 
   return (
     <CommonPopup
@@ -67,11 +79,7 @@ export function Popup({ state = EMPTY_STATE, setState = () => {} }) {
           }}
         >
           <VerticalTab
-            tabNames={[
-              { id: "word", name: "Word" },
-              { id: "meaning", name: "Meaning" },
-              { id: "example", name: "Example" },
-            ]}
+            tabNames={tabNames}
             currentTabId={currentTabId}
             setCurrentTabId={setCurrentTabId}
           />
