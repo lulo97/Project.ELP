@@ -13,6 +13,7 @@ import {
 } from "../../services/speaking_score";
 import { message } from "../../providers/MessageProvider";
 import { Tooltip } from "../../components/Tooltip";
+import { getTranslation } from "../../utils/getTranslation";
 
 export function SpeakingExercise() {
   const location = useLocation();
@@ -268,7 +269,7 @@ export function SpeakingExercise() {
     }
 
     message({
-      text: "Success!",
+      text: getTranslation("Success"),
     });
 
     refresh();

@@ -4,29 +4,26 @@ import { PopupField } from "../../../components/PopupField";
 import { useEffect, useState } from "react";
 import { message } from "../../../providers/MessageProvider";
 import { EMPTY_STATE } from "../Read";
+import { addWord } from "../../../services/word";
+import { getTranslation } from "../../../utils/getTranslation";
+import { translation } from "../Read.Translate";
 
 export function TabWord({
   state = EMPTY_STATE,
-  fetchData = () => {},
+  fetchWord = () => {},
 }) {
   async function handleAdd() {
-    const result = await fetch("/api/words", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ word: state.word_row.word }),
-    });
-
+    const row = { word: state.word_row.word };
+    const result = await addWord({ row: row })
     if (result.error) {
       message({ type: "error", text: result.error });
       return;
     }
 
-    fetchData();
+    fetchWord();
 
     message({
-      text: "Success!",
+      text: getTranslation("Success"),
     });
   }
 
@@ -35,7 +32,7 @@ export function TabWord({
       <div className="flex gap-4">
         <Button
           disabled={!!state.word_row.id}
-          text={"Add word"}
+          text={getTranslation("AddWord", translation)}
           onClick={handleAdd}
           className="mb-4"
         />
@@ -44,7 +41,7 @@ export function TabWord({
       </div>
 
       <PopupField
-        label="Word"
+        label={getTranslation("Word", translation)}
         fieldComponent={<input disabled value={state.word_row.word} />}
       />
     </div>

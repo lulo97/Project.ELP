@@ -8,6 +8,7 @@ import {
 } from "../../../services/meaning";
 import { Button } from "../../../components/Button";
 import { message } from "../../../providers/MessageProvider";
+import { getTranslation } from "../../../utils/getTranslation";
 
 export function Meaning({
   word,
@@ -44,7 +45,7 @@ export function Meaning({
     fetchExistingRows();
     setShowPopup(false);
     message({
-      text: "Success!",
+      text: getTranslation("Success"),
     });
   }
 
@@ -56,7 +57,7 @@ export function Meaning({
   return (
     <div>
       <Button
-        text={"Add"}
+        text={"Add meaning"}
         onClick={() => openPopup({ currentRow: EMPTY_ROW, action: "ADD" })}
         className="mb-4"
       />

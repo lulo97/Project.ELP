@@ -6,7 +6,6 @@ export function VerticalTab({
   currentTabId = "tab1",
   setCurrentTabId = () => {},
 }) {
-  console.log("VerticalTab", { tabNames })
   return (
     <div className="flex flex-col border-r border-gray-200 bg-white p-2 w-40">
       {tabNames.map((ele) => {

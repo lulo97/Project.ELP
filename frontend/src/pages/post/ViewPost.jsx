@@ -4,6 +4,7 @@ import { addPost, getAllPosts, updatePost } from "../../services/posts";
 import { RichTextEditorField } from "../../components/RichTextEditorField";
 import { Button } from "../../components/Button";
 import { message } from "../../providers/MessageProvider";
+import { getTranslation } from "../../utils/getTranslation";
 
 export function ViewPost() {
   //id, title, content
@@ -46,7 +47,7 @@ export function ViewPost() {
                 return;
               }
 
-              message({ text: "Success" });
+              message({ text: getTranslation("Success") });
 
               await fetchData();
             }}

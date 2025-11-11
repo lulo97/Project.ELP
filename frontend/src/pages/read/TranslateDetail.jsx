@@ -1,9 +1,11 @@
 import { Textarea } from "../../components/Textarea";
+import { getTranslation } from "../../utils/getTranslation";
+import { translation } from "./Read.Translate";
 
 export function TranslateDetail({ translate, idx, handleSaveTranslateChunk }) {
   return (
     <details className="pl-1" open={!!translate}>
-      <summary className="text-gray-500">Translate</summary>
+      <summary className="text-gray-500">{getTranslation("Translate", translation)}</summary>
       <Textarea
         isFitContent={true}
         value={translate}

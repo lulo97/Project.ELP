@@ -44,7 +44,6 @@ function getTooltipContent({ unit, idioms, phrases, meanings }) {
 }
 
 function handleDoubleClick({ unit, setState }) {
-  console.log("handleDoubleClick:", unit)
   const standardize_word = getStandardizeWord({ word: unit.value });
   setState((state) => {
     return {
@@ -77,6 +76,7 @@ export function ClickableWordParagraph({
         if (unit.value === NEW_LINE_CHARACTER) return <br key={index} />;
 
         const color = getWordColor({ unit: unit, words: state.words});
+        
         const tooltipContent = getTooltipContent({
           unit: unit,
           idioms: state.idioms,

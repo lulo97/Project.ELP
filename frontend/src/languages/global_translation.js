@@ -25,11 +25,11 @@ export const global_translation = {
   },
   Next: {
     vi: "Tiếp",
-    en: "Next"
+    en: "Next",
   },
   Prev: {
     vi: "Trước",
-    en: "Prev"
+    en: "Prev",
   },
   Go: {
     vi: "Đi",
@@ -37,7 +37,7 @@ export const global_translation = {
   },
   PaginationInfo: {
     vi: `Hiển thị {start} tới {end} của {totalCount} bản ghi`,
-    en: `Showing {start} to {end} of {totalCount} entries`
+    en: `Showing {start} to {end} of {totalCount} entries`,
   },
   Page: {
     vi: "Trang",
@@ -50,5 +50,17 @@ export const global_translation = {
   Search: {
     vi: "Tìm kiếm",
     en: "Search",
+  },
+  Success: {
+    vi: "Thành công",
+    en: "Success",
+  },
+  Error: {
+    vi: "Có lỗi",
+    en: "Error",
+  },
+  Fail: {
+    vi: "Thất bại",
+    en: "Fail",
   },
 };

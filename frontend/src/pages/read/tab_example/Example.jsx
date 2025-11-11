@@ -9,6 +9,7 @@ import {
 import { Button } from "../../../components/Button";
 import { CommonAudio } from "../../../components/CommonAudio";
 import { message } from "../../../providers/MessageProvider";
+import { getTranslation } from "../../../utils/getTranslation";
 
 export function Example({
   word,
@@ -45,7 +46,7 @@ export function Example({
     fetchExistingRows();
     setShowPopup(false);
     message({
-      text: "Success!",
+      text: getTranslation("Success"),
     });
   }
 
@@ -57,7 +58,7 @@ export function Example({
   return (
     <div>
       <Button
-        text={"Add"}
+        text={"Add example"}
         onClick={() => openPopup({ currentRow: EMPTY_ROW, action: "ADD" })}
         className="mb-4"
       />

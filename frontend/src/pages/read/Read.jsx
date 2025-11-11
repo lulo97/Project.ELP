@@ -8,6 +8,8 @@ import { Button } from "../../components/Button";
 import { addSourceTranslates } from "../../services/source_translates";
 import { TranslateDetail } from "./TranslateDetail";
 import { Popup } from "./Popup";
+import { getTranslation } from "../../utils/getTranslation";
+import { translation } from "./Read.Translate";
 
 export const EMPTY_STATE = {
   words: [],
@@ -94,10 +96,15 @@ export function Read() {
 
   if (!state.source_row.id) return <div>Loading...</div>;
 
+  const title = getTranslation("Title", translation).replace(
+    "{name}",
+    state.source_row.name
+  );
+
   return (
     <div className="p-4 min-h-[90vh]">
       <div className="flex justify-between mb-4">
-        <PageTitle title={`Title: ${state.source_row.name}`} />
+        <PageTitle title={title} />
         {!isChunksEdit() && (
           <div className="fixed top-[60px] right-0 p-4 z-10">
             <Button
@@ -111,7 +118,7 @@ export function Read() {
 
       {state.chunks.map((ele, idx) => {
         return (
-          <div key={ele.chunk + "-" + idx}>
+          <div key={idx}>
             <ClickableWordParagraph
               chunk={ele.chunk}
               state={state}
@@ -127,7 +134,9 @@ export function Read() {
         );
       })}
 
-      {state.open_popup && <Popup state={state} setState={setState} />}
+      {state.open_popup && (
+        <Popup state={state} setState={setState} fetchData={fetchData} />
+      )}
     </div>
   );
 }

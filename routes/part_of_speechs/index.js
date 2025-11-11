@@ -15,7 +15,7 @@ async function getPartOfSpeechs(req, res, next) {
             SELECT DISTINCT pos.*
             FROM PART_OF_SPEECHS pos
             JOIN MEANINGS m on m.part_of_speech = pos.id
-            WHERE m.word = ?
+            WHERE m.word = $1
         `
 
         params.push(word);
