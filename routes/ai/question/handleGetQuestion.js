@@ -67,7 +67,7 @@ async function handleGetQuestion(_context, event_id) {
         data: "",
       });
 
-      return "Can't generate question!";
+      return { question: null, answer: null, error: "Can't generate question!"};
     }
   }
 
@@ -85,7 +85,7 @@ async function handleGetQuestion(_context, event_id) {
     question = question.replaceAll(ele, "");
   });
 
-  return { question, answer };
+  return { question, answer, error: null };
 }
 
 module.exports = {

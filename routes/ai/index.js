@@ -15,6 +15,7 @@ async function callAI(req, res, next) {
   }
 
   let result = null;
+  let error = null;
 
   if (feature == "SYNONYMS") {
     //[a, b, c]
@@ -23,6 +24,10 @@ async function callAI(req, res, next) {
 
   if (feature == "GENERATE_QUESTION") {
     result = await handleGetQuestion(input.context, event_id);
+  }
+
+  if (feature == "GENERATE_MCQ") {
+    result = await handleGetMCQ(input.context);
   }
 
   if (feature == "GENERATE_REVIEW") {
@@ -41,7 +46,12 @@ async function callAI(req, res, next) {
     throw Error("Feature not exist!");
   }
 
-  res.json({ data: result, error: null });
+  if (result.error) {
+    result = null;
+    error = result.error;
+  }
+
+  res.json({ data: result, error: error });
 }
 
 router.post("/", callAI);

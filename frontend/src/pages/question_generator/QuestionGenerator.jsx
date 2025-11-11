@@ -6,6 +6,10 @@ import { callAI } from "../../services/ai";
 import { useEffect, useState } from "react";
 import { getRandomId } from "../../utils/getRandomId";
 import { useEventSource } from "../../hooks/useEventSource";
+import { getTranslation as _getTranslation } from "../../utils/getTranslation";
+import { translation } from "./QuestionGenerator.Translation";
+
+const getTranslation = (key) => _getTranslation(key, translation);
 
 export function QuestionGenerator() {
   const [context, setContext] = useState("");
@@ -30,7 +34,43 @@ export function QuestionGenerator() {
     }
   }
 
-  // Simple inline spinner (no external library)
+  async function handleGenerate() {
+    try {
+      const event_id = getRandomId();
+      setQuestionEventId(event_id);
+
+      setLoadingGenerate(true);
+      setAnswer("");
+      setQuestion("");
+      setReview(null);
+
+      const result = await callAI({
+        input: { context },
+        feature: "GENERATE_QUESTION",
+        event_id: event_id,
+      });
+
+      setQuestion(result.data.question);
+      setModelAnswer(result.data.answer);
+    } finally {
+      setLoadingGenerate(false);
+    }
+  }
+
+  async function handleSubmit() {
+    try {
+      setReview("");
+      setLoadingSubmit(true);
+      const review_result = await callAI({
+        input: { context, question, answer },
+        feature: "GENERATE_REVIEW",
+      });
+      setReview(review_result.data);
+    } finally {
+      setLoadingSubmit(false);
+    }
+  }
+
   const spinner = (
     <span
       className="inline-block w-4 h-4 border-2 border-t-transparent border-gray-600 rounded-full animate-spin align-middle"
@@ -38,15 +78,17 @@ export function QuestionGenerator() {
     ></span>
   );
 
-  if (!isConnected) return <div>Not connected to server!</div>
+  if (!isConnected)
+    return <div>{getTranslation("NotConnected")}</div>;
 
-  if (error) return <div>{JSON.stringify(error)}</div>
+  if (error) return <div>{JSON.stringify(error)}</div>;
 
   return (
     <div className="p-4">
-      <PageTitle title={"Question Generator"} />
+      <PageTitle title={getTranslation("Title")} />
+
       <Textarea
-        placeholder="Context..."
+        placeholder={getTranslation("Context")}
         className="w-full min-h-32"
         isFitContent={true}
         value={context}
@@ -54,48 +96,29 @@ export function QuestionGenerator() {
       />
 
       <Button
-        className="mb-2"
+        className="mb-4 mt-3"
         disabled={loadingGenerate}
         text={
-          loadingGenerate ? (
-            <span className="flex items-center justify-center gap-2">
-              {spinner} Generating... {current_event && "(" + current_event.data + ")"}
-            </span>
-          ) : (
-            "Generate"
-          )
+          <>
+            {loadingGenerate && (
+              <span className="flex items-center justify-center gap-2">
+                {spinner} {getTranslation("Generating")}{" "}
+                {current_event && "(" + current_event.data + ")"}
+              </span>
+            )}
+            {!loadingGenerate && getTranslation("Generate")}
+          </>
         }
-        onClick={async () => {
-          try {
-            const event_id = getRandomId();
-            setQuestionEventId(event_id);
-
-            setLoadingGenerate(true);
-            setAnswer("");
-            setQuestion("");
-            setReview(null);
-
-            const result = await callAI({
-              input: { context },
-              feature: "GENERATE_QUESTION",
-              event_id: event_id,
-            });
-
-            setQuestion(result.data.question);
-            setModelAnswer(result.data.answer);
-          } finally {
-            setLoadingGenerate(false);
-          }
-        }}
+        onClick={handleGenerate}
       />
 
       <div className="mb-4">
-        <span className="font-semibold">Question: </span>
+        <span className="font-semibold">{getTranslation("Question")}</span>
         {question}
       </div>
 
       <Textarea
-        placeholder="Answer..."
+        placeholder={getTranslation("Answer")}
         className="w-full mb-2 min-h-24"
         isFitContent={true}
         value={answer}
@@ -106,40 +129,36 @@ export function QuestionGenerator() {
         className="mb-2"
         disabled={loadingSubmit}
         text={
-          loadingSubmit ? (
-            <span className="flex items-center justify-center gap-2">
-              {spinner} Submitting...
-            </span>
-          ) : (
-            "Submit"
-          )
+          <>
+            {loadingSubmit && (
+              <span className="flex items-center justify-center gap-2">
+                {spinner} {getTranslation("Submitting")}
+              </span>
+            )}
+            {!loadingSubmit && getTranslation("Submit")}
+          </>
         }
-        onClick={async () => {
-          try {
-            setReview("");
-            setLoadingSubmit(true);
-            const review_result = await callAI({
-              input: { context, question, answer },
-              feature: "GENERATE_REVIEW",
-            });
-            setReview(review_result.data);
-          } finally {
-            setLoadingSubmit(false);
-          }
-        }}
+        onClick={handleSubmit}
       />
 
       {review && (
         <div className="mt-4 p-4 border rounded-2xl bg-gray-50 shadow-sm">
-          <h3 className="text-lg font-semibold mb-2 text-gray-800">Review</h3>
+          <h3 className="text-lg font-semibold mb-2 text-gray-800">
+            {getTranslation("Review")}
+          </h3>
           <p className="text-sm text-gray-800">
-            <span className="font-medium">Verdict:</span> {review.verdict}
+            <span className="font-medium">{getTranslation("Verdict")}</span>{" "}
+            {review.verdict}
           </p>
           <p className="text-sm text-gray-700 mt-1">
-            <span className="font-medium">Reason:</span> {review.reason}
+            <span className="font-medium">{getTranslation("Reason")}</span>{" "}
+            {review.reason}
           </p>
           <p className="text-sm text-gray-700 mt-1">
-            <span className="font-medium">Correct Answer:</span> {modelAnswer}
+            <span className="font-medium">
+              {getTranslation("CorrectAnswer")}
+            </span>{" "}
+            {modelAnswer}
           </p>
         </div>
       )}

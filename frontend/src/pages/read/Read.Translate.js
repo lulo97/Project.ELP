@@ -35,18 +35,6 @@ export const translation = {
         vi: "Thêm nghĩa cho từ",
         en: "Add meaning"
     },
-    Word: {
-        vi: "Từ vựng",
-        en: "Word"
-    },
-    Example: {
-        vi: "Ví dụ",
-        en: "Example"
-    },
-    Meaning: {
-        vi: "Nghĩa từ vựng",
-        en: "Meaning"
-    },
     PartOfSpeech: {
         vi: "Loại từ",
         en: "Part of speech"
