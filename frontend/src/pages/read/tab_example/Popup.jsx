@@ -1,6 +1,10 @@
 import { CommonPopup } from "../../../components/CommonPopup";
 import { PopupField } from "../../../components/PopupField";
 import { SelectNoStyle } from "../../../components/Select";
+import { getTranslation as _getTranslation } from "../../../utils/getTranslation";
+import { translation } from "../Read.Translate";
+
+const getTranslation = (key) => _getTranslation(key, translation);
 
 export function Popup({
   show,
@@ -29,7 +33,7 @@ export function Popup({
       />
 
       <PopupField
-        label={"Word"}
+        label={getTranslation("Word")}
         fieldComponent={
           <input
             value={row.word}
@@ -40,7 +44,7 @@ export function Popup({
       />
 
       <PopupField
-        label={"Part of speech"}
+        label={getTranslation("PartOfSpeech")}
         fieldComponent={
           <SelectNoStyle
             disabled={action == "DELETE" ? true : false}
@@ -53,7 +57,7 @@ export function Popup({
       />
 
       <PopupField
-        label={"Example"}
+        label={getTranslation("Example")}
         fieldComponent={
           <textarea
             value={row.example}

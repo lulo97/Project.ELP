@@ -8,8 +8,10 @@ import { Button } from "../../components/Button";
 import { addSourceTranslates } from "../../services/source_translates";
 import { TranslateDetail } from "./TranslateDetail";
 import { Popup } from "./Popup";
-import { getTranslation } from "../../utils/getTranslation";
+import { getTranslation as _getTranslation } from "../../utils/getTranslation";
 import { translation } from "./Read.Translate";
+
+const getTranslation = (key) => _getTranslation(key, translation);
 
 export const EMPTY_STATE = {
   words: [],
@@ -96,7 +98,7 @@ export function Read() {
 
   if (!state.source_row.id) return <div>Loading...</div>;
 
-  const title = getTranslation("Title", translation).replace(
+  const title = getTranslation("Title").replace(
     "{name}",
     state.source_row.name
   );
@@ -109,7 +111,7 @@ export function Read() {
           <div className="fixed top-[60px] right-0 p-4 z-10">
             <Button
               className="opacity-75"
-              text={"Save translate"}
+              text={getTranslation("SaveTranslate")}
               onClick={handleSaveChunks}
             />
           </div>

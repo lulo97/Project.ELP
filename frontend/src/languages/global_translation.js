@@ -63,4 +63,20 @@ export const global_translation = {
     vi: "Thất bại",
     en: "Fail",
   },
+  Id: {
+    vi: "Mã bản ghi",
+    en: "Id"
+  },
+  SelectAnOption: {
+    vi: "-- Lựa chọn --",
+    en: "-- Select an option --",
+  },
+  Confirm: {
+    vi: "Xác nhận",
+    en: "Confirm",
+  },
+  Close: {
+    vi: "Đóng",
+    en: "Close"
+  }
 };

@@ -11,7 +11,6 @@ export function VerticalTab({
       {tabNames.map((ele) => {
         const isActive = ele.id === currentTabId;
         const cursor = ele.disable ? "cursor-not-allowed" : "cursor-pointer";
-        console.log({ ele, cursor })
         return (
           <div
             key={ele.id}

@@ -9,7 +9,10 @@ import {
 import { Button } from "../../../components/Button";
 import { CommonAudio } from "../../../components/CommonAudio";
 import { message } from "../../../providers/MessageProvider";
-import { getTranslation } from "../../../utils/getTranslation";
+import { getTranslation as _getTranslation } from "../../../utils/getTranslation";
+import { translation } from "../Read.Translate";
+
+const getTranslation = (key) => _getTranslation(key, translation);
 
 export function Example({
   word,
@@ -58,17 +61,17 @@ export function Example({
   return (
     <div>
       <Button
-        text={"Add example"}
+        text={getTranslation("AddExample")}
         onClick={() => openPopup({ currentRow: EMPTY_ROW, action: "ADD" })}
         className="mb-4"
       />
 
       <Table
         columns={[
-          { id: "id", name: "Id" },
-          { id: "example", name: "Example", truncate: false },
-          { id: "word", name: "Word" },
-          { id: "part_of_speech", name: "Part of speech" },
+          { id: "id", name: getTranslation("Id") },
+          { id: "example", name: getTranslation("Example"), truncate: false },
+          { id: "word", name: getTranslation("Word") },
+          { id: "part_of_speech", name: getTranslation("PartOfSpeech") },
         ]}
         rows={existingRows}
         openPopup={openPopup}
@@ -77,7 +80,7 @@ export function Example({
         additionButtons={[(row) => <CommonAudio text={row.example} />]}
       />
       <Popup
-        title={"Add example"}
+        title={getTranslation("AddExample")}
         show={showPopup}
         row={currentRow}
         setCurrentRow={setCurrentRow}

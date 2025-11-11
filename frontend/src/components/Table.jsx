@@ -20,19 +20,14 @@ export function Table({
       <table className="w-full border-collapse bg-white text-sm text-left">
         <thead className="bg-gray-50 text-gray-700 text-sm font-medium border-b">
           <tr>
-            {columns.map((col) =>
-              isObject(col) ? (
-                <th key={col.id} className="px-4 py-3 border-b">
-                  {col.name != "Id" && getTranslation(col.name, translation)}
-                  {col.name == "Id" && getTranslation(col.name)}
-                </th>
-              ) : (
-                <th key={col} className="px-4 py-3 border-b">
-                  {col != "Id" && getTranslation(col, translation)}
-                  {col == "Id" && getTranslation(col)}
-                </th>
-              )
-            )}
+            {columns.map((col) => (
+              <th
+                key={isObject(col) ? col.id : col}
+                className="px-4 py-3 border-b"
+              >
+                {isObject(col) ? col.name : col}
+              </th>
+            ))}
             <th className="px-4 py-3 border-b">{getTranslation("Actions")}</th>
           </tr>
         </thead>

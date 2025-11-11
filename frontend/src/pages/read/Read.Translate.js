@@ -37,14 +37,22 @@ export const translation = {
     },
     Word: {
         vi: "Từ vựng",
-        end: "Word"
+        en: "Word"
     },
     Example: {
         vi: "Ví dụ",
-        end: "Example"
+        en: "Example"
     },
     Meaning: {
         vi: "Nghĩa từ vựng",
-        end: "Meaning"
+        en: "Meaning"
     },
+    PartOfSpeech: {
+        vi: "Loại từ",
+        en: "Part of speech"
+    },
+    SaveTranslate: {
+        vi: "Lưu dịch/ghi chú",
+        en: "Save translate"
+    }
 }

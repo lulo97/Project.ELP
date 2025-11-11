@@ -9,6 +9,7 @@ import {
 import { Button } from "../../../components/Button";
 import { message } from "../../../providers/MessageProvider";
 import { getTranslation } from "../../../utils/getTranslation";
+import { translation } from "../Read.Translate";
 
 export function Meaning({
   word,
@@ -57,16 +58,16 @@ export function Meaning({
   return (
     <div>
       <Button
-        text={"Add meaning"}
+        text={getTranslation("AddMeaning", translation)}
         onClick={() => openPopup({ currentRow: EMPTY_ROW, action: "ADD" })}
         className="mb-4"
       />
       <Table
         columns={[
-          { id: "id", name: "Id" },
-          { id: "meaning", name: "Meaning" },
-          { id: "word", name: "Word" },
-          { id: "part_of_speech", name: "Part of speech" },
+          { id: "id", name: getTranslation("Id") },
+          { id: "meaning", name: getTranslation("Meaning", translation) },
+          { id: "word", name: getTranslation("Word", translation) },
+          { id: "part_of_speech", name: getTranslation("PartOfSpeech", translation) },
         ]}
         rows={existingRows}
         openPopup={openPopup}
@@ -74,7 +75,7 @@ export function Meaning({
         fetchData={fetchExistingRows}
       />
       <Popup
-        title={"Add meaning"}
+        title={getTranslation("AddMeaning", translation)}
         show={showPopup}
         row={currentRow}
         setCurrentRow={setCurrentRow}

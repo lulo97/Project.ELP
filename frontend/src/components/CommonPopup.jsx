@@ -1,4 +1,5 @@
 import { useSelectedText } from "../hooks/useSelectedText";
+import { getTranslation } from "../utils/getTranslation";
 import { Button } from "./Button";
 import { useRef } from "react";
 
@@ -51,9 +52,9 @@ export function CommonPopup({
 
         {/* Footer */}
         <div className={footerClassname}>
-          <Button text="Close" onClick={handleClose} />
+          <Button text={getTranslation("Close")} onClick={handleClose} />
           {isShowConfirmButton && (
-            <Button text="Confirm" onClick={handleConfirm} />
+            <Button text={getTranslation("Confirm")} onClick={handleConfirm} />
           )}
         </div>
       </div>

@@ -1,3 +1,5 @@
+import { getTranslation } from "../utils/getTranslation";
+
 export function SelectNoStyle({
   disabled = false,
   onChange = () => {},
@@ -8,7 +10,7 @@ export function SelectNoStyle({
   return (
     <select className={className} value={value} disabled={disabled} onChange={onChange}>
       <option value="" selected>
-        -- Select an option --
+        {getTranslation("SelectAnOption")}
       </option>
       {options.map((ele) => {
         return <option value={ele.id}>{ele.name}</option>;
