@@ -50,6 +50,11 @@ export function FillInBank({ reset }) {
       feature: "SYNONYMS",
     });
 
+    if (synonyms_result.error) {
+      setSynonym("");
+      return;
+    }
+
     const synonyms = JSON.parse(synonyms_result.data);
 
     setSynonym(synonyms);
@@ -72,13 +77,13 @@ export function FillInBank({ reset }) {
     return "text-red-600 font-semibold";
   }
 
-  if (!data || !synonyms) {
+  if (!data) {
     return <div>Loading...</div>;
   }
 
   return (
-    <div className="p-4">
-      <div className="font-medium text-2xl">Fill word in blank</div>
+    <div className="">
+      <div className="font-medium text-2xl mb-2">Fill word in blank</div>
 
       <div className="flex flex-wrap items-baseline leading-relaxed mb-2">
         {data.sentence.split(" ").map((ele, i) => {
@@ -89,6 +94,7 @@ export function FillInBank({ reset }) {
                 className="mr-1"
                 placeholder="Fill in"
                 onChange={(e) => setFillWord(e.target.value)}
+                disabled={submitted}
               />
             );
           }
@@ -101,38 +107,45 @@ export function FillInBank({ reset }) {
       </div>
 
       <div className="flex flex-col gap-5">
-        <div>
-          <Button
-            text={showHint ? "Hide Hint" : "Show Hint"}
-            onClick={() => setShowHint(!showHint)}
-          />
+        <details
+          open={showHint}
+          onToggle={(e) => setShowHint(e.target.open)}
+          className="rounded-md"
+        >
+          <summary className="cursor-pointer font-medium">
+            {showHint ? "Hide Hint" : "Show Hint"}
+          </summary>
 
-          {showHint && (
-            <div className="mt-2 p-2 border rounded bg-gray-50">
-              <div className="font-semibold">Hint for meanings of word:</div>
-              <br />
-              <div>
-                <span className="italic">Synonyms:</span> {synonyms.join(", ")}
-              </div>
-              <br />
-              <div>
-                <span className="italic">It look something like this:</span>{" "}
-                {maskedWord}
-              </div>
-              <br />
-
-              <span className="italic">Part of speech:</span>
-              <ul className="list-disc pl-5">
-                {data.meanings.map((m, i) => (
-                  <li key={i}>
-                    <span className="italic">{m.part_of_speech}</span>:{" "}
-                    {m.meaning}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
+          <div className="mt-2 p-2 border rounded bg-gray-50">
+            {!synonyms ? (
+              <div>Loading hint...</div>
+            ) : (
+              <>
+                <div className="font-semibold">Hint for meanings of word:</div>
+                <br />
+                <div>
+                  <span className="italic">Synonyms:</span>{" "}
+                  {synonyms.join(", ")}
+                </div>
+                <br />
+                <div>
+                  <span className="italic">It looks something like this:</span>{" "}
+                  {maskedWord}
+                </div>
+                <br />
+                <span className="italic">Part of speech:</span>
+                <ul className="list-disc pl-5">
+                  {data.meanings.map((m, i) => (
+                    <li key={i}>
+                      <span className="italic">{m.part_of_speech}</span>:{" "}
+                      {m.meaning}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </div>
+        </details>
 
         {!submitted && (
           <Button

@@ -1,7 +1,9 @@
 import { global_translation } from "../languages/global_translation";
 
-export function getTranslation(key = "", translation = {}) {
+export function getTranslation(key = "", translation = {}, component = "") {
   let _translation = translation;
+
+  if (component) _translation = _translation[component]
 
   if (!key) {
     throw new Error("Key is empty!");
@@ -19,7 +21,7 @@ export function getTranslation(key = "", translation = {}) {
   const translated = translated_object[language];
 
   if (!translated) {
-    console.warn(`Missing translation for "${key}" in language "${language}"`);
+    console.warn(`Missing translation for "${key}" in language "${language}, _translation = ${Object.keys(_translation)}"`);
     return key;
   }
 

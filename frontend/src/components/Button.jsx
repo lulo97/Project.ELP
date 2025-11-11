@@ -1,6 +1,12 @@
 import { mergeTailwindClasses } from "../utils/mergeTailwindClasses";
 
-export function Button({ text, onClick, disabled = false, className = "" }) {
+export function Button({
+  text,
+  onClick = () => {},
+  disabled = false,
+  className = "",
+  ...props
+}) {
   const _className = `
         rounded-lg shadow-md transition w-fit
         ${
@@ -13,6 +19,7 @@ export function Button({ text, onClick, disabled = false, className = "" }) {
       `;
   return (
     <button
+      {...props}
       disabled={disabled}
       className={mergeTailwindClasses(_className)}
       onClick={() => !disabled && onClick()}

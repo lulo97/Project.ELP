@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { getMultipleChoiceQuestion } from "../../services/exercise";
 import { buildMultipleChoiceQuestion } from "../../utils/exercise";
 import { Button } from "../../components/Button";
+import { Radio } from "../../components/Radio";
+import { getTranslation } from "../../utils/getTranslation";
 
 export function MultipleChoice({ reset }) {
   const [data, setData] = useState([]);
@@ -51,28 +53,27 @@ export function MultipleChoice({ reset }) {
   }
 
   return (
-    <div className="p-4">
+    <div className="">
       <div className="font-medium text-2xl">{mcq.question}</div>
-      <ul className="my-4">
-        {mcq.choices.map((choice, index) => (
+      <ul className="my-4 flex flex-col gap-3">
+        {mcq.choices.map((choiceOption, index) => (
           <li key={index}>
-            <input
-              className="mr-4"
-              type="radio"
-              name="mcq"
-              value={choice}
-              checked={currentChoice === choice}
-              onChange={() => setCurrentChoice(choice)}
+            <Radio
+              value={choiceOption}
+              checked={currentChoice === choiceOption}
               disabled={submitted}
-            />
-            <label onClick={() => setCurrentChoice(choice)} className={getChoiceClass(choice)}>{choice}</label>
+              onClick={() => setCurrentChoice(choiceOption)}
+              className={getChoiceClass(choiceOption) + " w-full"}
+            >
+              {choiceOption}
+            </Radio>
           </li>
         ))}
       </ul>
 
       {!submitted && (
         <Button
-          text="Submit"
+          text={getTranslation("Submit")}
           onClick={() => {
             if (currentChoice) {
               setSubmitted(true);
@@ -82,7 +83,7 @@ export function MultipleChoice({ reset }) {
       )}
 
       {submitted && (
-        <Button text="Next question" onClick={() => reset()} />
+        <Button text={getTranslation("NextQuestion")} onClick={() => reset()} />
       )}
     </div>
   );
