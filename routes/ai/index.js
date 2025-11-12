@@ -3,6 +3,8 @@ const { handleGetSynonyms } = require("./synonym/handleGetSynonyms");
 const { handleGetQuestion } = require("./question/handleGetQuestion");
 const { handleGetReview } = require("./question/handleGetReview");
 const { handleGrammar } = require("./grammar/handleGrammar");
+const { handleGetMCQ } = require("./mcq/handleGetMCQ");
+
 const { initEvent } = require("../events/initEvent");
 
 const router = express.Router();
@@ -27,7 +29,7 @@ async function callAI(req, res, next) {
   }
 
   if (feature == "GENERATE_MCQ") {
-    result = await handleGetMCQ(input.context);
+    result = await handleGetMCQ(input.context, event_id);
   }
 
   if (feature == "GENERATE_REVIEW") {
@@ -47,7 +49,6 @@ async function callAI(req, res, next) {
   }
 
   if (result.error) {
-    result = null;
     error = result.error;
   }
 

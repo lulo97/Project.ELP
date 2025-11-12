@@ -4,7 +4,12 @@ import { Radio } from "../../components/Radio";
 import { getTranslation } from "../../utils/getTranslation";
 import { translation } from "./Exercise.Translation";
 
-export function MultipleChoiceTemplate({ question, correct_answer, choices, onNext }) {
+export function MultipleChoiceTemplate({
+  question,
+  correct_answer,
+  choices,
+  onNext,
+}) {
   const [currentChoice, setCurrentChoice] = useState(null);
   const [submitted, setSubmitted] = useState(false);
 
@@ -48,8 +53,15 @@ export function MultipleChoiceTemplate({ question, correct_answer, choices, onNe
         />
       )}
 
-      {submitted && (
-        <Button text={getTranslation("NextQuestion", translation, "MultipleChoice")} onClick={handleOnNext} />
+      {submitted && !onNext && (
+        <Button disabled={true} text={getTranslation("Submit")} />
+      )}
+
+      {submitted && onNext && (
+        <Button
+          text={getTranslation("NextQuestion", translation, "MultipleChoice")}
+          onClick={handleOnNext}
+        />
       )}
     </div>
   );

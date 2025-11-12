@@ -38,7 +38,6 @@ async function handleGetQuestion(_context, event_id) {
   const badQuestions = [];
 
   while (!can_answer) {
-    console.log("Updating event table");
     updateEvent({
       event_id,
       status: "PROCESSING",

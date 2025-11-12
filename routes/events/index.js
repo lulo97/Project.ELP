@@ -1,5 +1,5 @@
 const express = require("express");
-const { executeSelect } = require("../../database/execute");
+const { executeSelect, execute } = require("../../database/execute");
 const router = express.Router();
 
 function handleEvents(req, res) {
@@ -28,6 +28,13 @@ function handleEvents(req, res) {
   console.log("🟢 Client connected to /api/events");
 }
 
+async function reset(req, res) {
+  await execute({ sql: "DELETE FROM events", params: []});
+  return res.json({ data: null, error: null })
+}
+
+
 router.get("/", handleEvents);
+router.get("/reset", reset);
 
 module.exports = router;
