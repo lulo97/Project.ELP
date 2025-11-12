@@ -78,5 +78,9 @@ export const global_translation = {
   Submit: {
     vi: "Nộp bài",
     en: "Submit",
+  },
+  Loading: {
+    vi: "Đang tải...",
+    en: "Loading...",
   }
 };

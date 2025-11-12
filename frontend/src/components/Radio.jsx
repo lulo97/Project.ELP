@@ -6,6 +6,7 @@ export function Radio({
   checked = true,
   disabled = false,
   className = "",
+  labelClassName = "",
   size = "small",
   children,
 }) {
@@ -61,7 +62,7 @@ export function Radio({
       />
 
       <span
-        className={`text-sm text-gray-900`}
+        className={labelClassName ? labelClassName : `text-sm text-gray-900`}
       >
         {children}
       </span>

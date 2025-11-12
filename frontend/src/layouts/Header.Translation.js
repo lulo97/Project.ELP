@@ -12,6 +12,7 @@ export const translation = {
   Features: { vi: "Tính năng", en: "Features" },
   Exercise: { vi: "Bài tập", en: "Exercise" },
   QuestionGenerator: { vi: "Tạo câu hỏi", en: "Question Generator" },
+  McqGenerator: { vi: "Tạo câu hỏi trắc nghiệm", en: "Multiple Choice Generator" },
 
   Reading: { vi: "Đọc hiểu", en: "Reading" },
   ViewSources: { vi: "Đọc tài liệu", en: "View sources" },

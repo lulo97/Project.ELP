@@ -20,6 +20,7 @@ import { ReadWordList } from "./pages/read_word_list/ReadWordList";
 import { Post } from "./pages/post/Post";
 import { ViewPost } from "./pages/post/ViewPost";
 import { QuestionGenerator } from "./pages/question_generator/QuestionGenerator";
+import { McqGenerator } from "./pages/mcq_generator/McqGenerator";
 import { SignUp } from "./pages/signup/SignUp";
 import { LogIn } from "./pages/login/Login";
 import { ViewSources } from "./pages/view_sources/ViewSources";
@@ -48,6 +49,11 @@ export const routes = [
         name: "QuestionGenerator",
         path: "question_generator",
         element: <QuestionGenerator />,
+      },
+      {
+        name: "McqGenerator",
+        path: "mcq_generator",
+        element: <McqGenerator />,
       },
     ],
   },
