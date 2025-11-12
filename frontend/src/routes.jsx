@@ -24,6 +24,7 @@ import { McqGenerator } from "./pages/mcq_generator/McqGenerator";
 import { SignUp } from "./pages/signup/SignUp";
 import { LogIn } from "./pages/login/Login";
 import { ViewSources } from "./pages/view_sources/ViewSources";
+import { YoutubeListening } from "./components/YoutubeListening";
 
 export const routes = [
   {
@@ -66,7 +67,13 @@ export const routes = [
   },
   {
     name: "Listening",
-    children: [],
+    children: [
+      {
+        name: "YoutubeListening",
+        path: "youtube_listening",
+        element: <YoutubeListening />,
+      },
+    ],
   },
   {
     name: "Writing",

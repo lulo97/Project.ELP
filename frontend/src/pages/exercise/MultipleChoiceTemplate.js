@@ -5,25 +5,19 @@ import { getTranslation } from "../../utils/getTranslation";
 import { translation } from "./Exercise.Translation";
 
 export function MultipleChoiceTemplate({
-  question,
-  correct_answer,
-  choices,
-  onNext,
+  question = "question...",
+  correct_answer = "a",
+  choices = ["a", "b", "c", "d"],
+  current_choice = "a",
+  setCurrentChoice = () => {},
+  submitted = false,
+  action_button = <Button text={getTranslation("Submit")} />,
 }) {
-  const [currentChoice, setCurrentChoice] = useState(null);
-  const [submitted, setSubmitted] = useState(false);
-
   function getChoiceClass(choice) {
     if (!submitted) return "";
-
     if (choice === correct_answer) return "text-green-600 font-semibold";
-    if (choice === currentChoice) return "text-red-600 font-semibold";
+    if (choice === current_choice) return "text-red-600 font-semibold";
     return "";
-  }
-
-  function handleOnNext() {
-    if (onNext) onNext();
-    setSubmitted(false);
   }
 
   return (
@@ -34,7 +28,7 @@ export function MultipleChoiceTemplate({
           <li key={index}>
             <Radio
               value={choiceOption}
-              checked={currentChoice === choiceOption}
+              checked={current_choice === choiceOption}
               disabled={submitted}
               onClick={() => setCurrentChoice(choiceOption)}
               className={"w-full"}
@@ -46,23 +40,7 @@ export function MultipleChoiceTemplate({
         ))}
       </ul>
 
-      {!submitted && (
-        <Button
-          text={getTranslation("Submit")}
-          onClick={() => currentChoice && setSubmitted(true)}
-        />
-      )}
-
-      {submitted && !onNext && (
-        <Button disabled={true} text={getTranslation("Submit")} />
-      )}
-
-      {submitted && onNext && (
-        <Button
-          text={getTranslation("NextQuestion", translation, "MultipleChoice")}
-          onClick={handleOnNext}
-        />
-      )}
+      {typeof action_button === "function" ? action_button() : action_button}
     </div>
   );
 }

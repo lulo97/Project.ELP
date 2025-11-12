@@ -34,7 +34,7 @@ export function McqGenerator() {
   let current_event = null;
   if (questionEventId && data) {
     current_event = data.find((ele) => ele.id == questionEventId);
-    console.log(`Find ${questionEventId} in ${data}`, {current_event})
+    console.log(`Find ${questionEventId} in ${data}`, { current_event });
 
     if (current_event && current_event.status == "COMPLETE") {
       setQuestionEventId("");
@@ -97,7 +97,8 @@ export function McqGenerator() {
             {loadingGenerate && (
               <span className="flex items-center justify-center gap-2">
                 {spinner} {getTranslation("Generating")}{" "}
-                {current_event && `[${current_event.status}] ${current_event.data}`}
+                {current_event &&
+                  `[${current_event.status}] ${current_event.data}`}
               </span>
             )}
             {!loadingGenerate && getTranslation("Generate")}
@@ -111,7 +112,16 @@ export function McqGenerator() {
           question={mcq.question}
           correct_answer={mcq.correct_answer}
           choices={mcq.choices}
-          onNext={null}
+          current_choice={mcq.current_choice}
+          setCurrentChoice={(choice) => {
+            const new_mcq = {
+              ...mcq,
+              current_choice: choice,
+            };
+            setState(new_mcq);
+          }}
+          submitted={mcq.submitted}
+          action_button={action_button}
         />
       )}
     </div>

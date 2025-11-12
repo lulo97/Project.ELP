@@ -3,38 +3,80 @@ import { getMultipleChoiceQuestion } from "../../services/exercise";
 import { buildMultipleChoiceQuestion } from "../../utils/exercise";
 import { MultipleChoiceTemplate } from "./MultipleChoiceTemplate";
 import { getTranslation } from "../../utils/getTranslation";
+import { Button } from "../../components/Button";
+import { translation } from "./Exercise.Translation";
 
-export function MultipleChoice({ reset }) {
-  const [data, setData] = useState([]);
-  const [mcq, setMcq] = useState(null);
+const EMPTY_STATE = {
+  question: "",
+  correct_answer: "",
+  choices: [],
+  current_choice: "",
+  submitted: false,
+};
+
+export function MultipleChoice() {
+  const [state, setState] = useState(EMPTY_STATE);
+
+  async function fetchData() {
+    const result = await getMultipleChoiceQuestion();
+    if (result.data.length > 0) {
+      const newMcq = buildMultipleChoiceQuestion({ data: result.data });
+      setState({ ...EMPTY_STATE, ...newMcq });
+    } else {
+      console.error("API response empty!", JSON.stringify(result));
+    }
+  }
 
   useEffect(() => {
-    async function fetchData() {
-      const result = await getMultipleChoiceQuestion();
-      setData(result.data);
-    }
     fetchData();
   }, []);
 
-  useEffect(() => {
-    if (data.length > 0) {
-      generateNewQuestion();
-    }
-  }, [data]);
+  if (!state) return <div>{getTranslation("Loading")}</div>;
 
-  if (!mcq) return <div>{getTranslation("Loading")}</div>;
+  const action_button = () => {
+    return (
+      <>
+        {!state.submitted && (
+          <Button
+            disabled={state.submitted}
+            text={getTranslation("Submit")}
+            onClick={() => {
+              const new_state = {
+                ...state,
+                submitted: true,
+              };
+              setState(new_state);
+            }}
+          />
+        )}
 
-  function generateNewQuestion() {
-    const newMcq = buildMultipleChoiceQuestion({ data });
-    setMcq(newMcq);
-  }
+        {state.submitted && (
+          <Button
+            text={getTranslation("NextQuestion", translation, "MultipleChoice")}
+            onClick={async () => {
+              await fetchData();
+            }}
+          />
+        )}
+      </>
+    );
+  };
 
   return (
     <MultipleChoiceTemplate
-      question={mcq.question}
-      correct_answer={mcq.correct_answer}
-      choices={mcq.choices}
-      onNext={generateNewQuestion}
+      question={state.question}
+      correct_answer={state.correct_answer}
+      choices={state.choices}
+      current_choice={state.current_choice}
+      setCurrentChoice={(choice) => {
+        const new_state = {
+          ...state,
+          current_choice: choice,
+        };
+        setState(new_state);
+      }}
+      submitted={state.submitted}
+      action_button={action_button}
     />
   );
 }

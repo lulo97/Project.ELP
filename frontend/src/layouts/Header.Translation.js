@@ -18,6 +18,7 @@ export const translation = {
   ViewSources: { vi: "Đọc tài liệu", en: "View sources" },
 
   Listening: { vi: "Nghe hiểu", en: "Listening" },
+  YoutubeListening: { vi: "Học nghe qua Youtube", en: "Youtube listening" },
 
   Writing: { vi: "Viết", en: "Writing" },
   Grammar: { vi: "Ngữ pháp", en: "Grammar" },
