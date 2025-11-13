@@ -6,6 +6,8 @@ const { handleGrammar } = require("./grammar/handleGrammar");
 const { handleGetMCQ } = require("./mcq/handleGetMCQ");
 
 const { initEvent } = require("../events/initEvent");
+const { handleSummary } = require("./summary/handleSummary");
+const { handleGenerateFillInBlank } = require("./fill_in_blank/handleGenerateFillInBlank");
 
 const router = express.Router();
 
@@ -44,12 +46,23 @@ async function callAI(req, res, next) {
     result = await handleGrammar(input.text);
   }
 
+  if (feature == 'SUMMARY') {
+    result = await handleSummary({ context: input.context })
+  }
+
+  if (feature == 'FILL_IN_BLANK') {
+    result = await handleGenerateFillInBlank({ context: input.context })
+  }
+
   if (result == null) {
     throw Error("Feature not exist!");
   }
 
   if (result.error) {
     error = result.error;
+    result = null;
+  } else {
+    result = result.data || result;
   }
 
   res.json({ data: result, error: error });

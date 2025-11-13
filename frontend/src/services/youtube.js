@@ -1,0 +1,5 @@
+export async function getTranscript(video_id) {
+    const result = await fetch(`/api/youtube/transcript?video_id=${video_id}`);
+    const result_json = await result.json();
+    return result_json;
+}

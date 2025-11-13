@@ -1,16 +1,34 @@
 import React from "react";
+import { mergeTailwindClasses } from "../utils/mergeTailwindClasses";
 
-export function Input({ className = "", ...props }) {
+export function Input({ label, className = "", padding = "", inputClassName = "", ...props }) {
+
+  const _padding = padding || "px-3 py-2";
+
   return (
-    <input
-      {...props}
-      className={[
-        "px-3 py-2",
-        "border border-gray-300 rounded-md shadow-sm",
-        "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
-        "text-sm text-gray-800",
+    <div
+      className={mergeTailwindClasses([
+        "flex items-center w-full",
+        "border border-gray-300 rounded-md shadow-sm overflow-hidden",
+        "focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500",
         className,
-      ].join(" ")}
-    />
+      ].join(" "))}
+    >
+      {label && (
+        <span className={`bg-gray-100 text-gray-700 text-sm ${_padding} whitespace-nowrap select-none`}>
+          {label}
+        </span>
+      )}
+
+      <input
+        {...props}
+        className={mergeTailwindClasses([
+          `flex-1 ${_padding}`,
+          "text-sm text-gray-800 bg-white",
+          "focus:outline-none",
+          inputClassName
+        ].join(" "))}
+      />
+    </div>
   );
 }

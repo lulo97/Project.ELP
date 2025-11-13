@@ -27,6 +27,7 @@ const routes = [
     { path: "/api/events", module: "./events/index.js" },
     { path: "/api/auth", module: "./auth/index.js" },
     { path: "/api/read", module: "./read/index.js" },
+    { path: "/api/youtube", module: "./youtube/index.js" },
 ];
 
 function extractRoutes(routes) {

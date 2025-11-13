@@ -1,7 +1,8 @@
 function getUtilityBase(utilityPart) {
   if (utilityPart === "border") return "border-width";
   if (/^border-(\d+)$/.test(utilityPart)) return "border-width";
-  if (/^border-(solid|dashed|dotted|double|none)$/.test(utilityPart)) return "border-style";
+  if (/^border-(solid|dashed|dotted|double|none)$/.test(utilityPart))
+    return "border-style";
   if (/^border-(.+)/.test(utilityPart)) {
     const colorMatch = utilityPart.match(/^border-(.+)/);
     const val = colorMatch[1];
@@ -13,7 +14,8 @@ function getUtilityBase(utilityPart) {
 
   // Flex utilities
   if (utilityPart === "flex") return "flex-display";
-  if (/^flex-(col|row|row-reverse|col-reverse)$/.test(utilityPart)) return "flex-direction";
+  if (/^flex-(col|row|row-reverse|col-reverse)$/.test(utilityPart))
+    return "flex-direction";
   if (/^flex-(1|auto|initial|none)$/.test(utilityPart)) return "flex-grow";
 
   // Height and width
@@ -27,6 +29,11 @@ function getUtilityBase(utilityPart) {
 }
 
 export function mergeTailwindClasses(className) {
+  try {
+    className.trim().split(/\s+/);
+  } catch (error) {
+    console.log(className);
+  }
   const tokens = className.trim().split(/\s+/);
 
   // Maps baseKey => token, last occurrence index
@@ -38,7 +45,9 @@ export function mergeTailwindClasses(className) {
     const utilityPart = parts.pop();
 
     const baseUtility = getUtilityBase(utilityPart);
-    const key = parts.length ? parts.join(":") + ":" + baseUtility : baseUtility;
+    const key = parts.length
+      ? parts.join(":") + ":" + baseUtility
+      : baseUtility;
 
     // Always overwrite to keep last occurrence and track last index
     groups.set(key, { token, index: i });
@@ -145,4 +154,3 @@ function runTests(mergeFn) {
 }
 
 //runTests(mergeTailwindClasses);
-

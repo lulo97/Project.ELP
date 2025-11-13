@@ -17,8 +17,8 @@ export function Button({
             ? "bg-gray-400 text-gray-200 cursor-not-allowed"
             : "bg-indigo-600 text-white hover:bg-indigo-700"
         }
-        px-4 py-2  /* defaults */
-        ${className} /* parent overrides */
+        px-4 py-2
+        ${className}
       `;
   return (
     <button

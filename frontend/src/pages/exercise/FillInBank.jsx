@@ -91,7 +91,7 @@ export function FillInBank({ reset }) {
             return (
               <Input
                 key={i}
-                className="mr-1"
+                className="mr-1 w-fit"
                 placeholder="Fill in"
                 onChange={(e) => setFillWord(e.target.value)}
                 disabled={submitted}

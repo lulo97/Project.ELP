@@ -17,6 +17,8 @@ const EMPTY_MCQ = {
   question: "",
   correct_answer: "",
   choices: [],
+  current_choice: "",
+  submitted: false,
 };
 
 export function McqGenerator() {
@@ -60,7 +62,7 @@ export function McqGenerator() {
         return;
       }
 
-      setMcq(result.data);
+      setMcq({ ...EMPTY_MCQ, ...result.data });
     } finally {
       setLoadingGenerate(false);
     }
@@ -71,6 +73,20 @@ export function McqGenerator() {
       className="inline-block w-4 h-4 border-2 border-t-transparent border-gray-600 rounded-full animate-spin align-middle"
       style={{ borderTopColor: "transparent" }}
     ></span>
+  );
+
+  const action_button = (
+    <Button
+      disabled={mcq.submitted}
+      text={getTranslation("Submit")}
+      onClick={() => {
+        const new_mcq = {
+          ...mcq,
+          submitted: true,
+        };
+        setMcq(new_mcq);
+      }}
+    />
   );
 
   if (!isConnected) return <div>{getTranslation("NotConnected")}</div>;
@@ -118,7 +134,7 @@ export function McqGenerator() {
               ...mcq,
               current_choice: choice,
             };
-            setState(new_mcq);
+            setMcq(new_mcq);
           }}
           submitted={mcq.submitted}
           action_button={action_button}

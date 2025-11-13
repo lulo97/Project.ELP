@@ -13,7 +13,7 @@ export function Header({ language, handleChangeLanguage }) {
   const [userName, setUsername] = useState("");
 
   async function fetchData() {
-    const show_error = ["/login", "/signup", "/", "/exercise", "/mcq_generator"].includes(
+    const show_error = ["/login", "/signup", "/", "/exercise", "/mcq_generator", "/youtube_listening"].includes(
       window.location.pathname
     );
     const user = await getUserByToken(!show_error);
