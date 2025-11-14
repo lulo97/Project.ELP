@@ -13,7 +13,6 @@ docker run -d ^
   -p 3001:3001 ^
   --name elp-application-container ^
   --restart unless-stopped ^
-  -v C:/Users/admin/Desktop/Project.ELP/Application/database/database.sqlite:/app/database/database.sqlite ^
   elp-application-image
 
 echo.

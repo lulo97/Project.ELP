@@ -3,10 +3,10 @@ const { Pool } = pkg;
 
 const pool = new Pool({
   user: "admin",
-  host: "localhost",
+  host: process.env.POSTGRESQL_HOST || "localhost",
   database: "mydb",
   password: "admin123",
-  port: 5432,
+  port: process.env.POSTGRESQL_PORT || 5432,
   options: "-c search_path=elp" //Set default schema = elp
 });
 
