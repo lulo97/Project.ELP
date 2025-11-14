@@ -8,7 +8,7 @@ async function initData() {
     const existing = await client.get("CONSTS");
 
     if (existing !== null) {
-      console.log("ℹ️ Redis data already initialized!");
+      console.log("Redis data already initialized!");
       //console.log(await client.get("CONSTS"))
       return;
     }
@@ -21,9 +21,9 @@ async function initData() {
 
     await client.set("CONSTS", JSON.stringify(result));
 
-    console.log("✅ Initialized Redis data successfully!");
+    console.log("Initialized Redis data successfully!");
   } catch (err) {
-    console.error("❌ Failed to initialize Redis data:", err);
+    console.error("Failed to initialize Redis data:", err);
   }
 }
 

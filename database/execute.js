@@ -10,7 +10,7 @@ async function executeSelect({ sql, params = [] }) {
     const result = await client.query(sql, params);
     return result.rows;
   } catch (error) {
-    console.error("❌ SELECT query error:", error);
+    console.error("SELECT query error:", error);
     throw error;
   } finally {
     client.release();
@@ -31,7 +31,7 @@ async function execute({ sql, params = [] }) {
       command: result.command,
     };
   } catch (error) {
-    console.error("❌ DML query error:", error);
+    console.error("DML query error:", error);
     throw error;
   } finally {
     client.release();
@@ -63,7 +63,7 @@ async function executeTransaction(queries = []) {
     return results;
   } catch (error) {
     await client.query("ROLLBACK");
-    console.error("❌ Transaction rolled back due to error:", error.message);
+    console.error("Transaction rolled back due to error:", error.message);
     throw error;
   } finally {
     client.release();

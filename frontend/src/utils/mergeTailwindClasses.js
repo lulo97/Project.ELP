@@ -143,9 +143,9 @@ function runTests(mergeFn) {
   testCases.forEach(({ input, expected, description }, i) => {
     const result = mergeFn(input);
     if (result === expected) {
-      console.log(`✅ Test ${i + 1} passed: ${description}`);
+      console.log(`Test ${i + 1} passed: ${description}`);
     } else {
-      console.error(`❌ Test ${i + 1} failed: ${description}`);
+      console.error(`Test ${i + 1} failed: ${description}`);
       console.error(`   Input:    "${input}"`);
       console.error(`   Expected: "${expected}"`);
       console.error(`   Got:      "${result}"`);

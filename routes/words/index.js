@@ -36,7 +36,7 @@ async function getWords(req, res, next) {
 
     next();
   } catch (err) {
-    console.error("❌ getWords error:", err);
+    console.error("getWords error:", err);
     res.locals.data = [];
     res.locals.error = err.message;
     next();
@@ -66,7 +66,7 @@ async function addWord(req, res) {
 
     res.json({ error: null, data: { id, word } });
   } catch (err) {
-    console.error("❌ addWord error:", err);
+    console.error("addWord error:", err);
     res.status(500).json({ error: err.message, data: null });
   }
 }
@@ -94,7 +94,7 @@ async function updateWord(req, res) {
 
     res.json({ error: null, data: { id, word } });
   } catch (err) {
-    console.error("❌ updateWord error:", err);
+    console.error("updateWord error:", err);
     res.status(500).json({ error: err.message, data: null });
   }
 }
@@ -121,7 +121,7 @@ async function deleteWord(req, res) {
 
     res.json({ error: null, data: { id } });
   } catch (err) {
-    console.error("❌ deleteWord error:", err);
+    console.error("deleteWord error:", err);
     res.status(500).json({ error: err.message, data: null });
   }
 }

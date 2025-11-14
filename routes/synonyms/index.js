@@ -35,7 +35,7 @@ async function getSynonyms(req, res, next) {
 
     next();
   } catch (err) {
-    console.error("❌ getSynonyms error:", err);
+    console.error("getSynonyms error:", err);
     res.locals.data = [];
     res.locals.error = err.message;
     next();
@@ -67,7 +67,7 @@ async function addSynonym(req, res) {
 
     res.json({ error: null, data: { id, word, synonym, note } });
   } catch (err) {
-    console.error("❌ addSynonym error:", err);
+    console.error("addSynonym error:", err);
     res.status(500).json({ error: err.message, data: null });
   }
 }
@@ -97,7 +97,7 @@ async function updateSynonym(req, res) {
 
     res.json({ error: null, data: { id, word, synonym, note } });
   } catch (err) {
-    console.error("❌ updateSynonym error:", err);
+    console.error("updateSynonym error:", err);
     res.status(500).json({ error: err.message, data: null });
   }
 }
@@ -126,7 +126,7 @@ async function deleteSynonym(req, res) {
 
     res.json({ error: null, data: { id } });
   } catch (err) {
-    console.error("❌ deleteSynonym error:", err);
+    console.error("deleteSynonym error:", err);
     res.status(500).json({ error: err.message, data: null });
   }
 }

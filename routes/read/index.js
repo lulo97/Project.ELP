@@ -47,7 +47,7 @@ async function getReadData(req, res, next) {
 
     return res.json(output);
   } catch (err) {
-    console.error("❌ error:", err);
+    console.error("error:", err);
     output.data = [];
     output.error = err.message;
     return res.json(output);

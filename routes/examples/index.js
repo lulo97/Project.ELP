@@ -35,7 +35,7 @@ async function getExamples(req, res, next) {
 
     next();
   } catch (err) {
-    console.error("❌ getExamples error:", err);
+    console.error("getExamples error:", err);
     res.locals.data = [];
     res.locals.error = err.message;
     next();
@@ -67,7 +67,7 @@ async function addExample(req, res) {
 
     res.json({ error: null, data: { id, word, part_of_speech, example } });
   } catch (err) {
-    console.error("❌ addExample error:", err);
+    console.error("addExample error:", err);
     res.status(500).json({ error: err.message, data: null });
   }
 }
@@ -97,7 +97,7 @@ async function updateExample(req, res) {
 
     res.json({ error: null, data: { id, word, part_of_speech, example } });
   } catch (err) {
-    console.error("❌ updateExample error:", err);
+    console.error("updateExample error:", err);
     res.status(500).json({ error: err.message, data: null });
   }
 }
@@ -126,7 +126,7 @@ async function deleteExample(req, res) {
 
     res.json({ error: null, data: { id } });
   } catch (err) {
-    console.error("❌ deleteExample error:", err);
+    console.error("deleteExample error:", err);
     res.status(500).json({ error: err.message, data: null });
   }
 }

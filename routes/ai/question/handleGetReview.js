@@ -72,7 +72,7 @@ async function handleGetReview({ context, question, answer }) {
     const parsed = JSON.parse(result.trim());
     return parsed;
   } catch (err) {
-    console.error("❌ Failed to parse model output:", result);
+    console.error("Failed to parse model output:", result);
     return {
       verdict: "Error",
       reason: "Invalid JSON format from model.",

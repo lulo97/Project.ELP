@@ -42,7 +42,7 @@ async function getMeanings(req, res, next) {
 
     next();
   } catch (err) {
-    console.error("❌ getMeanings error:", err);
+    console.error("getMeanings error:", err);
     res.locals.error = err.message;
     res.locals.data = [];
     next();
@@ -74,7 +74,7 @@ async function addMeaning(req, res) {
 
     res.json({ error: null, data: { id, meaning, word, part_of_speech } });
   } catch (err) {
-    console.error("❌ addMeaning error:", err);
+    console.error("addMeaning error:", err);
     res.status(500).json({ error: err.message, data: null });
   }
 }
@@ -104,7 +104,7 @@ async function updateMeaning(req, res) {
 
     res.json({ error: null, data: { id, meaning, word, part_of_speech } });
   } catch (err) {
-    console.error("❌ updateMeaning error:", err);
+    console.error("updateMeaning error:", err);
     res.status(500).json({ error: err.message, data: null });
   }
 }
@@ -133,7 +133,7 @@ async function deleteMeaning(req, res) {
 
     res.json({ error: null, data: { id } });
   } catch (err) {
-    console.error("❌ deleteMeaning error:", err);
+    console.error("deleteMeaning error:", err);
     res.status(500).json({ error: err.message, data: null });
   }
 }

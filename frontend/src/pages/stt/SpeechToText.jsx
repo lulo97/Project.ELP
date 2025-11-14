@@ -9,7 +9,7 @@ export function SpeechToText() {
   const [error, setError] = useState(null);
   const [text, setText] = useState("");
   const [recordingTime, setRecordingTime] = useState(0);
-  const [canRecord, setCanRecord] = useState(false); // ✅ new state
+  const [canRecord, setCanRecord] = useState(false); // new state
 
   const audioContextRef = useRef(null);
   const mediaStreamRef = useRef(null);
@@ -18,7 +18,7 @@ export function SpeechToText() {
   const audioDataRef = useRef([]);
   const recordingTimerRef = useRef(null);
 
-  // ✅ Run only in browser
+  // Run only in browser
   useEffect(() => {
     let tries = 0;
     const maxTries = 5; // e.g. try up to 5 times

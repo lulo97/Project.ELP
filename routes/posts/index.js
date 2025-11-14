@@ -34,7 +34,7 @@ async function getPosts(req, res, next) {
 
     next();
   } catch (err) {
-    console.error("❌ getPosts error:", err);
+    console.error("getPosts error:", err);
     res.locals.data = [];
     res.locals.error = err.message;
     next();
@@ -65,7 +65,7 @@ async function addPost(req, res) {
 
     res.json({ error: null, data: { id, title, content } });
   } catch (err) {
-    console.error("❌ addPost error:", err);
+    console.error("addPost error:", err);
     res.status(500).json({ error: err.message, data: null });
   }
 }
@@ -94,7 +94,7 @@ async function updatePost(req, res) {
 
     res.json({ error: null, data: { id, title, content } });
   } catch (err) {
-    console.error("❌ updatePost error:", err);
+    console.error("updatePost error:", err);
     res.status(500).json({ error: err.message, data: null });
   }
 }
@@ -122,7 +122,7 @@ async function deletePost(req, res) {
 
     res.json({ error: null, data: { id } });
   } catch (err) {
-    console.error("❌ deletePost error:", err);
+    console.error("deletePost error:", err);
     res.status(500).json({ error: err.message, data: null });
   }
 }

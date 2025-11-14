@@ -35,7 +35,7 @@ async function getIdioms(req, res, next) {
 
     next();
   } catch (err) {
-    console.error("❌ getIdioms error:", err);
+    console.error("getIdioms error:", err);
     res.locals.data = [];
     res.locals.error = err.message;
     next();
@@ -67,7 +67,7 @@ async function addIdiom(req, res) {
 
     res.json({ error: null, data: { id, idiom, meaning, example } });
   } catch (err) {
-    console.error("❌ addIdiom error:", err);
+    console.error("addIdiom error:", err);
     res.status(500).json({ error: err.message, data: null });
   }
 }
@@ -97,7 +97,7 @@ async function updateIdiom(req, res) {
 
     res.json({ error: null, data: { id, idiom, meaning, example } });
   } catch (err) {
-    console.error("❌ updateIdiom error:", err);
+    console.error("updateIdiom error:", err);
     res.status(500).json({ error: err.message, data: null });
   }
 }
@@ -126,7 +126,7 @@ async function deleteIdiom(req, res) {
 
     res.json({ error: null, data: { id } });
   } catch (err) {
-    console.error("❌ deleteIdiom error:", err);
+    console.error("deleteIdiom error:", err);
     res.status(500).json({ error: err.message, data: null });
   }
 }

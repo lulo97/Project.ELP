@@ -77,7 +77,7 @@ export function RichTextEditor({
       return "handled";
     }
 
-    // ✅ Let Draft.js handle built-in commands like "bold", "italic", etc.
+    // Let Draft.js handle built-in commands like "bold", "italic", etc.
     const newState = RichUtils.handleKeyCommand(editorState, command);
     if (newState) {
       setEditorState(newState);

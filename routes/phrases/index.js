@@ -35,7 +35,7 @@ async function getPhrases(req, res, next) {
 
     next();
   } catch (err) {
-    console.error("❌ getPhrases error:", err);
+    console.error("getPhrases error:", err);
     res.locals.data = [];
     res.locals.error = err.message;
     next();
@@ -67,7 +67,7 @@ async function addPhrase(req, res) {
 
     res.json({ error: null, data: { id, phrase, meaning, example } });
   } catch (err) {
-    console.error("❌ addPhrase error:", err);
+    console.error("addPhrase error:", err);
     res.status(500).json({ error: err.message, data: null });
   }
 }
@@ -97,7 +97,7 @@ async function updatePhrase(req, res) {
 
     res.json({ error: null, data: { id, phrase, meaning, example } });
   } catch (err) {
-    console.error("❌ updatePhrase error:", err);
+    console.error("updatePhrase error:", err);
     res.status(500).json({ error: err.message, data: null });
   }
 }
@@ -126,7 +126,7 @@ async function deletePhrase(req, res) {
 
     res.json({ error: null, data: { id } });
   } catch (err) {
-    console.error("❌ deletePhrase error:", err);
+    console.error("deletePhrase error:", err);
     res.status(500).json({ error: err.message, data: null });
   }
 }

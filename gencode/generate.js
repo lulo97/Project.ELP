@@ -59,7 +59,7 @@ function generate(sql) {
     fs.writeFileSync(file.path, file.content, "utf-8");
   }
 
-  console.log(`✅ Generated scaffold for table "${tableName}" at ${rootPath}`);
+  console.log(`Generated scaffold for table "${tableName}" at ${rootPath}`);
 }
 
 // --- Example usage ---

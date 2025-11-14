@@ -9,7 +9,7 @@ const redisHost = process.env.REDIS_HOST || "redis://localhost:6379";
 async function getConnection() {
   // Stop retrying if reached maximum consecutive errors
   if (current_error_count >= maximum_error_count) {
-    console.error("❌ Maximum Redis error count reached — aborting reconnection attempts.");
+    console.error("Maximum Redis error count reached — aborting reconnection attempts.");
     return null;
   }
 
@@ -30,7 +30,7 @@ async function getConnection() {
     socket: {
       reconnectStrategy: (retries) => {
         if (retries > 5) {
-          console.error("❌ Too many Redis reconnection attempts — giving up.");
+          console.error("Too many Redis reconnection attempts — giving up.");
           return new Error("Redis reconnect failed");
         }
         console.log(`🔁 Redis reconnect attempt ${retries}`);
@@ -42,7 +42,7 @@ async function getConnection() {
   // Handle errors
   client.on("error", (err) => {
     current_error_count += 1;
-    console.error("❌ Redis Client Error:", err.message);
+    console.error("Redis Client Error:", err.message);
 
     // If Redis connection dropped, mark as closed
     if (client && !client.isOpen) {
@@ -56,13 +56,13 @@ async function getConnection() {
 
   client.on("ready", () => {
     current_error_count = 0; // reset error counter
-    console.log("✅ Redis connection ready");
+    console.log("Redis connection ready");
   });
 
   try {
     await client.connect();
   } catch (err) {
-    console.error("❌ Failed to connect to Redis:", err.message);
+    console.error("Failed to connect to Redis:", err.message);
   }
 
   return client;

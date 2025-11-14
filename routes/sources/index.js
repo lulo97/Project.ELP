@@ -35,7 +35,7 @@ async function getSources(req, res, next) {
 
     next();
   } catch (err) {
-    console.error("❌ getSources error:", err);
+    console.error("getSources error:", err);
     res.locals.data = [];
     res.locals.error = err.message;
     next();
@@ -67,7 +67,7 @@ async function addSource(req, res) {
 
     res.json({ error: null, data: { id, name, source, note } });
   } catch (err) {
-    console.error("❌ addSource error:", err);
+    console.error("addSource error:", err);
     res.status(500).json({ error: err.message, data: null });
   }
 }
@@ -97,7 +97,7 @@ async function updateSource(req, res) {
 
     res.json({ error: null, data: { id, name, source, note } });
   } catch (err) {
-    console.error("❌ updateSource error:", err);
+    console.error("updateSource error:", err);
     res.status(500).json({ error: err.message, data: null });
   }
 }
@@ -126,7 +126,7 @@ async function deleteSource(req, res) {
 
     res.json({ error: null, data: { id } });
   } catch (err) {
-    console.error("❌ deleteSource error:", err);
+    console.error("deleteSource error:", err);
     res.status(500).json({ error: err.message, data: null });
   }
 }

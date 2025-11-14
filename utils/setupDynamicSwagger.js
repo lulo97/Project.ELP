@@ -37,7 +37,7 @@ function setupDynamicSwagger(app) {
 
   // Serve Swagger UI
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-  console.log('✅ Swagger UI available at /api-docs');
+  console.log('Swagger UI available at /api-docs');
 }
 
 module.exports = {

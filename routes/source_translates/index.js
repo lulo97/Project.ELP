@@ -34,7 +34,7 @@ async function getSourceTranslates(req, res, next) {
 
     next();
   } catch (err) {
-    console.error("❌ getSourceTranslates error:", err);
+    console.error("getSourceTranslates error:", err);
     res.locals.data = [];
     res.locals.error = err.message;
     next();
@@ -77,7 +77,7 @@ async function saveSourceTranslates(req, res) {
       data: { source_id, chunks },
     });
   } catch (err) {
-    console.error("❌ saveSourceTranslates error:", err);
+    console.error("saveSourceTranslates error:", err);
     res.status(500).json({ error: err.message, data: null });
   }
 }

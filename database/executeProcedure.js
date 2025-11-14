@@ -69,7 +69,7 @@ async function executeProcedure(
     return output;
   } catch (error) {
     await client.query("ROLLBACK");
-    console.error(`❌ Procedure ${procedureName} call error:`, error);
+    console.error(`Procedure ${procedureName} call error:`, error);
     return {};
   } finally {
     client.release();

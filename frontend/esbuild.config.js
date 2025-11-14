@@ -14,7 +14,7 @@ async function build() {
       loader: { '.js': 'jsx', '.jsx': 'jsx' },
     });
 
-    console.log('✅ Build completed successfully!');
+    console.log('Build completed successfully!');
   } catch (err) {
     console.error(err);
     process.exit(1);

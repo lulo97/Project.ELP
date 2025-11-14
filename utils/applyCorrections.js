@@ -146,5 +146,5 @@ module.exports = {
 // // Run the tests
 // tests.forEach(({ name, text, matches, expected }) => {
 //   const result = applyCorrections(text, matches);
-//   console.log(name, result === expected ? "✅ PASS" : `❌ FAIL (got: ${result})`);
+//   console.log(name, result === expected ? "PASS" : `FAIL (got: ${result})`);
 // });
