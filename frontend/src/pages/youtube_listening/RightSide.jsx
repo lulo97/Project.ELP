@@ -48,7 +48,7 @@ export function RightSide({ state, setState }) {
     setState((old_state) => ({ ...old_state, submitted: false }));
 
   return (
-    <div className="flex-1 flex flex-col border border-gray-300 rounded p-2 bg-white shadow-md">
+    <div className="flex-1 flex flex-col border border-gray-300 rounded p-2 bg-white shadow-md h-full">
       <div className="flex gap-2 mb-2">
         <Input
           label={"Total question"}

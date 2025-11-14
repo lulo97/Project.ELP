@@ -2,6 +2,7 @@ import { useState } from "react";
 import { TopLayout } from "./TopLayout";
 import { LeftSide } from "./LeftSide";
 import { RightSide } from "./RightSide";
+import { SplitPane } from "../../components/SplitPane";
 
 export const EMPTY_STATE = {
   youtube_id: "NcsGpDFKCgY",
@@ -22,13 +23,15 @@ export function YoutubeListening() {
   const [state, setState] = useState(EMPTY_STATE);
 
   return (
-    <div className="h-[90vh] flex flex-col p-4 gap-4 bg-gray-100">
+    <div className="h-[90vh] flex flex-col p-4 gap-2 bg-gray-100">
       <TopLayout state={state} setState={setState} />
-
-      <div className="flex flex-1 gap-4 min-h-0">
-        <LeftSide state={state} setState={setState} />
-        <RightSide state={state} setState={setState} />
-      </div>
+      <SplitPane
+        right={<RightSide state={state} setState={setState} />}
+        left={<LeftSide state={state} setState={setState} />}
+        initialLeftWidth={50}
+        className={"flex flex-1 gap-2 min-h-0"}
+        parent_component="YoutubeListening"
+      />
     </div>
   );
 }

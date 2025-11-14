@@ -4,7 +4,6 @@ import draftToHtml from "draftjs-to-html";
 import htmlToDraft from "html-to-draftjs";
 import React, { useState } from "react";
 import { Textarea } from "../../components/Textarea";
-import { SplitPane } from "../../components/SplitPane";
 import { Button } from "../../components/Button";
 import {
   deleteWritingAnswer,
@@ -12,6 +11,7 @@ import {
   updateWritingAnswer,
 } from "../../services/writing_answer";
 import { message } from "../../providers/MessageProvider";
+import { SplitPane } from "../../components/SplitPane";
 
 export function Answer({ row, refresh, className = "" }) {
 
