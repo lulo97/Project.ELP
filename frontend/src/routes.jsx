@@ -24,7 +24,7 @@ import { McqGenerator } from "./pages/mcq_generator/McqGenerator";
 import { SignUp } from "./pages/signup/SignUp";
 import { LogIn } from "./pages/login/Login";
 import { ViewSources } from "./pages/view_sources/ViewSources";
-import { YoutubeListening } from "./components/YoutubeListening";
+import { YoutubeListening } from "./pages/youtube_listening/YoutubeListening";
 
 export const routes = [
   {

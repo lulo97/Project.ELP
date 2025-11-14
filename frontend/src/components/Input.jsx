@@ -15,7 +15,7 @@ export function Input({ label, className = "", padding = "", inputClassName = ""
       ].join(" "))}
     >
       {label && (
-        <span className={`bg-gray-100 text-gray-700 text-sm ${_padding} whitespace-nowrap select-none`}>
+        <span className={`bg-gray-100 text-gray-700 text-sm ${_padding} whitespace-nowrap`}>
           {label}
         </span>
       )}
