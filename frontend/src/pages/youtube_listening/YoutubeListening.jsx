@@ -11,7 +11,7 @@ export const EMPTY_STATE = {
   transcripts: [],
   //[{ question, choices, correct_answer }]
   mcqs: [],
-  //[{context, word}]
+  //[{context, word, start, end}]
   fill_in_blanks: [],
   submitted: false,
   show_transcript: false,

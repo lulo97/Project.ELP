@@ -1,3 +1,10 @@
+/**
+input = api body, example = { context, question }
+
+feature = task enum like "SUMMARY", "GENERATE_MCQ",...
+
+event_id = id of events table
+*/
 export async function callAI({ input = {}, feature = "", event_id = "" }) {
   const result = await fetch(`/api/ai`, {
     method: "POST",

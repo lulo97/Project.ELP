@@ -4,10 +4,20 @@ import { FillInBankTemplate } from "../exercise/FillInBankTemplate";
 import { callAI } from "../../services/ai";
 import { combineTextsByMinWords } from "../../utils/combineTextsByMinWords";
 import { selectRandomIncreasing } from "../../utils/selectRandomIncreasing";
+import { message } from "../../providers/MessageProvider";
+import { toMinutesSeconds } from "../../utils/convertTime";
 
 export function RightSide({ state, setState }) {
   const handleGenerateQuestion = async () => {
-    if (state.transcripts.length === 0 || !state.total_question) return;
+    if (state.transcripts.length === 0) {
+      message({ type: "warning", text: "No transcript detected!" });
+      return;
+    }
+
+    if (!state.total_question) {
+      message({ type: "warning", text: "Total question is null!" });
+      return;
+    }
 
     setState((old_state) => ({ ...old_state, loading: true }));
 
@@ -31,7 +41,27 @@ export function RightSide({ state, setState }) {
           word: result.data.word,
           input_word: result.data.input_word,
         };
-        new_fill_in_blanks.push(question);
+
+        let start = null;
+        let end = null;
+
+        state.transcripts.forEach((ele) => {
+          if (context.substring(0, ele.text.length) === ele.text) {
+            start = ele.start;
+          }
+
+          if (
+            context.substring(context.length - ele.text.length) === ele.text
+          ) {
+            end = ele.end;
+          }
+        });
+
+        new_fill_in_blanks.push({
+          ...question,
+          start: start,
+          end: end,
+        });
         setState((prev) => ({
           ...prev,
           fill_in_blanks: [...new_fill_in_blanks],
@@ -46,6 +76,11 @@ export function RightSide({ state, setState }) {
     setState((old_state) => ({ ...old_state, submitted: true }));
   const handleReset = () =>
     setState((old_state) => ({ ...old_state, submitted: false }));
+
+  const request_percent = `Generate... [${(
+    (state.fill_in_blanks.length * 100) /
+    state.total_question
+  ).toFixed(0)}%]`;
 
   return (
     <div className="flex-1 flex flex-col border border-gray-300 rounded p-2 bg-white shadow-md h-full">
@@ -65,9 +100,10 @@ export function RightSide({ state, setState }) {
           }}
         />
         <Button
-          text={state.loading ? "Generate..." : "Generate"}
+          text={state.loading ? request_percent : "Generate"}
           onClick={handleGenerateQuestion}
           disabled={state.loading}
+          className={`${state.loading ? "min-w-40" : "min-w-28"} whitespace-nowrap`}
         />
       </div>
 
@@ -99,7 +135,7 @@ export function RightSide({ state, setState }) {
               postfix={
                 state.submitted ? (
                   <span className="font-bold text-green-500">
-                    &nbsp;({ele.word})
+                    &nbsp;({ele.word}, {`${ele.start} -${ele.end}`})
                   </span>
                 ) : null
               }

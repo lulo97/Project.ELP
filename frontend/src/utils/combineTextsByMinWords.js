@@ -3,6 +3,11 @@
  * @param {string[]} texts - Array of text strings
  * @param {number} minWords - Minimum words per sentence
  * @returns {string[]} - Array of combined sentences
+ * 
+ * 
+ * Input: [a1, a2, a3, a4, a5, a6]
+ * 
+ * Output: [a1 + a2, a3 + a4 + a5, a6]
  */
 export function combineTextsByMinWords(texts, minWords = 15) {
   if (!Array.isArray(texts) || texts.length === 0) return [];

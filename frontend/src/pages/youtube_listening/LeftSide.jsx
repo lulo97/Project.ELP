@@ -1,4 +1,5 @@
 import { Button } from "../../components/Button";
+import { toSeconds } from "../../utils/convertTime";
 
 export function LeftSide({ state, setState }) {
   return (
@@ -24,7 +25,7 @@ export function LeftSide({ state, setState }) {
           }}
         ></audio>
         <Button
-          className="py-2"
+          className="py-2 min-w-28"
           text={state.show_transcript ? "Hide" : "Show"}
           onClick={() => {
             setState((old_state) => {
@@ -43,13 +44,16 @@ export function LeftSide({ state, setState }) {
       */}
       <div
         className={`${
-          !state.show_transcript ? "blur-sm" : ""
+          !state.show_transcript && state.transcripts.length != 0
+            ? "blur-sm"
+            : ""
         } flex-1 overflow-y-auto border-t pt-2 grid grid-cols-[auto_1fr] gap-2`}
       >
+        {state.transcripts.length == 0 && <div>No transcript detected!</div>}
         {state.transcripts.map((t, index) => {
           const isActive =
-            state.current_second >= parseFloat(t.start) &&
-            state.current_second <= parseFloat(t.end);
+            parseFloat(state.current_second) >= toSeconds(t.start) &&
+            parseFloat(state.current_second) <= toSeconds(t.end);
 
           return (
             <div key={index} className="contents">
@@ -59,8 +63,7 @@ export function LeftSide({ state, setState }) {
                   isActive ? "font-bold text-blue-500" : "text-gray-500"
                 }`}
               >
-                {parseFloat(t.start).toFixed(2)} -{" "}
-                {parseFloat(t.end).toFixed(2)}
+                {`${t.start} - ${t.end}`}
               </div>
               <div
                 className={`py-1 border-b text-sm min-w-0 ${

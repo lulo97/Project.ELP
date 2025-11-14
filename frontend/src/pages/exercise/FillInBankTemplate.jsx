@@ -43,7 +43,7 @@ export function FillInBankTemplate({
             return (
               <Input
                 key={i}
-                className={`mr-1 w-fit`}
+                className={`mr-1 w-fit ${submitted ? "cursor-not-allowed" : ""}`}
                 inputClassName={`${getInputClass()}`}
                 padding="px-1 py-0.5"
                 placeholder="Fill in"

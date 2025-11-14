@@ -4,9 +4,9 @@ import { Button } from "../../components/Button";
 import { getTranscript } from "../../services/youtube";
 import { message } from "../../providers/MessageProvider";
 import { EMPTY_STATE } from "./YoutubeListening";
+import { toMinutesSeconds } from "../../utils/convertTime";
 
 export function TopLayout({ state, setState }) {
-
   async function handleYoutubeSubmit() {
     const transript_result = await getTranscript(state.youtube_id);
 
@@ -15,7 +15,15 @@ export function TopLayout({ state, setState }) {
       return;
     }
 
-    setState({ ...EMPTY_STATE, transcripts: transript_result.data });
+    const transcripts = transript_result.data.map((ele) => {
+      return {
+        ...ele,
+        start: toMinutesSeconds(ele.start),
+        end: toMinutesSeconds(ele.end),
+      };
+    });
+
+    setState({ ...EMPTY_STATE, transcripts: transcripts });
   }
 
   return (
@@ -37,7 +45,18 @@ export function TopLayout({ state, setState }) {
             });
           }}
         />
-        <Button text={"Submit"} onClick={handleYoutubeSubmit} />
+        <Button
+          className="min-w-28"
+          text={"Submit"}
+          onClick={handleYoutubeSubmit}
+        />
+        <Button
+          className="min-w-28"
+          text={"Reset"}
+          onClick={() => {
+            setState(EMPTY_STATE)
+          }}
+        />
       </div>
     </div>
   );
