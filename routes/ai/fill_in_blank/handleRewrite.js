@@ -1,5 +1,4 @@
 const { sendPrompt } = require("../utils/sendPromt");
-const { countWords } = require("../../../utils/countWords");
 
 const PROMPT = `
 You are given the following text. The text may be incomplete or contain grammatical errors.
@@ -21,30 +20,8 @@ async function handleRewrite({ context, maxRetries = 3 }) {
   }
 
   const prompt = PROMPT.replace("[context]", context);
-  let result = null;
 
-  let attempts = 0;
-  while (true) {
-    attempts++;
-    if (attempts > maxRetries) {
-      return {
-        error: `Failed to generate output within 15-30 words after ${maxRetries} attempts.`,
-        data: null,
-      };
-    }
-
-    const response = await sendPrompt(prompt);
-    const text = response?.trim();
-
-    if (!text) continue;
-
-    const wordCount = countWords(text);
-
-    if (wordCount >= 15 && wordCount <= 30) {
-      result = text;
-      break;
-    }
-  }
+  const result = await sendPrompt(prompt);
 
   return { error: null, data: result };
 }

@@ -8,6 +8,7 @@ import { message } from "../providers/MessageProvider";
 import { callAI } from "../services/ai";
 import { combineTextsByMinWords } from "../utils/combineTextsByMinWords";
 import { FillInBankTemplate } from "../pages/exercise/FillInBankTemplate";
+import { selectRandomIncreasing } from "../utils/selectRandomIncreasing";
 
 const EMPTY_STATE = {
   youtube_id: "NcsGpDFKCgY",
@@ -25,6 +26,7 @@ const EMPTY_STATE = {
     },
   ],
   submitted: false,
+  show_transcript: false,
 };
 
 export function YoutubeListening() {
@@ -59,7 +61,8 @@ export function YoutubeListening() {
     let contexts = combineTextsByMinWords(
       state.transcripts.map((ele) => ele.text)
     );
-    contexts = contexts.slice(0, state.total_question);
+
+    contexts = selectRandomIncreasing(contexts, state.total_question);
 
     const new_fill_in_blanks = [];
 
@@ -140,18 +143,31 @@ export function YoutubeListening() {
       <div className="flex flex-1 gap-4 min-h-0">
         {/* Left Side */}
         <div className="flex-1 flex flex-col border border-gray-300 rounded p-2 bg-white shadow-md">
-          <audio
-            controls
-            className="mb-2 flex-shrink-0 w-full"
-            src={
-              state.youtube_id
-                ? `/api/youtube/stream_audio?video_id=${state.youtube_id}`
-                : ""
-            }
-            onError={() => {
-              console.error("Audio failed to load.");
-            }}
-          ></audio>
+          <div className="flex items-center gap-2">
+            <audio
+              controls
+              className="flex-shrink-0 flex-1 h-10"
+              src={
+                state.youtube_id
+                  ? `/api/youtube/stream_audio?video_id=${state.youtube_id}`
+                  : ""
+              }
+              onError={() => {
+                console.error("Audio failed to load.");
+              }}
+            ></audio>
+            <Button
+              className="py-2"
+              text={state.show_transcript ? "Hide" : "Show"}
+              onClick={() => {
+                const new_state = {
+                  ...state,
+                  show_transcript: !state.show_transcript,
+                };
+                setState(new_state);
+              }}
+            />
+          </div>
 
           {/* grid-cols-[auto_1fr] = setting for 2 column:
             First column: auto fit widest child 
@@ -159,7 +175,7 @@ export function YoutubeListening() {
           */}
           <div
             className={`${
-              state.submitted ? "blur-sm" : ""
+              !state.show_transcript ? "blur-sm" : ""
             } flex-1 overflow-y-auto border-t pt-2 grid grid-cols-[auto_1fr] gap-2`}
           >
             {state.transcripts.map((t, index) => (

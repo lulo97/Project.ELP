@@ -23,43 +23,14 @@ Input:
 Output:
 `;
 
-function countFrequency(context, word) {
-  if (!word) return 0;
-  const regex = new RegExp(`\\b${word}\\b`, "gi");
-  return (context.match(regex) || []).length;
-}
-
-async function handleExtractWord({ context, frequency = 1, maxRetries = 5 }) {
+async function handleExtractWord({ context }) {
   if (!context || [null, undefined, ""].includes(context.trim?.())) {
     throw new Error("Context must not be null or empty!");
   }
 
-  let result = null;
-  let current_context = context;
+  const prompt = PROMPT.replace("[context]", context);
 
-  for (let i = 0; i < maxRetries; i++) {
-    const prompt = PROMPT.replace("[context]", current_context);
-    const response = await sendPrompt(prompt);
-    const word = response?.trim();
-
-    if (!word) continue;
-
-    if (word.split(" ").length >= 2) continue;
-
-    const freq = countFrequency(context, word);
-
-    if (freq === frequency) {
-      result = word;
-      break;
-    } else {
-      current_context = current_context.replaceAll(word, "");
-    }
-  }
-
-  if (!result) {
-    const error = `No word found in ${maxRetries} attempts with frequency = ${frequency}`;
-    return { data: null, error: error };
-  }
+  const result = await sendPrompt(prompt);
 
   return { data: result, error: null };
 }

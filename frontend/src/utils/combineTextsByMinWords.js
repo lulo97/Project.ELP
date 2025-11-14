@@ -11,9 +11,7 @@ export function combineTextsByMinWords(texts, minWords = 15) {
   let currentSentence = "";
 
   for (const text of texts) {
-    currentSentence = currentSentence
-      ? currentSentence + " " + text
-      : text;
+    currentSentence = currentSentence ? currentSentence + " " + text : text;
 
     const wordCount = currentSentence.split(/\s+/).filter(Boolean).length;
 
@@ -26,6 +24,16 @@ export function combineTextsByMinWords(texts, minWords = 15) {
   // Add any leftover text as a sentence
   if (currentSentence) {
     sentences.push(currentSentence.trim());
+  }
+
+  if (sentences.length >= 2) {
+    const lastSentence = sentences[sentences.length - 1];
+    const lastWordCount = lastSentence.split(/\s+/).filter(Boolean).length;
+
+    if (lastWordCount < minWords) {
+      sentences[sentences.length - 2] += " " + lastSentence;
+      sentences.pop();
+    }
   }
 
   return sentences;
