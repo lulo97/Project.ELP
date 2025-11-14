@@ -1,4 +1,5 @@
 const { sendPrompt } = require("../utils/sendPromt");
+const { countWords } = require("../../../utils/countWords");
 
 const PROMPT = `
 You are given the following text. The text may be incomplete or contain grammatical errors.
@@ -13,10 +14,6 @@ Input:
 
 Paraphrased Output:
 `;
-
-function countWords(text) {
-  return text.trim().split(/\s+/).length;
-}
 
 async function handleRewrite({ context, maxRetries = 3 }) {
   if (!context || [null, undefined, ""].includes(context.trim?.())) {
@@ -42,8 +39,6 @@ async function handleRewrite({ context, maxRetries = 3 }) {
     if (!text) continue;
 
     const wordCount = countWords(text);
-
-    console.log({ wordCount, text })
 
     if (wordCount >= 15 && wordCount <= 30) {
       result = text;

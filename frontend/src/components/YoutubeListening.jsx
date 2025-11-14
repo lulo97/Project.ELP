@@ -140,14 +140,28 @@ export function YoutubeListening() {
       <div className="flex flex-1 gap-4 min-h-0">
         {/* Left Side */}
         <div className="flex-1 flex flex-col border border-gray-300 rounded p-2 bg-white shadow-md">
-          <audio controls className="mb-2 flex-shrink-0 w-full">
-            <source src="sample-audio.mp3" type="audio/mp3" />
-          </audio>
+          <audio
+            controls
+            className="mb-2 flex-shrink-0 w-full"
+            src={
+              state.youtube_id
+                ? `/api/youtube/stream_audio?video_id=${state.youtube_id}`
+                : ""
+            }
+            onError={() => {
+              console.error("Audio failed to load.");
+            }}
+          ></audio>
+
           {/* grid-cols-[auto_1fr] = setting for 2 column:
             First column: auto fit widest child 
             Second column: 1fr = fit remaining space
           */}
-          <div className="blur-sm flex-1 overflow-y-auto border-t pt-2 grid grid-cols-[auto_1fr] gap-2">
+          <div
+            className={`${
+              state.submitted ? "blur-sm" : ""
+            } flex-1 overflow-y-auto border-t pt-2 grid grid-cols-[auto_1fr] gap-2`}
+          >
             {state.transcripts.map((t, index) => (
               <div key={index} className="contents">
                 {/* contents = treat children as single row instead of grid items (columns) */}

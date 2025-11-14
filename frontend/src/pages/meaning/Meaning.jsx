@@ -63,7 +63,6 @@ export function Meaning() {
     let result;
     if (action == "ADD") {
       result = await addMeaning({ row: currentRow });
-      console.log(result)
     }
 
     if (action == "EDIT") {

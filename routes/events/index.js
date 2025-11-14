@@ -22,10 +22,10 @@ function handleEvents(req, res) {
   req.on("close", () => {
     clearInterval(interval);
     res.end();
-    console.log("🔴 Client disconnected from /api/events");
+    console.log("Client disconnected from /api/events");
   });
 
-  console.log("🟢 Client connected to /api/events");
+  console.log("Client connected to /api/events");
 }
 
 async function reset(req, res) {

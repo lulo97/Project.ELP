@@ -36,7 +36,6 @@ export function McqGenerator() {
   let current_event = null;
   if (questionEventId && data) {
     current_event = data.find((ele) => ele.id == questionEventId);
-    console.log(`Find ${questionEventId} in ${data}`, { current_event });
 
     if (current_event && current_event.status == "COMPLETE") {
       setQuestionEventId("");

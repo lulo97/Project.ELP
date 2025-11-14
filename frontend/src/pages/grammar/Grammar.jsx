@@ -16,7 +16,6 @@ export function Grammar() {
 
     try {
       const result = await callAI({ feature: "GRAMMAR", input: { text } });
-      console.log(result);
 
       if (result.error) {
         setErrorMsg("An error occurred while checking grammar.");

@@ -33,7 +33,7 @@ async function getConnection() {
           console.error("Too many Redis reconnection attempts — giving up.");
           return new Error("Redis reconnect failed");
         }
-        console.log(`🔁 Redis reconnect attempt ${retries}`);
+        console.log(`Redis reconnect attempt ${retries}`);
         return Math.min(retries * 100, 3000); // retry delay
       },
     },
@@ -46,12 +46,12 @@ async function getConnection() {
 
     // If Redis connection dropped, mark as closed
     if (client && !client.isOpen) {
-      console.log("⚠️ Redis connection lost, will attempt reconnect...");
+      console.log("Redis connection lost, will attempt reconnect...");
     }
   });
 
   client.on("connect", () => {
-    console.log("🔌 Connecting to Redis...");
+    console.log("Connecting to Redis...");
   });
 
   client.on("ready", () => {

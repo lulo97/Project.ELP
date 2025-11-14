@@ -44,7 +44,6 @@ async function getSourceTranslates(req, res, next) {
 // -------------------- CREATE / REPLACE SOURCE TRANSLATES --------------------
 async function saveSourceTranslates(req, res) {
   try {
-    console.log(req.body);
     const { source_id, chunks } = req.body; // chunks = array of { id, chunk, translate }
     const username = await getUsernameFromToken(req.headers["authorization"]);
 

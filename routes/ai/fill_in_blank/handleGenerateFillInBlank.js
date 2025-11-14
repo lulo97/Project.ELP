@@ -1,3 +1,4 @@
+const { countWords } = require("../../../utils/countWords");
 const { handleExtractWord } = require("./handleExtractWord");
 const { handleRewrite } = require("./handleRewrite");
 
@@ -16,6 +17,10 @@ async function handleGenerateFillInBlank({ context }) {
   }
 
   const refined_context = result_refined_context.data;
+
+  if (!(15 <= countWords(refined_context) && countWords(refined_context) <= 30)) {
+    throw Error(JSON.stringify({ refined_context, error: "Must word count in [15, 30]" }))
+  }
 
   const sentences = refined_context.split(".");
 

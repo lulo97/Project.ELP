@@ -29,7 +29,7 @@ function countFrequency(context, word) {
   return (context.match(regex) || []).length;
 }
 
-async function handleExtractWord({ context, frequency = 1, maxRetries = 3 }) {
+async function handleExtractWord({ context, frequency = 1, maxRetries = 5 }) {
   if (!context || [null, undefined, ""].includes(context.trim?.())) {
     throw new Error("Context must not be null or empty!");
   }
@@ -41,11 +41,13 @@ async function handleExtractWord({ context, frequency = 1, maxRetries = 3 }) {
     const prompt = PROMPT.replace("[context]", current_context);
     const response = await sendPrompt(prompt);
     const word = response?.trim();
-    console.log({ current_context, word })
 
     if (!word) continue;
 
+    if (word.split(" ").length >= 2) continue;
+
     const freq = countFrequency(context, word);
+
     if (freq === frequency) {
       result = word;
       break;

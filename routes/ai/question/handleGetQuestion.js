@@ -55,7 +55,6 @@ async function handleGetQuestion(_context, event_id) {
     can_answer = result.can_answer;
 
     if (!can_answer) {
-      console.log("Generated question cannot be answered, retrying...");
       badQuestions.push(question.trim());
     }
 
@@ -69,8 +68,6 @@ async function handleGetQuestion(_context, event_id) {
       return { question: null, answer: null, error: "Can't generate question!"};
     }
   }
-
-  console.log("Found a good question:", question);
 
   updateEvent({
     event_id,

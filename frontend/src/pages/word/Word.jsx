@@ -54,7 +54,6 @@ export function Word() {
     let result;
     if (action === "ADD") {
       result = await addWord({ row: currentRow });
-      console.log(result)
     }
     if (action === "EDIT") {
       result = await updateWord({ row: currentRow });

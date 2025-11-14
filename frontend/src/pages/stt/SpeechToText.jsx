@@ -23,7 +23,6 @@ export function SpeechToText() {
     let tries = 0;
     const maxTries = 5; // e.g. try up to 5 times
     const interval = setInterval(() => {
-      console.log("Try: ", tries)
       if (
         typeof navigator !== "undefined" &&
         navigator.mediaDevices?.getUserMedia

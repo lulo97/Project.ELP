@@ -16,7 +16,7 @@ async function startBuild() {
 
     // Start watching for changes
     await ctx.watch();
-    console.log('⚡ Watching for changes...');
+    console.log('Watching for changes...');
   } catch (err) {
     console.error(err);
     process.exit(1);

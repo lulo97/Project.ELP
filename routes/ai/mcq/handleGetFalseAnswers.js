@@ -68,8 +68,6 @@ async function handleGetFalseAnswers({ question, answer }) {
 
   result_splited = await Promise.all(
     result_splited.map(async (ele) => {
-      console.log("Process false answer = ", ele);
-
       let new_ele = cleanText(ele);
 
       // Extend if too short

@@ -6,8 +6,6 @@ async function main() {
     { name: "p_rows", type: "CURSOR", value: "cur_rows" },
     { name: "p_error", type: "text", value: null },
   ]);
-
-  console.log(out);
 }
 
 main();
