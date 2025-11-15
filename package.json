@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build-start": "cd frontend && node esbuild.config.js && cd .. && node app.js",
+    "build-start": "cd frontend && node esbuild.config.js && cd .. && xcopy frontend\\dist dist\\frontend /E /I /Y /Q && npx esbuild app.js --bundle --platform=node --outfile=dist\\app.js && node dist\\app.js",
     "dev": "nodemon --exec \"npm run build-start\""
   },
   "author": "",
@@ -18,10 +18,10 @@
     "jsonwebtoken": "^9.0.2",
     "npm": "^11.6.0",
     "pg": "^8.16.3",
-    "redis": "^5.8.2",
-    "swagger-ui-express": "^5.0.1"
+    "redis": "^5.8.2"
   },
   "devDependencies": {
+    "esbuild": "^0.27.0",
     "nodemon": "^3.1.10"
   }
 }

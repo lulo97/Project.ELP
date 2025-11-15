@@ -1,4 +1,4 @@
 {
-  "ignore": ["frontend/dist"],
+  "ignore": ["frontend/dist", "dist"],
   "ext": "js,jsx,json,ts,tsx"
 }
