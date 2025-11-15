@@ -60,16 +60,10 @@ module.exports = function (app) {
         app.use(r.path, r.handler);
     });
 
-    app.use("/api/docs", (req, res) => {
-        const data = extractRoutes(routes);
-        res.json(data);
-    });
-
     app.use("/api/{*any}", (req, res) => {
         return res.json({
             error: "Unknown route!",
             unknownRoute: req.originalUrl,
-            existingRoutes: extractRoutes(routes),
         });
     });
 };

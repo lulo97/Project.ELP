@@ -13,6 +13,7 @@ docker run -d ^
   -p 3001:3001 ^
   --name elp-application-container ^
   --restart unless-stopped ^
+  --network elp-network ^
   elp-application-image
 
 echo.
