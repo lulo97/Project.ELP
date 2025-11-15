@@ -115,3 +115,18 @@ sudo systemctl restart nginx
 ## 6. Access
 
 Open in browser: [http://elpprojectlulo97.duckdns.org](http://elpprojectlulo97.duckdns.org)
+
+# 7. Setting network
+
+Create network "elp-network":
+```bash
+docker network create elp-network
+```
+
+Adding this command to every docker run command: 
+
+```bash
+--network elp-network
+```
+
+**Containers dependency problem:** Application need to run after Redis and PostgreSQL container.
