@@ -30,38 +30,6 @@ const routes = [
     { path: "/api/youtube", module: "./youtube/index.js" },
 ];
 
-function extractRoutes(routes) {
-    return routes
-        .map(ele => {
-            // Case 1: Direct handler (like /api/helloworld)
-            if (ele.handler) {
-                return {
-                    path: ele.path,
-                    methods: ["get"] // default: single GET handler
-                };
-            }
-
-            // Case 2: Module with Express router
-            if (ele.module) {
-                const router = require(ele.module);
-
-                return router.stack
-                    .filter(r => r.route) // only keep actual routes
-                    .map(r => {
-                        const route = r.route;
-                        return {
-                            path: ele.path + route.path, // combine base + sub path
-                            methods: Object.keys(route.methods)
-                        };
-                    });
-            }
-
-            return null;
-        })
-        .flat()        // flatten nested arrays
-        .filter(Boolean); // remove nulls
-}
-
 module.exports = function (app) {
     routes.forEach((r) => {
         if (r.handler) {
@@ -84,4 +52,3 @@ module.exports = function (app) {
 };
 
 module.exports.routes = routes;
-module.exports.extractRoutes = extractRoutes;
