@@ -10,3 +10,5 @@
 
 # [5. Features]
 ## [5.1 Manage user's learning materials like words, idioms, phrases, sources]
+
+# [6. Deployment](./documents/deployment.md)
