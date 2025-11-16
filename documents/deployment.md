@@ -132,5 +132,5 @@ Adding this command to every docker run command:
 **Containers dependency problem:** Application need to run after Redis and PostgreSQL container.
 
 # 8. Service notes
-- Application using .env file and loaded in runtime -> If using esbuild then dotenv will failed in runtime -> Load env by replacing all process.env.key in build time using esbuild (only do this in backend bundle, doing in frontend bundle will expose all env variables)
+- Application using .env file and loaded in runtime -> If using esbuild then dotenv will failed in runtime -> Using flag --env-file in docker to inject .env.production
 

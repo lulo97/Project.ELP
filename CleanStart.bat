@@ -14,6 +14,7 @@ docker run -d ^
   --name elp-application-container ^
   --restart unless-stopped ^
   --network elp-network ^
+  --env-file .env.production ^
   elp-application-image
 
 echo.
