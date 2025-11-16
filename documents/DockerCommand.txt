@@ -1,0 +1,12 @@
+docker logs -f elp-application-container
+
+docker exec -it elp-application-container bash
+cd /app
+ls -la
+cat .env
+
+
+docker exec -it elp-redis-container redis-cli PING
+docker exec -it elp-redis-container redis-cli KEYS '*'
+
+docker exec -it $CONTAINER_NAME psql -U $POSTGRES_USER -d $POSTGRES_DB -c "YOUR_SQL_COMMAND_HERE;"
