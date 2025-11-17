@@ -1,0 +1,34 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" version="28.2.9">
+  <diagram name="Page-1" id="Jz4fhLLgIDJoVGgJ6hwV">
+    <mxGraphModel dx="724" dy="465" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="vampZCI7oszvMnJq0HsV-1" value="Table Sources" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="vampZCI7oszvMnJq0HsV-2" value="Table Words" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="120" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="vampZCI7oszvMnJq0HsV-3" value="Table Phrases" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="200" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="vampZCI7oszvMnJq0HsV-4" value="Table Idioms" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="280" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="vampZCI7oszvMnJq0HsV-5" value="Table Source_Translates" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="360" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="vampZCI7oszvMnJq0HsV-6" value="Input: source_id" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="40" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="vampZCI7oszvMnJq0HsV-7" value="Chức năng:&lt;div&gt;- Xem tài liệu từ source_id&lt;/div&gt;&lt;div&gt;- Tách văn bản tài liệu thành 1 mảng các từ (words)&lt;/div&gt;&lt;div&gt;- Hover vào 1 từ để show Tooltip&lt;/div&gt;&lt;div&gt;- Double click 1 từ để mở Popup CRUD từ, nghĩa, ví dụ&lt;/div&gt;&lt;div&gt;- Hiển thị màu cho từng đối tượng:&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;+ Word = xanh&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;+ Phrases = đỏ&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;+ Idioms = xanh lá&lt;br&gt;&lt;/div&gt;&lt;div&gt;- Từng paragraph của tài liệu có 1 khoảng ghi chú bên cạnh để ghi lại các câu hay ho, bản dịch, ngữ pháp ...&lt;/div&gt;&lt;div&gt;- Nút Save ở góc phải màn hình để Save trạng thái ghi chu cho các paragraph&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacingLeft=5;" vertex="1" parent="1">
+          <mxGeometry x="200" y="120" width="360" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="vampZCI7oszvMnJq0HsV-8" value="Components:&lt;div&gt;- Read = Component cha&lt;/div&gt;&lt;div&gt;- Popup = Component CRUD từ, nghĩa, ví dụ&lt;/div&gt;&lt;div&gt;- ClickableWordParagraph: Hiển thị 1 paragraph trong tài liệu với các từ click được&lt;/div&gt;&lt;div&gt;- TranslateChunk: Phần ghi chú tương ứng với ClickableWordParagraph&amp;nbsp;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacingLeft=5;" vertex="1" parent="1">
+          <mxGeometry x="200" y="360" width="360" height="120" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
