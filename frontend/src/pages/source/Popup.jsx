@@ -1,5 +1,7 @@
 import { CommonPopup } from "../../components/CommonPopup";
 import { PopupField } from "../../components/PopupField";
+import { RichTextEditorWithUpload } from "../../components/RichTextEditorWithUpload";
+import { useState } from "react";
 
 export function Popup({
   show,
@@ -34,12 +36,11 @@ export function Popup({
       />
 
       <PopupField
-        label={"Source"}
+        label="Source"
         fieldComponent={
-          <textarea
-            value={row.source}
-            disabled={action == "DELETE" ? true : false}
-            onChange={(e) => setCurrentRow({ ...row, source: e.target.value })}
+          <RichTextEditorWithUpload
+            initialValue={row.source}
+            onChange={(value) => setCurrentRow({ ...row, source: value })}
           />
         }
       />

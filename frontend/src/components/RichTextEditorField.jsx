@@ -5,6 +5,15 @@ import draftToHtml from "draftjs-to-html";
 import htmlToDraft from "html-to-draftjs";
 import { mergeTailwindClasses } from "../utils/mergeTailwindClasses";
 
+function htmlStringToState(html) {
+  const blocksFromHtml = htmlToDraft(html);
+  const contentState = ContentState.createFromBlockArray(
+    blocksFromHtml.contentBlocks,
+    blocksFromHtml.entityMap
+  );
+  return EditorState.createWithContent(contentState);
+}
+
 export function RichTextEditorField({
   value,
   onChange,
@@ -15,12 +24,7 @@ export function RichTextEditorField({
   const [editorState, setEditorState] = useState(() => {
     try {
       if (value) {
-        const blocksFromHtml = htmlToDraft(value);
-        const contentState = ContentState.createFromBlockArray(
-          blocksFromHtml.contentBlocks,
-          blocksFromHtml.entityMap
-        );
-        return EditorState.createWithContent(contentState);
+        return htmlStringToState(value);
       }
       return EditorState.createEmpty();
     } catch {
@@ -28,15 +32,10 @@ export function RichTextEditorField({
     }
   });
 
-  // Keep editor in sync if `value` prop changes externally
   useEffect(() => {
     if (!value) return;
-    const blocksFromHtml = htmlToDraft(value);
-    const contentState = ContentState.createFromBlockArray(
-      blocksFromHtml.contentBlocks,
-      blocksFromHtml.entityMap
-    );
-    setEditorState(EditorState.createWithContent(contentState));
+    setEditorState(htmlStringToState(value));
+    console.log("Detect value change, value = ", value);
   }, [value]);
 
   const handleEditorChange = (state) => {
