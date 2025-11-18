@@ -3,9 +3,11 @@ import { TopLayout } from "./TopLayout";
 import { LeftSide } from "./LeftSide";
 import { RightSide } from "./RightSide";
 import { SplitPane } from "../../components/SplitPane";
+import { Popup } from "./Popup";
 
 export const EMPTY_STATE = {
   youtube_id: "",
+  openPopup: false,
   file_name: "",
   total_question: 3,
   //[{ text, start, end }]
@@ -25,6 +27,18 @@ export function YoutubeListening() {
 
   return (
     <div className="h-[90vh] flex flex-col p-4 gap-2 bg-gray-100">
+      <Popup
+        show={state.openPopup}
+        title={"Existing audios"}
+        handleClose={() => {
+          setState((old_state) => ({
+            ...old_state,
+            openPopup: false,
+          }));
+        }}
+        setState={setState}
+      />
+
       <TopLayout state={state} setState={setState} />
       <SplitPane
         right={<RightSide state={state} setState={setState} />}

@@ -7,8 +7,8 @@ export function Button({
   className = "",
   ...props
 }) {
-
-  if (Object.keys(props).includes("disable")) console.warn("Incorrect props = 'disable'!")
+  if (Object.keys(props).includes("disable"))
+    console.warn("Incorrect props = 'disable'!");
 
   const _className = `
         rounded-lg shadow-md transition w-fit
@@ -20,6 +20,7 @@ export function Button({
         px-4 py-2
         ${className}
       `;
+
   return (
     <button
       {...props}

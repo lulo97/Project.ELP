@@ -37,7 +37,7 @@ export function TopLayout({ state, setState }) {
       ""
     );
 
-    const old_state = { ...state }
+    const old_state = { ...state };
 
     setState({
       ...EMPTY_STATE,
@@ -49,7 +49,20 @@ export function TopLayout({ state, setState }) {
 
   return (
     <div>
-      <PageTitle title={"Youtube listening"} />
+      <div className="flex justify-between">
+        <PageTitle title={"Youtube listening"} />
+
+        <Button
+          className="py-1 h-fit"
+          text={"Existing audios"}
+          onClick={() => {
+            setState((old_state) => ({
+              ...old_state,
+              openPopup: true,
+            }));
+          }}
+        />
+      </div>
 
       <div className="flex gap-2 bg-white border border-gray-300 rounded p-2 shadow-md">
         <Input

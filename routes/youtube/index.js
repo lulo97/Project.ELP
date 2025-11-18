@@ -3,6 +3,24 @@ const { Readable } = require("stream");
 
 const router = express.Router();
 
+async function getAllAudios(req, res, next) {
+  try {
+    const host = process.env.UTILS_HOST || 'http://localhost:3002';
+
+    const result = await fetch(host + `/get_audios`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+    const result_json = await result.json();
+
+    res.json(result_json);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ data: null, error: err.message });
+  }
+}
+
+
 async function transcript(req, res, next) {
   try {
     const { video_id } = req.query;
@@ -113,5 +131,6 @@ async function stream_audio(req, res) {
 router.get("/transcript", transcript);
 router.get("/audio", audio);
 router.get("/stream_audio", stream_audio);
+router.get("/get_all_audios", getAllAudios);
 
 module.exports = router;
