@@ -29,7 +29,7 @@ export function FillInBankTemplate({
 
   function getInputClass() {
     if (!submitted) return "";
-    if (input_word === word) return `text-green-600 font-semibold`;
+    if (input_word.trim().toLowerCase() === word.trim().toLowerCase()) return `text-green-600 font-semibold`;
     return `text-red-600 font-semibold`;
   }
 

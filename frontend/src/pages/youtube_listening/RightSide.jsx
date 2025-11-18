@@ -19,7 +19,12 @@ export function RightSide({ state, setState }) {
       return;
     }
 
-    setState((old_state) => ({ ...old_state, loading: true }));
+    setState((old_state) => ({
+      ...old_state,
+      loading: true,
+      submitted: false,
+      fill_in_blanks: [],
+    }));
 
     let contexts = combineTextsByMinWords(
       state.transcripts.map((ele) => ele.text)
@@ -45,17 +50,25 @@ export function RightSide({ state, setState }) {
         let start = null;
         let end = null;
 
-        state.transcripts.forEach((ele) => {
-          if (context.substring(0, ele.text.length) === ele.text) {
-            start = ele.start;
-          }
+        function normalize(str) {
+          return str.toLowerCase().replace(/[^a-z0-9]/g, "");
+        }
 
-          if (
-            context.substring(context.length - ele.text.length) === ele.text
-          ) {
+        const normContext = normalize(context);
+
+        state.transcripts.forEach((ele) => {
+          const normText = normalize(ele.text);
+
+          if (normText && normContext.includes(normText)) {
+            if (start === null) start = ele.start;
             end = ele.end;
           }
         });
+
+        if (!start || !end) {
+          console.error({ state, context, start, end });
+          throw Error("Something is wrong here!");
+        }
 
         new_fill_in_blanks.push({
           ...question,
@@ -103,7 +116,9 @@ export function RightSide({ state, setState }) {
           text={state.loading ? request_percent : "Generate"}
           onClick={handleGenerateQuestion}
           disabled={state.loading}
-          className={`${state.loading ? "min-w-40" : "min-w-28"} whitespace-nowrap`}
+          className={`${
+            state.loading ? "min-w-40" : "min-w-28"
+          } whitespace-nowrap`}
         />
       </div>
 
@@ -135,9 +150,11 @@ export function RightSide({ state, setState }) {
               postfix={
                 state.submitted ? (
                   <span className="font-bold text-green-500">
-                    &nbsp;({ele.word}, {`${ele.start} -${ele.end}`})
+                    &nbsp;({ele.word}, {`${ele.start} - ${ele.end}`})
                   </span>
-                ) : null
+                ) : <span>
+                    &nbsp;({`${ele.start} - ${ele.end}`})
+                  </span>
               }
             />
           </div>

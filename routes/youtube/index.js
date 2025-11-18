@@ -13,9 +13,34 @@ async function transcript(req, res, next) {
         .json({ data: null, error: "Missing video_id parameter" });
     }
 
-    const host = process.env.YOUTUBE_HOST || "http://localhost:3005";
+    const host = process.env.UTILS_HOST || 'http://localhost:3002';
 
     const result = await fetch(host + `/transcript?video_id=${video_id}`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+    const result_json = await result.json();
+
+    res.json(result_json);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ data: null, error: err.message });
+  }
+}
+
+async function audio(req, res, next) {
+  try {
+    const { video_id } = req.query;
+
+    if (!video_id) {
+      return res
+        .status(400)
+        .json({ data: null, error: "Missing video_id parameter" });
+    }
+
+    const host = process.env.UTILS_HOST || 'http://localhost:3002';
+
+    const result = await fetch(host + `/audio?video_id=${video_id}`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     });
@@ -50,7 +75,7 @@ async function stream_audio(req, res) {
 
     const range = req.headers.range;
 
-    const host = process.env.YOUTUBE_HOST || "http://localhost:3005";
+    const host = process.env.UTILS_HOST || 'http://localhost:3002';
     const url = `${host}/stream_audio?video_id=${video_id}`;
 
     const response = await fetch(url, {
@@ -86,6 +111,7 @@ async function stream_audio(req, res) {
 }
 
 router.get("/transcript", transcript);
+router.get("/audio", audio);
 router.get("/stream_audio", stream_audio);
 
 module.exports = router;

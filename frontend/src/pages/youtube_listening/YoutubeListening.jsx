@@ -5,7 +5,8 @@ import { RightSide } from "./RightSide";
 import { SplitPane } from "../../components/SplitPane";
 
 export const EMPTY_STATE = {
-  youtube_id: "NcsGpDFKCgY",
+  youtube_id: "",
+  file_name: "",
   total_question: 3,
   //[{ text, start, end }]
   transcripts: [],

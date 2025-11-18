@@ -9,7 +9,7 @@ async function stt(req, res, next) {
             return res.status(400).json({ data: null, error: "Missing base64 parameter" });
         }
 
-        const sttHost = process.env.STT_HOST || 'http://localhost:3003';
+        const sttHost = process.env.UTILS_HOST || 'http://localhost:3002';
 
         const result = await fetch(sttHost, {
             method: "POST",

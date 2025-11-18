@@ -2,6 +2,7 @@ import { PageTitle } from "../../components/PageTitle";
 import { Input } from "../../components/Input";
 import { Button } from "../../components/Button";
 import { getTranscript } from "../../services/youtube";
+import { getAudio } from "../../services/youtube";
 import { message } from "../../providers/MessageProvider";
 import { EMPTY_STATE } from "./YoutubeListening";
 import { toMinutesSeconds } from "../../utils/convertTime";
@@ -23,7 +24,27 @@ export function TopLayout({ state, setState }) {
       };
     });
 
-    setState({ ...EMPTY_STATE, transcripts: transcripts });
+    const audio_result = await getAudio(state.youtube_id);
+
+    if (audio_result.error) {
+      message({ type: "error", text: audio_result.error });
+      return;
+    }
+
+    //Replace .mp3 to ""
+    const file_name = audio_result.data.file_name.replace(
+      "." + audio_result.data.format,
+      ""
+    );
+
+    const old_state = { ...state }
+
+    setState({
+      ...EMPTY_STATE,
+      youtube_id: old_state.youtube_id,
+      transcripts: transcripts,
+      file_name: file_name,
+    });
   }
 
   return (
@@ -54,7 +75,7 @@ export function TopLayout({ state, setState }) {
           className="min-w-28"
           text={"Reset"}
           onClick={() => {
-            setState(EMPTY_STATE)
+            setState(EMPTY_STATE);
           }}
         />
       </div>

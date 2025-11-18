@@ -17,7 +17,7 @@ async function tts(req, res, next) {
             return res.json({ data: { audio_base64: existingTTSRow.audio_base64 }, error: null });
         }
 
-        const ttsHost = process.env.TTS_HOST || 'http://localhost:5000';
+        const ttsHost = process.env.UTILS_HOST || 'http://localhost:3002';
 
         const result = await fetch(`${ttsHost}/tts?text=${encodeURIComponent(text)}`);
 

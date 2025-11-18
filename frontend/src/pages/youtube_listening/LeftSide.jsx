@@ -6,11 +6,12 @@ export function LeftSide({ state, setState }) {
     <div className="flex-1 flex flex-col border border-gray-300 rounded p-2 bg-white shadow-md h-full">
       <div className="flex items-center gap-2 mb-2">
         <audio
+          key={state.file_name}
           controls
           className="flex-shrink-0 flex-1 h-10"
           src={
-            state.youtube_id
-              ? `/api/youtube/stream_audio?video_id=${state.youtube_id}`
+            state.file_name
+              ? `/api/youtube/stream_audio?video_id=${state.file_name}`
               : ""
           }
           onError={() => console.error("Audio failed to load.")}
