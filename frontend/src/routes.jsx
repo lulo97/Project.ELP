@@ -26,12 +26,20 @@ import { LogIn } from "./pages/login/Login";
 import { ViewSources } from "./pages/view_sources/ViewSources";
 import { YoutubeListening } from "./pages/youtube_listening/YoutubeListening";
 import { Prompts } from "./pages/prompts/Prompts";
+import { ModelInformation } from "./pages/model_information/ModelInformation";
 
 export const routes = [
   {
     name: "System",
     isAdmin: true,
-    children: [{ name: "Prompts", path: "prompts", element: <Prompts /> }],
+    children: [
+      { name: "Prompts", path: "prompts", element: <Prompts /> },
+      {
+        name: "Model Information",
+        path: "model_information",
+        element: <ModelInformation />,
+      },
+    ],
   },
   {
     name: "Library",

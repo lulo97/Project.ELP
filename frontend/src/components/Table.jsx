@@ -50,10 +50,33 @@ export function Table({
                   className="hover:bg-gray-50 transition-colors"
                 >
                   {columns.map((col) => {
-                    const key = isObject(col) ? col.id : col;
-                    const cell = getLowercaseKeys(row)[key.toLowerCase()];
                     const isTruncate =
                       col.truncate != null ? col.truncate : true;
+
+                    const key = isObject(col) ? col.id : col;
+
+                    //Trying to map any column name to UI declared column id
+                    //Example: database column = nAmE vs UI column id = NaMe still matched
+                    let cell = getLowercaseKeys(row)[key.toLowerCase()];
+
+                    //If cell value is boolean then render special
+                    if (
+                      typeof cell === "boolean" ||
+                      ["true", "false"].includes(String(cell))
+                    ) {
+                      return (
+                        <td
+                          key={key + rowIndex}
+                          className="px-4 py-3 h-[48px] flex items-center justify-center"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={cell === true || cell === "true"}
+                            className="flex-none"
+                          />
+                        </td>
+                      );
+                    }
 
                     return (
                       <td
