@@ -24,6 +24,7 @@ export function Prompts() {
   const [paginationData, setPaginationData] = useState({});
   const [searchValues, setSearchValues] = useState([
     { id: "model_name", label: "Model name", value: "" },
+    { id: "task_name", label: "Task name", value: "" },
     { id: "prompt", label: "Prompt", value: "" },
     { id: "description", label: "Description", value: "" },
   ]);
@@ -109,8 +110,8 @@ export function Prompts() {
         columns={[
           { id: "id", name: "Id" },
           { id: "model_name", name: "Model name" },
+          { id: "task_name", name: "Task name" },
           { id: "prompt", name: "Prompt" },
-          { id: "active", name: "Active" },
           { id: "description", name: "Description" },
         ]}
         rows={rows}

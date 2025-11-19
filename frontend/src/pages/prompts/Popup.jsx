@@ -36,6 +36,19 @@ export function Popup({
       />
 
       <PopupField
+        label="Task name"
+        fieldComponent={
+          <input
+            value={row.task_name}
+            disabled={action == "DELETE" ? true : false}
+            onChange={(e) =>
+              setCurrentRow({ ...row, task_name: e.target.value })
+            }
+          />
+        }
+      />
+
+      <PopupField
         label="Prompt"
         fieldComponent={
           <textarea
@@ -43,24 +56,6 @@ export function Popup({
             value={row.prompt}
             disabled={action == "DELETE" ? true : false}
             onChange={(e) => setCurrentRow({ ...row, prompt: e.target.value })}
-          />
-        }
-      />
-
-      <PopupField
-        label="Active"
-        fieldComponent={
-          <input
-            className="flex-initial" //Override default flex-1 of PopupField
-            type="checkbox"
-            checked={row.active === true || row.active === "true"}
-            disabled={action === "DELETE"}
-            onChange={(e) =>
-              setCurrentRow({
-                ...row,
-                active: !row.active,
-              })
-            }
           />
         }
       />

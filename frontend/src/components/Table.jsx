@@ -11,6 +11,7 @@ export function Table({
   columns = [],
   rows = [],
   openPopup = () => {},
+  showActionColumn = true,
   additionButtons = [],
   fetchData = () => {},
   paginationData = {},
@@ -28,7 +29,11 @@ export function Table({
                 {isObject(col) ? col.name : col}
               </th>
             ))}
-            <th className="px-4 py-3 border-b">{getTranslation("Actions")}</th>
+            {showActionColumn && (
+              <th className="px-4 py-3 border-b">
+                {getTranslation("Actions")}
+              </th>
+            )}
           </tr>
         </thead>
 
@@ -95,27 +100,30 @@ export function Table({
                     <td> = height strech to <tr> height auto
                     Wrapping cell inside <td> by a <div> and <div> style = h-full
                   */}
-                  <td className="px-4 py-3 space-x-2 h-[48px]">
-                    <div className="flex h-full items-center space-x-2">
-                      <Button
-                        className="py-0 h-full"
-                        text={getTranslation("Edit")}
-                        onClick={() =>
-                          openPopup({ currentRow: row, action: "EDIT" })
-                        }
-                      />
-                      <Button
-                        className="py-0 h-full"
-                        text={getTranslation("Delete")}
-                        onClick={() =>
-                          openPopup({ currentRow: row, action: "DELETE" })
-                        }
-                      />
-                      {additionButtons.map((renderBtn, i) => (
-                        <Fragment key={i}>{renderBtn(row)}</Fragment>
-                      ))}
-                    </div>
-                  </td>
+
+                  {showActionColumn && (
+                    <td className="px-4 py-3 space-x-2 h-[48px]">
+                      <div className="flex h-full items-center space-x-2">
+                        <Button
+                          className="py-0 h-full"
+                          text={getTranslation("Edit")}
+                          onClick={() =>
+                            openPopup({ currentRow: row, action: "EDIT" })
+                          }
+                        />
+                        <Button
+                          className="py-0 h-full"
+                          text={getTranslation("Delete")}
+                          onClick={() =>
+                            openPopup({ currentRow: row, action: "DELETE" })
+                          }
+                        />
+                        {additionButtons.map((renderBtn, i) => (
+                          <Fragment key={i}>{renderBtn(row)}</Fragment>
+                        ))}
+                      </div>
+                    </td>
+                  )}
                 </tr>
               ))}
 

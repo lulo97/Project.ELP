@@ -1,4 +1,4 @@
-async function updateConsts({ key, value }) {
+export async function updateConsts({ key, value }) {
   const res = await fetch(`/api/consts`, {
     method: "PUT",
     headers: {

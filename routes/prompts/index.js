@@ -12,14 +12,14 @@ const router = express.Router();
 // -------------------- GET PROMPTS --------------------
 async function getPrompts(req, res, next) {
   try {
-    const { prompt, model_name, description, active } = req.query;
+    const { prompt, model_name, description, task_name } = req.query;
 
     const result = await executeProcedure("prc_crud_prompts", [
       { name: "p_id", type: "text", value: null },
+      { name: "p_task_name", type: "text", value: task_name }, // added
       { name: "p_prompt", type: "text", value: prompt },
       { name: "p_model_name", type: "text", value: model_name },
       { name: "p_description", type: "text", value: description },
-      { name: "p_active", type: "text", value: active },
       { name: "p_action", type: "text", value: "READ" },
       { name: "p_rows", type: "CURSOR", value: "cursor_" + getRandomId() },
       { name: "p_error", type: "text", value: null },
@@ -46,15 +46,15 @@ async function getPrompts(req, res, next) {
 // -------------------- ADD PROMPT --------------------
 async function addPrompt(req, res) {
   try {
-    const { prompt, model_name, description, active } = req.body;
+    const { prompt, model_name, description, task_name } = req.body; // added
     const id = getRandomId();
 
     const result = await executeProcedure("prc_crud_prompts", [
       { name: "p_id", type: "text", value: id },
+      { name: "p_task_name", type: "text", value: task_name }, // added
       { name: "p_prompt", type: "text", value: prompt },
       { name: "p_model_name", type: "text", value: model_name },
       { name: "p_description", type: "text", value: description },
-      { name: "p_active", type: "text", value: active },
       { name: "p_action", type: "text", value: "CREATE" },
       { name: "p_rows", type: "CURSOR", value: null },
       { name: "p_error", type: "text", value: null },
@@ -65,7 +65,7 @@ async function addPrompt(req, res) {
       return res.status(400).json({ error: result.p_error, data: null });
     }
 
-    res.json({ error: null, data: { id, prompt } });
+    res.json({ error: null, data: { id, task_name, prompt } }); // included task_name
   } catch (err) {
     console.error("addPrompt error:", err);
     res.status(500).json({ error: err.message, data: null });
@@ -76,14 +76,14 @@ async function addPrompt(req, res) {
 async function updatePrompt(req, res) {
   try {
     const { id } = req.params;
-    const { prompt, model_name, description, active } = req.body;
+    const { prompt, model_name, description, task_name } = req.body; // added
 
     const result = await executeProcedure("prc_crud_prompts", [
       { name: "p_id", type: "text", value: id },
+      { name: "p_task_name", type: "text", value: task_name }, // added
       { name: "p_prompt", type: "text", value: prompt },
       { name: "p_model_name", type: "text", value: model_name },
       { name: "p_description", type: "text", value: description },
-      { name: "p_active", type: "text", value: active },
       { name: "p_action", type: "text", value: "UPDATE" },
       { name: "p_rows", type: "CURSOR", value: null },
       { name: "p_error", type: "text", value: null },
@@ -94,7 +94,7 @@ async function updatePrompt(req, res) {
       return res.status(400).json({ error: result.p_error, data: null });
     }
 
-    res.json({ error: null, data: { id, prompt } });
+    res.json({ error: null, data: { id, task_name, prompt } }); // included task_name
   } catch (err) {
     console.error("updatePrompt error:", err);
     res.status(500).json({ error: err.message, data: null });
@@ -108,6 +108,7 @@ async function deletePrompt(req, res) {
 
     const result = await executeProcedure("prc_crud_prompts", [
       { name: "p_id", type: "text", value: id },
+      { name: "p_task_name", type: "text", value: null }, // added
       { name: "p_prompt", type: "text", value: null },
       { name: "p_model_name", type: "text", value: null },
       { name: "p_description", type: "text", value: null },

@@ -14,7 +14,7 @@ async function getModelInformations(req, res, next) {
   try {
     const username = await getUsernameFromToken(req.headers["authorization"]);
 
-    const result = await executeProcedure("prc_crud_model_information", [
+    const result = await executeProcedure("prc_crud_model_informations", [
       { name: "p_username", type: "text", value: username },
       { name: "p_action", type: "text", value: "READ" },
       { name: "p_rows", type: "CURSOR", value: "cursor_" + getRandomId() },
