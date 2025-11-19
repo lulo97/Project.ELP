@@ -23,7 +23,7 @@ export function PopupField({
 
   if (direction === "horizontal") {
     return (
-      <div className="flex items-center mb-4">
+      <div className="flex items-start mb-4">
         <label className="w-32 text-sm font-medium text-gray-700">
           {label}
         </label>

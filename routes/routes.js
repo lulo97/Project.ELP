@@ -24,6 +24,7 @@ const events = require("./events/index.js");
 const auth = require("./auth/index.js");
 const read = require("./read/index.js");
 const youtube = require("./youtube/index.js");
+const prompts = require("./prompts/index.js");
 
 const routes = [
     { path: "/api/helloworld", handler: (req, res) => res.json({ message: "Hello World" }) },
@@ -53,6 +54,7 @@ const routes = [
     { path: "/api/auth", handler: auth },
     { path: "/api/read", handler: read },
     { path: "/api/youtube", handler: youtube },
+    { path: "/api/prompts", handler: prompts },
 ];
 
 module.exports = function (app) {

@@ -55,6 +55,8 @@ export function Header({ language, handleChangeLanguage }) {
 
           if (ele.isAuth && !userName) return null;
 
+          if (ele.isAdmin && userName.toLowerCase() != 'admin') return null;
+
           // Dropdown menu
           if (ele.children) {
             const menu = ele.children.map((item) => ({

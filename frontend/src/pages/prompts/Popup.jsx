@@ -1,0 +1,82 @@
+import { CommonPopup } from "../../components/CommonPopup";
+import { PopupField } from "../../components/PopupField";
+
+export function Popup({
+  show,
+  title,
+  action,
+  row,
+  setCurrentRow,
+  handleConfirm,
+  handleClose,
+}) {
+  return (
+    <CommonPopup
+      show={show}
+      title={title}
+      handleConfirm={() => handleConfirm({ action })}
+      handleClose={handleClose}
+    >
+      <PopupField
+        label="Id"
+        fieldComponent={<input value={row.id} disabled />}
+      />
+
+      <PopupField
+        label="Model name"
+        fieldComponent={
+          <input
+            value={row.model_name}
+            disabled={action == "DELETE" ? true : false}
+            onChange={(e) =>
+              setCurrentRow({ ...row, model_name: e.target.value })
+            }
+          />
+        }
+      />
+
+      <PopupField
+        label="Prompt"
+        fieldComponent={
+          <textarea
+            className="h-[50vh]"
+            value={row.prompt}
+            disabled={action == "DELETE" ? true : false}
+            onChange={(e) => setCurrentRow({ ...row, prompt: e.target.value })}
+          />
+        }
+      />
+
+      <PopupField
+        label="Active"
+        fieldComponent={
+          <input
+            className="flex-initial" //Override default flex-1 of PopupField
+            type="checkbox"
+            checked={row.active === true || row.active === "true"}
+            disabled={action === "DELETE"}
+            onChange={(e) =>
+              setCurrentRow({
+                ...row,
+                active: !row.active,
+              })
+            }
+          />
+        }
+      />
+
+      <PopupField
+        label="Description"
+        fieldComponent={
+          <input
+            value={row.description}
+            disabled={action == "DELETE" ? true : false}
+            onChange={(e) =>
+              setCurrentRow({ ...row, description: e.target.value })
+            }
+          />
+        }
+      />
+    </CommonPopup>
+  );
+}
