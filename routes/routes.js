@@ -24,8 +24,6 @@ const events = require("./events/index.js");
 const auth = require("./auth/index.js");
 const read = require("./read/index.js");
 const youtube = require("./youtube/index.js");
-const prompts = require("./prompts/index.js");
-const model_informations = require("./model_informations/index.js");
 const consts = require("./consts/index.js");
 
 const routes = [
@@ -59,8 +57,6 @@ const routes = [
   { path: "/api/auth", handler: auth },
   { path: "/api/read", handler: read },
   { path: "/api/youtube", handler: youtube },
-  { path: "/api/prompts", handler: prompts },
-  { path: "/api/model_informations", handler: model_informations },
   { path: "/api/consts", handler: consts },
 ];
 
