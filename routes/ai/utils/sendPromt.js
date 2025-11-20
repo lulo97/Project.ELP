@@ -22,7 +22,7 @@ function getRandomParams() {
 }
 
 async function sendPrompt(prompt, is_random = false) {
-  const url = process.env.AI_HOST + "/v1/chat/completions";
+  const url = (process.env.AI_HOST || "http://localhost:3004") + "/v1/chat/completions";
 
   // Default parameters
   const defaultBody = {

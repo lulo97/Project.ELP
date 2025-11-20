@@ -1,18 +1,12 @@
 const { sendPrompt } = require("../utils/sendPromt");
-
-const PROMPT = `
-Check the following sentence for grammar, punctuation, and clarity errors.
-Return your response only in JSON format with the following fields:
-"corrected": the corrected sentence
-"explanations": brief explanations for each correction
-
-Sentence: [sentence]
-`;
+const { getPrompt } = require("../utils/getPrompt");
 
 async function handleGrammar(text) {
   if (!text || [null, undefined, ""].includes(text)) {
     throw Error("Text must not be null!");
   }
+
+  const PROMPT = await getPrompt("GRAMMAR");
 
   const sentences = text
     .split(".")

@@ -11,8 +11,6 @@ async function handleSummary({ context }) {
 
   const PROMPT = await getPrompt("SUMMARY");
 
-    console.log({PROMPT})
-
   const prompt = PROMPT.replace("[context]", context);
   const result = await sendPrompt(prompt);
 
