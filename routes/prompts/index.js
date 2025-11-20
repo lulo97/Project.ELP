@@ -9,7 +9,29 @@ const { verifyAdmin } = require("../../middleware/verifyAdmin.js");
 
 const router = express.Router();
 
-// -------------------- GET PROMPTS --------------------
+async function getPromptMetadata(req, res, next) {
+  try {
+    const { prompt, model_name, description, task_name } = req.query;
+
+    const result = await executeProcedure("prc_crud_prompts", [
+      { name: "p_id", type: "text", value: null },
+      { name: "p_task_name", type: "text", value: task_name }, // added
+      { name: "p_prompt", type: "text", value: prompt },
+      { name: "p_model_name", type: "text", value: model_name },
+      { name: "p_description", type: "text", value: description },
+      { name: "p_action", type: "text", value: "READ_METADATA" },
+      { name: "p_rows", type: "CURSOR", value: "cursor_" + getRandomId() },
+      { name: "p_error", type: "text", value: null },
+      { name: "p_json_params", type: "text", value: null },
+    ]);
+
+    return res.json({ data: result.p_rows, error: result.p_error });
+  } catch (err) {
+    console.error("getPrompts error:", err);
+    return res.json({ data: null, error: err.message });
+  }
+}
+
 async function getPrompts(req, res, next) {
   try {
     const { prompt, model_name, description, task_name } = req.query;
@@ -131,6 +153,7 @@ async function deletePrompt(req, res) {
 }
 
 // -------------------- ROUTES --------------------
+router.get("/metadata", verifyToken, verifyAdmin, getPromptMetadata);
 router.get("/", verifyToken, verifyAdmin, getPrompts, paginationMiddleware);
 router.post("/", verifyToken, verifyAdmin, addPrompt);
 router.put("/:id", verifyToken, verifyAdmin, updatePrompt);

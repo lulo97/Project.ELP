@@ -13,14 +13,23 @@ export async function getPrompt({ prompt, where_options }) {
       },
     }
   );
-  return await result.json();;
+  return await result.json();
+}
+
+export async function getPromptMetadata() {
+  const result = await fetch(`/api/prompts/metadata`, {
+    headers: {
+      authorization: "Bearer " + localStorage.getItem("token"),
+    },
+  });
+  return await result.json();
 }
 
 export async function getAllPrompts({ pageIndex, pageSize, prompt }) {
   const result = await fetch(
-    `/api/prompts?pageIndex=${pageIndex || ""}&pageSize=${pageSize || ""}&prompt=${
-      prompt || ""
-    }`,
+    `/api/prompts?pageIndex=${pageIndex || ""}&pageSize=${
+      pageSize || ""
+    }&prompt=${prompt || ""}`,
     {
       headers: {
         authorization: "Bearer " + localStorage.getItem("token"),
