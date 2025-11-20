@@ -3,6 +3,8 @@ const express = require("express");
 const { executeProcedure } = require("../../database/executeProcedure.js");
 const { verifyToken } = require("../../middleware/verifyToken.js");
 const { getUsernameFromToken } = require("../../utils/getUsernameFromToken.js");
+const { getConnection } = require("../../redis/getConnection");
+const { initData } = require("../../redis/initData");
 
 const router = express.Router();
 
@@ -25,7 +27,11 @@ async function updateConsts(req, res) {
       return res.status(400).json({ error: result.p_error, data: null });
     }
 
-    res.json({ error: null, data: { id, word, part_of_speech, example } });
+    const client = await getConnection();
+    await client.FLUSHALL();
+    await initData();
+
+    res.json({ error: null, data: null });
   } catch (err) {
     console.error("error:", err);
     res.status(500).json({ error: err.message, data: null });

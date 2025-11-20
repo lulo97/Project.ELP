@@ -9,10 +9,10 @@ import {
 } from "../../services/prompts";
 import { PageTitle } from "../../components/PageTitle";
 import { Button } from "../../components/Button";
-import { Input } from "../../components/Input";
 import { SearchTable } from "../../components/SearchTable";
-import { Popup as PopupDetail } from "../read/Popup";
 import { message } from "../../providers/MessageProvider";
+import { PopupTest } from "./PopupTest";
+import { getConsts } from "../../utils/const";
 
 const EMPTY_ROW = { id: "", prompt: "" };
 
@@ -20,6 +20,7 @@ export function Prompts() {
   const [rows, setRows] = useState([]);
   const [currentRow, setCurrentRow] = useState(EMPTY_ROW);
   const [showPopup, setShowPopup] = useState(false);
+  const [showPopupTest, setShowPopupTest] = useState(false);
   const [action, setAction] = useState("ADD");
   const [paginationData, setPaginationData] = useState({});
   const [searchValues, setSearchValues] = useState([
@@ -28,8 +29,6 @@ export function Prompts() {
     { id: "prompt", label: "Prompt", value: "" },
     { id: "description", label: "Description", value: "" },
   ]);
-  const [showPopupDetail, setShowPopupDetail] = useState(false);
-  const [selectedPrompt, setSelectedPrompt] = useState(EMPTY_ROW);
 
   async function fetchRows(
     { pageIndex, pageSize } = {
@@ -78,9 +77,9 @@ export function Prompts() {
     setShowPopup(false);
   }
 
-  function handleClosePopupDetail() {
+  function handleCloseTest() {
     setCurrentRow(EMPTY_ROW);
-    setShowPopupDetail(false);
+    setShowPopupTest(false);
   }
 
   useEffect(() => {
@@ -118,6 +117,19 @@ export function Prompts() {
         openPopup={openPopup}
         fetchData={fetchRows}
         paginationData={paginationData}
+        additionButtons={[
+          (row) => (
+            <Button
+              className="py-0 h-full"
+              text={"Test"}
+              disabled={getConsts().MODEL_NAME != row.model_name}
+              onClick={() => {
+                setShowPopupTest(true)
+                setCurrentRow(row)
+              }}
+            />
+          ),
+        ]}
       />
 
       {/* Popup (already styled) */}
@@ -131,14 +143,12 @@ export function Prompts() {
         handleClose={handleClose}
       />
 
-      {selectedPrompt.prompt && (
-        <PopupDetail
-          show={showPopupDetail}
-          title="Add"
-          prompt={selectedPrompt.prompt}
-          handleClose={handleClosePopupDetail}
-        />
-      )}
+      <PopupTest
+        title={"Test"}
+        show={showPopupTest}
+        row={currentRow}
+        handleClose={handleCloseTest}
+      />
     </div>
   );
 }

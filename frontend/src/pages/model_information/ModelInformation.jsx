@@ -5,6 +5,7 @@ import { Button } from "../../components/Button";
 import { Table } from "../../components/Table";
 import { getModelInformations } from "../../services/model_informations";
 import { PageTitle } from "../../components/PageTitle";
+import { updateConsts } from "../../services/consts";
 
 const EMPTY_STATE = {
   //Table CONSTS key = MODEL_NAME
@@ -89,7 +90,7 @@ export function ModelInformation() {
             id: ele,
             name: ele,
           }))}
-          value={state.model_name}
+          value={state.selected_model_name}
           className="mr-4"
         />
 
@@ -105,7 +106,6 @@ export function ModelInformation() {
           { id: "description", name: "Description" },
         ]}
         rows={state.prompts}
-        openPopup={() => {}}
         fetchData={fetchData}
         showActionColumn={false}
         paginationData={paginationData}

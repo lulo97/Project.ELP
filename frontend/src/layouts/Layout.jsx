@@ -24,13 +24,17 @@ export function Layout() {
 
   // Track locations with timestamp
   useEffect(() => {
-    const previousLocations =
+    let previousLocations =
       JSON.parse(localStorage.getItem("locations") || "[]");
 
     const newLocation = {
       path: location.pathname + location.search,
       timestamp: new Date().toISOString(),
     };
+
+    if (previousLocations.length >= 10) {
+      previousLocations = []
+    }
 
     // Append new location
     previousLocations.push(newLocation);
