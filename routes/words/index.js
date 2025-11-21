@@ -13,8 +13,13 @@ const router = express.Router();
 async function getWords(req, res, next) {
   try {
     const { word, where_options } = req.query;
-    const username = await getUsernameFromToken(req.headers["authorization"]);
+    const username = await getUsernameFromToken(req.cookies?.token);
+
+    console.log({username})
+
     const p_json_params = where_options ? JSON.stringify(where_options) : "";
+
+    console.log({p_json_params})
 
     const result = await executeProcedure("prc_crud_words", [
       { name: "p_id", type: "text", value: null },
@@ -23,7 +28,7 @@ async function getWords(req, res, next) {
       { name: "p_action", type: "text", value: "READ" },
       { name: "p_rows", type: "CURSOR", value: "cursor_" + getRandomId() },
       { name: "p_error", type: "text", value: null },
-      { name: "p_json_params", type: "text", value: p_json_params },
+      { name: "p_json_params", type: "text", value: p_json_params || null },
     ]);
 
     if (result.p_error) {
@@ -47,7 +52,7 @@ async function getWords(req, res, next) {
 async function addWord(req, res) {
   try {
     const { word } = req.body;
-    const username = await getUsernameFromToken(req.headers["authorization"]);
+    const username = await getUsernameFromToken(req.cookies?.token);
     const id = getRandomId();
 
     const result = await executeProcedure("prc_crud_words", [
@@ -76,7 +81,7 @@ async function updateWord(req, res) {
   try {
     const { id } = req.params;
     const { word } = req.body;
-    const username = await getUsernameFromToken(req.headers["authorization"]);
+    const username = await getUsernameFromToken(req.cookies?.token);
 
     const result = await executeProcedure("prc_crud_words", [
       { name: "p_id", type: "text", value: id },
@@ -103,7 +108,7 @@ async function updateWord(req, res) {
 async function deleteWord(req, res) {
   try {
     const { id } = req.params;
-    const username = await getUsernameFromToken(req.headers["authorization"]);
+    const username = await getUsernameFromToken(req.cookies?.token);
 
     const result = await executeProcedure("prc_crud_words", [
       { name: "p_id", type: "text", value: id },

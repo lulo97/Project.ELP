@@ -11,7 +11,7 @@ const router = express.Router();
 async function getSynonyms(req, res, next) {
   try {
     const { word } = req.query;
-    const username = await getUsernameFromToken(req.headers["authorization"]);
+    const username = await getUsernameFromToken(req.cookies?.token);
 
     const result = await executeProcedure("prc_crud_synonyms", [
       { name: "p_id", type: "text", value: null },
@@ -46,7 +46,7 @@ async function getSynonyms(req, res, next) {
 async function addSynonym(req, res) {
   try {
     const { word, synonym, note } = req.body;
-    const username = await getUsernameFromToken(req.headers["authorization"]);
+    const username = await getUsernameFromToken(req.cookies?.token);
     const id = getRandomId();
 
     const result = await executeProcedure("prc_crud_synonyms", [
@@ -77,7 +77,7 @@ async function updateSynonym(req, res) {
   try {
     const { id } = req.params;
     const { word, synonym, note } = req.body;
-    const username = await getUsernameFromToken(req.headers["authorization"]);
+    const username = await getUsernameFromToken(req.cookies?.token);
 
     const result = await executeProcedure("prc_crud_synonyms", [
       { name: "p_id", type: "text", value: id },
@@ -106,7 +106,7 @@ async function updateSynonym(req, res) {
 async function deleteSynonym(req, res) {
   try {
     const { id } = req.params;
-    const username = await getUsernameFromToken(req.headers["authorization"]);
+    const username = await getUsernameFromToken(req.cookies?.token);
 
     const result = await executeProcedure("prc_crud_synonyms", [
       { name: "p_id", type: "text", value: id },

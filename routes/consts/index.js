@@ -11,7 +11,7 @@ const router = express.Router();
 async function updateConsts(req, res) {
   try {
     const { key, value } = req.body;
-    const username = await getUsernameFromToken(req.headers["authorization"]);
+    const username = await getUsernameFromToken(req.cookies?.token);
 
     const result = await executeProcedure("prc_crud_consts", [
       { name: "p_key", type: "text", value: key },

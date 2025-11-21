@@ -101,17 +101,34 @@ export function MessageProvider({ children }) {
   );
 }
 
-export const message = (
-  options = {
-    type: "success",
-    text: "Empty message!",
-    duration: 3000,
-    position: "bottom-right",
+const DEFAULT_OPTIONS = {
+  type: "success",
+  text: "Empty message!",
+  duration: 3000,
+  position: "bottom-right",
+};
+
+export const message = (options = DEFAULT_OPTIONS) => {
+  const final = {
+    ...DEFAULT_OPTIONS,
+    ...options,
+  };
+
+  const stack = new Error().stack?.split("\n") || [];
+  const callerLine = stack[2] || stack[3] || "(unknown)";
+
+  const cleanedCallerLine = callerLine.replace(/^Error\s*/, "").trim();
+
+  final.trace = cleanedCallerLine;
+
+  if (final.type === "error") {
+    console.error(
+      `[Message Error] ${final.text}\nCaller: ${cleanedCallerLine}`
+    );
+  } else {
+    console.log(`[Message] ${final.text}\nCaller: ${cleanedCallerLine}`);
   }
-) => {
-  if (options.type == 'error') {
-    console.error(options.text);
-  }
-  if (globalFire) globalFire(options);
-  else console.warn("⚠️ MessageProvider not mounted yet!");
+
+  if (globalFire) globalFire(final);
+  else console.warn("MessageProvider not mounted yet!");
 };

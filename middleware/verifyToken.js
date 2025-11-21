@@ -1,14 +1,14 @@
 const jwt = require("jsonwebtoken");
+const { getConsts } = require("../redis/getConsts");
 
 function verifyToken(req, res, next) {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1]; // Expecting "Bearer <token>"
+  const token = req.cookies.token;
 
   if (!token) {
     return res.status(401).json({ error: "No token provided", data: null });
   }
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+  jwt.verify(token, getConsts("JWT_SECRET"), (err, decoded) => {
     if (err) {
       return res
         .status(403)
@@ -22,5 +22,5 @@ function verifyToken(req, res, next) {
 }
 
 module.exports = {
-    verifyToken
+  verifyToken,
 };

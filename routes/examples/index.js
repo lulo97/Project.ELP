@@ -11,7 +11,7 @@ const router = express.Router();
 async function getExamples(req, res, next) {
   try {
     const { example, word } = req.query;
-    const username = await getUsernameFromToken(req.headers["authorization"]);
+    const username = await getUsernameFromToken(req.cookies?.token);
 
     const result = await executeProcedure("prc_crud_examples", [
       { name: "p_id", type: "text", value: null },
@@ -46,7 +46,7 @@ async function getExamples(req, res, next) {
 async function addExample(req, res) {
   try {
     const { word, part_of_speech, example } = req.body;
-    const username = await getUsernameFromToken(req.headers["authorization"]);
+    const username = await getUsernameFromToken(req.cookies?.token);
     const id = getRandomId();
 
     const result = await executeProcedure("prc_crud_examples", [
@@ -77,7 +77,7 @@ async function updateExample(req, res) {
   try {
     const { id } = req.params;
     const { word, part_of_speech, example } = req.body;
-    const username = await getUsernameFromToken(req.headers["authorization"]);
+    const username = await getUsernameFromToken(req.cookies?.token);
 
     const result = await executeProcedure("prc_crud_examples", [
       { name: "p_id", type: "text", value: id },
@@ -106,7 +106,7 @@ async function updateExample(req, res) {
 async function deleteExample(req, res) {
   try {
     const { id } = req.params;
-    const username = await getUsernameFromToken(req.headers["authorization"]);
+    const username = await getUsernameFromToken(req.cookies?.token);
 
     const result = await executeProcedure("prc_crud_examples", [
       { name: "p_id", type: "text", value: id },

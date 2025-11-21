@@ -1,18 +1,11 @@
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
+const { getConsts } = require("../redis/getConsts");
 
 async function getUsernameFromToken(token) {
-  try {
-    const token_extracted = token.split(" ")[1]
-    const decoded = jwt.verify(token_extracted, process.env.JWT_SECRET);
-
-    // Assuming the payload includes `username`
+    const decoded = jwt.verify(token, getConsts("JWT_SECRET"));
     return decoded.username || null;
-  } catch (error) {
-    console.error('Invalid token:', error.message, ", input token = ", token);
-    return null;
-  }
 }
 
 module.exports = {
-  getUsernameFromToken
+  getUsernameFromToken,
 };

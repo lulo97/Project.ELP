@@ -13,7 +13,7 @@ async function initData() {
       return;
     }
 
-    const result = await executeSelect({ sql: "SELECT * FROM CONSTS" });
+    const result = await executeSelect({ sql: "SELECT * FROM CONSTS WHERE VISIBLE = true" });
 
     if ([null, undefined].includes(result) || result.length == 0) {
       throw Error("Error when select CONSTS table!");

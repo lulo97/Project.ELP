@@ -1,14 +1,12 @@
-import React, { useEffectEvent } from "react";
-
 import { Layout } from "./layouts/Layout";
 import { HomePage } from "./pages/HomePage";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Link, useNavigate, useLocation } from "react-router-dom";
 import { routes } from "./routes";
 import "./index.css";
 import { MessageProvider } from "./providers/MessageProvider";
-import { Link } from "react-router-dom";
-import { useLocation } from "react-router-dom";
 import { useDeviceType } from "./hooks/useDeviceType";
+import { getUserByToken } from "./services/auth";
+import { useEffect } from "react";
 
 function flattenRoutes(routes) {
   const result = [];
@@ -60,8 +58,29 @@ export function NotFoundPage() {
 
 function App() {
   const location = useLocation();
-
   const device = useDeviceType();
+  const navigate = useNavigate();
+
+  console.log("Current device =", device)
+
+  useEffect(() => {
+    async function checkAuthOnPublicPages() {
+      const publicPages = ["/login", "/signup"];
+      console.log(publicPages,location.pathname,publicPages.includes(location.pathname))
+      if (!publicPages.includes(location.pathname)) {
+        console.log("Not check")
+        return;
+      };
+
+      const user = await getUserByToken(false);
+      console.log({user})
+      if (user && user.username) {
+        navigate("/");
+      }
+    }
+
+    checkAuthOnPublicPages();
+  }, [location.pathname]);
 
   return (
     <div>

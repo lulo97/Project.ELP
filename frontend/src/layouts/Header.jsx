@@ -8,14 +8,20 @@ import Dropdown from "../components/Dropdown";
 import { OutlinedButton } from "../components/OutlinedButton";
 import { translation } from "./Header.Translation";
 import { getTranslation } from "../utils/getTranslation";
+import { message } from "../providers/MessageProvider";
 
 export function Header({ language, handleChangeLanguage }) {
   const [userName, setUsername] = useState("");
 
   async function fetchData() {
-    const show_error = ["/login", "/signup", "/", "/exercise", "/mcq_generator", "/youtube_listening"].includes(
-      window.location.pathname
-    );
+    const show_error = [
+      "/login",
+      "/signup",
+      "/",
+      "/exercise",
+      "/mcq_generator",
+      "/youtube_listening",
+    ].includes(window.location.pathname);
     const user = await getUserByToken(!show_error);
     if (!user || !user.username) return;
     setUsername(user.username);
@@ -25,13 +31,37 @@ export function Header({ language, handleChangeLanguage }) {
     fetchData();
   }, []);
 
+  async function handleLogout() {
+    await fetch("/api/auth/logOut", {
+      method: "POST",
+      credentials: "include",
+    });
+
+    const meRes = await fetch("/api/auth/me", {
+      method: "GET",
+      credentials: "include",
+    });
+
+    const meJson = await meRes.json();
+
+    if (meJson.data) {
+      message({
+        type: "error",
+        text: "Logout may have failed, /me still returns a user",
+      });
+    } else {
+      message({ text: "Logout verified successfully" });
+    }
+
+    window.location.href = "/";
+  }
+
   const avatarMenu = [
     {
       key: "1",
       content: "Log out",
-      onClick: () => {
-        localStorage.removeItem("token");
-        window.location.href = "/";
+      onClick: async () => {
+        await handleLogout();
       },
     },
   ];
@@ -55,7 +85,7 @@ export function Header({ language, handleChangeLanguage }) {
 
           if (ele.isAuth && !userName) return null;
 
-          if (ele.isAdmin && userName.toLowerCase() != 'admin') return null;
+          if (ele.isAdmin && userName.toLowerCase() != "admin") return null;
 
           // Dropdown menu
           if (ele.children) {

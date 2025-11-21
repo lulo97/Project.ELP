@@ -11,7 +11,7 @@ const router = express.Router();
 async function getSourceTranslates(req, res, next) {
   try {
     const { source_id } = req.query;
-    const username = await getUsernameFromToken(req.headers["authorization"]);
+    const username = await getUsernameFromToken(req.cookies?.token);
 
     const result = await executeProcedure("prc_crud_source_translates", [
       { name: "p_id", type: "text", value: null },
@@ -45,7 +45,7 @@ async function getSourceTranslates(req, res, next) {
 async function saveSourceTranslates(req, res) {
   try {
     const { source_id, chunks } = req.body; // chunks = array of { id, chunk, translate }
-    const username = await getUsernameFromToken(req.headers["authorization"]);
+    const username = await getUsernameFromToken(req.cookies?.token);
 
     if (!Array.isArray(chunks)) {
       return res.status(400).json({ error: "chunks must be an array", data: null });

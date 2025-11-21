@@ -11,7 +11,7 @@ const router = express.Router();
 async function getSources(req, res, next) {
   try {
     const { name, source } = req.query;
-    const username = await getUsernameFromToken(req.headers["authorization"]);
+    const username = await getUsernameFromToken(req.cookies?.token);
 
     const result = await executeProcedure("prc_crud_sources", [
       { name: "p_id", type: "text", value: null },
@@ -46,7 +46,7 @@ async function getSources(req, res, next) {
 async function addSource(req, res) {
   try {
     const { name, source, note } = req.body;
-    const username = await getUsernameFromToken(req.headers["authorization"]);
+    const username = await getUsernameFromToken(req.cookies?.token);
     const id = getRandomId();
 
     const result = await executeProcedure("prc_crud_sources", [
@@ -77,7 +77,7 @@ async function updateSource(req, res) {
   try {
     const { id } = req.params;
     const { name, source, note } = req.body;
-    const username = await getUsernameFromToken(req.headers["authorization"]);
+    const username = await getUsernameFromToken(req.cookies?.token);
 
     const result = await executeProcedure("prc_crud_sources", [
       { name: "p_id", type: "text", value: id },
@@ -106,7 +106,7 @@ async function updateSource(req, res) {
 async function deleteSource(req, res) {
   try {
     const { id } = req.params;
-    const username = await getUsernameFromToken(req.headers["authorization"]);
+    const username = await getUsernameFromToken(req.cookies?.token);
 
     const result = await executeProcedure("prc_crud_sources", [
       { name: "p_id", type: "text", value: id },

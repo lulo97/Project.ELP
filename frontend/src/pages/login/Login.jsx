@@ -34,13 +34,6 @@ export function LogIn() {
         throw new Error(result.error);
       }
 
-      // Store token or user info if returned
-      if (result.data?.token) {
-        localStorage.setItem("token", result.data.token);
-      } else {
-        throw Error(getTranslation("ResponseDoesntHaveToken", translation));
-      }
-
       message({
         text: getTranslation("LoginSuccessful", translation),
       });

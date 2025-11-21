@@ -12,7 +12,7 @@ const router = express.Router();
 
 async function getModelInformations(req, res, next) {
   try {
-    const username = await getUsernameFromToken(req.headers["authorization"]);
+    const username = await getUsernameFromToken(req.cookies?.token);
 
     const result = await executeProcedure("prc_crud_model_informations", [
       { name: "p_username", type: "text", value: username },

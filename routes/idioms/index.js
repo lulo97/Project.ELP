@@ -11,7 +11,7 @@ const router = express.Router();
 async function getIdioms(req, res, next) {
   try {
     const { idiom } = req.query;
-    const username = await getUsernameFromToken(req.headers["authorization"]);
+    const username = await getUsernameFromToken(req.cookies?.token);
 
     const result = await executeProcedure("prc_crud_idioms", [
       { name: "p_id", type: "text", value: null },
@@ -46,7 +46,7 @@ async function getIdioms(req, res, next) {
 async function addIdiom(req, res) {
   try {
     const { idiom, meaning, example } = req.body;
-    const username = await getUsernameFromToken(req.headers["authorization"]);
+    const username = await getUsernameFromToken(req.cookies?.token);
     const id = getRandomId();
 
     const result = await executeProcedure("prc_crud_idioms", [
@@ -77,7 +77,7 @@ async function updateIdiom(req, res) {
   try {
     const { id } = req.params;
     const { idiom, meaning, example } = req.body;
-    const username = await getUsernameFromToken(req.headers["authorization"]);
+    const username = await getUsernameFromToken(req.cookies?.token);
 
     const result = await executeProcedure("prc_crud_idioms", [
       { name: "p_id", type: "text", value: id },
@@ -106,7 +106,7 @@ async function updateIdiom(req, res) {
 async function deleteIdiom(req, res) {
   try {
     const { id } = req.params;
-    const username = await getUsernameFromToken(req.headers["authorization"]);
+    const username = await getUsernameFromToken(req.cookies?.token);
 
     const result = await executeProcedure("prc_crud_idioms", [
       { name: "p_id", type: "text", value: id },

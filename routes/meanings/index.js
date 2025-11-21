@@ -11,7 +11,7 @@ const router = express.Router();
 async function getMeanings(req, res, next) {
   try {
     const { meaning, word, part_of_speech, where_options } = req.query;
-    const username = await getUsernameFromToken(req.headers["authorization"]);
+    const username = await getUsernameFromToken(req.cookies?.token);
 
     let p_json_params = null;
     if (where_options) {
@@ -27,7 +27,8 @@ async function getMeanings(req, res, next) {
       { name: "p_action", type: "text", value: "READ" },
       { name: "p_rows", type: "CURSOR", value: "cursor_" + getRandomId() },
       { name: "p_error", type: "text", value: null },
-      { name: "p_json_params", type: "text", value: p_json_params },
+      //IMPORTANT: PostgeSQL strictly distinct "" and null from js passing down.
+      { name: "p_json_params", type: "text", value: p_json_params || null },
     ]);
 
     if (result.p_error) {
@@ -51,7 +52,7 @@ async function getMeanings(req, res, next) {
 async function addMeaning(req, res) {
   try {
     const { meaning, word, part_of_speech } = req.body;
-    const username = await getUsernameFromToken(req.headers["authorization"]);
+    const username = await getUsernameFromToken(req.cookies?.token);
     const id = getRandomId();
 
     const result = await executeProcedure("prc_crud_meanings", [
@@ -82,7 +83,7 @@ async function updateMeaning(req, res) {
   try {
     const { id } = req.params;
     const { meaning, word, part_of_speech } = req.body;
-    const username = await getUsernameFromToken(req.headers["authorization"]);
+    const username = await getUsernameFromToken(req.cookies?.token);
 
     const result = await executeProcedure("prc_crud_meanings", [
       { name: "p_id", type: "text", value: id },
@@ -111,7 +112,7 @@ async function updateMeaning(req, res) {
 async function deleteMeaning(req, res) {
   try {
     const { id } = req.params;
-    const username = await getUsernameFromToken(req.headers["authorization"]);
+    const username = await getUsernameFromToken(req.cookies?.token);
 
     const result = await executeProcedure("prc_crud_meanings", [
       { name: "p_id", type: "text", value: id },

@@ -11,7 +11,7 @@ const router = express.Router();
 async function getPosts(req, res, next) {
   try {
     const { title } = req.query;
-    const username = await getUsernameFromToken(req.headers["authorization"]);
+    const username = await getUsernameFromToken(req.cookies?.token);
 
     const result = await executeProcedure("prc_crud_posts", [
       { name: "p_id", type: "text", value: null },
@@ -45,7 +45,7 @@ async function getPosts(req, res, next) {
 async function addPost(req, res) {
   try {
     const { title, content } = req.body;
-    const username = await getUsernameFromToken(req.headers["authorization"]);
+    const username = await getUsernameFromToken(req.cookies?.token);
     const id = getRandomId();
 
     const result = await executeProcedure("prc_crud_posts", [
@@ -75,7 +75,7 @@ async function updatePost(req, res) {
   try {
     const { id } = req.params;
     const { title, content } = req.body;
-    const username = await getUsernameFromToken(req.headers["authorization"]);
+    const username = await getUsernameFromToken(req.cookies?.token);
 
     const result = await executeProcedure("prc_crud_posts", [
       { name: "p_id", type: "text", value: id },
@@ -103,7 +103,7 @@ async function updatePost(req, res) {
 async function deletePost(req, res) {
   try {
     const { id } = req.params;
-    const username = await getUsernameFromToken(req.headers["authorization"]);
+    const username = await getUsernameFromToken(req.cookies?.token);
 
     const result = await executeProcedure("prc_crud_posts", [
       { name: "p_id", type: "text", value: id },

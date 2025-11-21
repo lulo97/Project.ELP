@@ -13,7 +13,7 @@ const router = express.Router();
 async function getReadData(req, res, next) {
   try {
     const { source_id } = req.query;
-    const username = await getUsernameFromToken(req.headers["authorization"]);
+    const username = await getUsernameFromToken(req.cookies?.token);
 
     const result = await executeProcedure("prc_get_read_data", [
       { name: "p_source_id", type: "text", value: source_id },

@@ -1,14 +1,13 @@
 const { getUsernameFromToken } = require("../utils/getUsernameFromToken");
 
 async function verifyAdmin(req, res, next) {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1]; // Expecting "Bearer <token>"
+  const token = req.cookies.token;
 
   if (!token) {
     return res.status(401).json({ error: "No token provided", data: null });
   }
 
-  const username = await getUsernameFromToken(req.headers["authorization"]);
+  const username = await getUsernameFromToken(req.cookies?.token);
 
   if (username.toLowerCase() != 'admin') {
     return res
