@@ -1,0 +1,7 @@
+EF generates cs model files in /Models folder
+
+Project structure = Feature folders
+/Features/Table
+    /Repository.cs: Calling AppContext to access database
+    /Service.cs: Calling Repository and apply bussiness logic
+    /Controller.cs: Calling Service and config api method, url, params, ...
