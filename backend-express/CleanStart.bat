@@ -1,22 +1,40 @@
 @echo off
-REM Stop and remove container
-docker rm -f elp-application-container
+REM =============================
+REM Configuration Variables
+REM =============================
+SET IMAGE_NAME=elp-backend-express-image
+SET CONTAINER_NAME=elp-backend-express-container
+SET HOST_PORT=3001
+SET CONTAINER_PORT=3001
+SET DOCKER_NETWORK=elp-network
+SET ENV_FILE=.env.production
 
-REM Remove image
-docker rmi elp-application-image
+REM =============================
+REM Stop and remove existing container
+REM =============================
+docker rm -f %CONTAINER_NAME%
 
-REM Build the image
-docker build -t elp-application-image .
+REM =============================
+REM Remove existing image
+REM =============================
+docker rmi %IMAGE_NAME%
 
-REM Run container with SQLite volume bind
+REM =============================
+REM Build new image
+REM =============================
+docker build -t %IMAGE_NAME% .
+
+REM =============================
+REM Run container with volume and env
+REM =============================
 docker run -d ^
-  -p 3001:3001 ^
-  --name elp-application-container ^
+  -p %HOST_PORT%:%CONTAINER_PORT% ^
+  --name %CONTAINER_NAME% ^
   --restart unless-stopped ^
-  --network elp-network ^
-  --env-file .env.production ^
-  elp-application-image
+  --network %DOCKER_NETWORK% ^
+  --env-file %ENV_FILE% ^
+  %IMAGE_NAME%
 
 echo.
-echo CleanStart finished. App should be running on http://localhost:3001
+echo CleanStart finished. App should be running on http://localhost:%HOST_PORT%
 pause

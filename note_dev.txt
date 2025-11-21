@@ -1,0 +1,8 @@
+cd backend folder
+run dev scripts
+
+3000 = dev port backend express
+3001 = container port backend express
+
+3100 = dev port frontend react
+3101 = container port frontend react
