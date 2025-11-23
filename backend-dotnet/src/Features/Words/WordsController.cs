@@ -2,6 +2,7 @@ using Models;
 using Microsoft.AspNetCore.Mvc;
 using Utils;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Controllers
 {
@@ -18,6 +19,7 @@ namespace Controllers
 
         // GET api/words?word=&userId=&pageIndex=&pageSize=&language=
         [HttpGet]
+        [Authorize] //Error 401 Unauthorized
         public async Task<ApiResponse<List<Words>>> Get(
             [FromQuery] string? word = null,
             [FromQuery] string? userId = null,
@@ -25,7 +27,6 @@ namespace Controllers
             [FromQuery] int pageSize = 20,
             [FromQuery] string language = "en")
         {
-            Log.Write("He222llo");
             return await _service.GetAsync(word, pageIndex, pageSize, userId);
         }
 

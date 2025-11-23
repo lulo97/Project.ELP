@@ -10,16 +10,6 @@ public class WordsRepository
         _context = context;
     }
 
-    public async Task<List<Words>> GetAllAsync()
-    {
-        return await _context.Words.ToListAsync();
-    }
-
-    public async Task<Words?> GetByIdAsync(int id)
-    {
-        return await _context.Words.FindAsync(id);
-    }
-
     public async Task<Words> AddAsync(Words row)
     {
         _context.Words.Add(row);
@@ -29,22 +19,16 @@ public class WordsRepository
 
     public async Task<Words?> UpdateAsync(Words row)
     {
-        var existing = await _context.Words.FindAsync(row.Id);
-        if (existing == null) return null;
-
-        existing.Word = row.Word;
-        existing.UserId = row.UserId;
-
+        var existing = await _context.Words.FindAsync(row.Id) ?? throw new InvalidOperationException("Record not found");
+        _context.Entry(existing!).CurrentValues.SetValues(row);
         await _context.SaveChangesAsync();
         return existing;
     }
 
     public async Task<bool> DeleteAsync(int id)
     {
-        var row = await _context.Words.FindAsync(id);
-        if (row == null) return false;
-
-        _context.Words.Remove(row);
+        var row = await _context.Words.FindAsync(id) ?? throw new InvalidOperationException("Record not found");
+        _context.Words.Remove(row!);
         await _context.SaveChangesAsync();
         return true;
     }

@@ -2,6 +2,24 @@ EF generates cs model files in /Models folder
 
 Project structure = Feature folders
 /Features/Table
-    /Repository.cs: Calling AppContext to access database
+    /Repository.cs: Calling AppContext to access database, provide CRUD method
     /Service.cs: Calling Repository and apply bussiness logic
     /Controller.cs: Calling Service and config api method, url, params, ...
+
+ASP.NET Core only allows one [FromBody] parameter per action
+    [FromBody] AuthResponse body -> Correct
+    [FromBody] string username, [FromBody] string password -> Error
+
+DI in dotnet:
+- Using: AddScoped<T> or AddSingleton<T>
+    + AddScoped = one scope (http request) one instance
+    + AddSingleton = one instance in entire application
+- Talking a type <T> and return a value
+- If same <T> registed multiple time then only the last services applied:
+    builder.Services.AddScoped<string>(sp => "One");
+    builder.Services.AddScoped<string>(sp => "Two");
+    var s = sp.GetRequiredService<string>();
+    Console.WriteLine(s); // Will print "Two"
+
+dotnet run watch => invalid / doesn't work
+dotnet watch run => correct
