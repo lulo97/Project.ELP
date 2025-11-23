@@ -3,15 +3,15 @@ using System.Collections.Generic;
 
 namespace Models;
 
-public partial class Examples
+public partial class examples
 {
-    public string Id { get; set; } = null!;
+    public string id { get; set; } = null!;
 
-    public string Word { get; set; } = null!;
+    public string word { get; set; } = null!;
 
-    public string PartOfSpeech { get; set; } = null!;
+    public string part_of_speech { get; set; } = null!;
 
-    public string Example { get; set; } = null!;
+    public string example { get; set; } = null!;
 
-    public string UserId { get; set; } = null!;
+    public string user_id { get; set; } = null!;
 }

@@ -3,15 +3,15 @@ using System.Collections.Generic;
 
 namespace Models;
 
-public partial class Synonyms
+public partial class synonyms
 {
-    public string Id { get; set; } = null!;
+    public string id { get; set; } = null!;
 
-    public string Word { get; set; } = null!;
+    public string word { get; set; } = null!;
 
-    public string Synonym { get; set; } = null!;
+    public string synonym { get; set; } = null!;
 
-    public string? Note { get; set; }
+    public string? note { get; set; }
 
-    public string UserId { get; set; } = null!;
+    public string user_id { get; set; } = null!;
 }

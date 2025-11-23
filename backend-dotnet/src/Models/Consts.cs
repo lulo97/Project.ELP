@@ -3,14 +3,14 @@ using System.Collections.Generic;
 
 namespace Models;
 
-public partial class Consts
+public partial class consts
 {
     /// <summary>
     /// yyyy
     /// </summary>
-    public string? Key { get; set; }
+    public string? key { get; set; }
 
-    public string? Value { get; set; }
+    public string? value { get; set; }
 
-    public bool Visible { get; set; }
+    public bool visible { get; set; }
 }

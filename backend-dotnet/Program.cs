@@ -10,6 +10,7 @@ using StackExchange.Redis;
 using Serilog;
 using Serilog.Events;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 
 Serilog.Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
@@ -49,7 +50,7 @@ builder.Services.AddScoped<JwtSettings>(sp =>
 
     string GetValue(string key)
     {
-        var output = db.Consts.FirstOrDefault(c => c.Key == key)?.Value;
+        var output = db.consts.FirstOrDefault(c => c.key == key)?.value;
         if (output == null) throw new Exception($"{key} missing");
         return output;
     }
@@ -66,21 +67,12 @@ builder.Services.AddScoped<JwtSettings>(sp =>
     };
 });
 
-//InvalidOperationException: No authenticationScheme was specified, and there was no DefaultChallengeScheme found. The default schemes can be set using either AddAuthentication(string defaultScheme) or AddAuthentication(Action<AuthenticationOptions> configureOptions).
-builder.Services.AddAuthentication("Bearer")
-    .AddJwtBearer("Bearer", options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = false,
-            ValidateAudience = false,
-            ValidateIssuerSigningKey = false,
-            ValidateLifetime = false
-        };
-    });
-
 //AuthService depend on JwtSettings and AppDbContext
 builder.Services.AddScoped<AuthService>();
+
+//System.InvalidOperationException: No authenticationScheme was specified, and there was no DefaultChallengeScheme found. The default schemes can be set using either AddAuthentication(string defaultScheme) or AddAuthentication(Action<AuthenticationOptions> configureOptions).
+builder.Services.AddAuthentication("JwtScheme")
+    .AddScheme<AuthenticationSchemeOptions, JwtAuthenticatedHandler>("JwtScheme", options => { });
 
 builder.Services.AddAuthorization(); //Allow [Authorize] attribute to work
 
@@ -121,35 +113,6 @@ if (app.Environment.IsDevelopment())
     // JSON = /swagger/v1/swagger.json
     app.UseSwagger();
     app.UseSwaggerUI();
-}
-
-//JWT Config after build
-using (var scope = app.Services.CreateScope())
-{
-    var jwtSettings = scope.ServiceProvider.GetService<JwtSettings>();
-    var jwtBearerOptions = app.Services.GetRequiredService<IOptionsMonitor<JwtBearerOptions>>()
-          .Get(JwtBearerDefaults.AuthenticationScheme);
-
-    jwtBearerOptions.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = false,
-        ValidateAudience = false,
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings!.Secret)),
-        ValidateLifetime = true
-    };
-
-    jwtBearerOptions.Events = new JwtBearerEvents
-    {
-        OnMessageReceived = context =>
-        {
-            if (context.Request.Cookies.TryGetValue("token", out var token))
-                context.Token = token;
-            return Task.CompletedTask;
-        }
-    };
-
-    Serilog.Log.Information("App - JWT Setting configured");
 }
 
 //Init redist keys after build

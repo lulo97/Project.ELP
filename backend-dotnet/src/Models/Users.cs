@@ -3,19 +3,19 @@ using System.Collections.Generic;
 
 namespace Models;
 
-public partial class Users
+public partial class users
 {
-    public string Id { get; set; } = null!;
+    public string id { get; set; } = null!;
 
-    public string Username { get; set; } = null!;
+    public string username { get; set; } = null!;
 
-    public string? Email { get; set; }
+    public string? email { get; set; }
 
-    public string PasswordHash { get; set; } = null!;
+    public string password_hash { get; set; } = null!;
 
-    public string? FullName { get; set; }
+    public string? full_name { get; set; }
 
-    public bool? IsActive { get; set; }
+    public bool? is_active { get; set; }
 
-    public DateTime? CreatedAt { get; set; }
+    public DateTime? created_at { get; set; }
 }

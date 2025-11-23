@@ -15,43 +15,43 @@ public partial class AppDbContext : DbContext
     {
     }
 
-    public virtual DbSet<Consts> Consts { get; set; }
+    public virtual DbSet<consts> consts { get; set; }
 
-    public virtual DbSet<Events> Events { get; set; }
+    public virtual DbSet<events> events { get; set; }
 
-    public virtual DbSet<Examples> Examples { get; set; }
+    public virtual DbSet<examples> examples { get; set; }
 
-    public virtual DbSet<Idioms> Idioms { get; set; }
+    public virtual DbSet<idioms> idioms { get; set; }
 
-    public virtual DbSet<Log> Log { get; set; }
+    public virtual DbSet<log> log { get; set; }
 
-    public virtual DbSet<Meanings> Meanings { get; set; }
+    public virtual DbSet<meanings> meanings { get; set; }
 
-    public virtual DbSet<PartOfSpeechs> PartOfSpeechs { get; set; }
+    public virtual DbSet<part_of_speechs> part_of_speechs { get; set; }
 
-    public virtual DbSet<Phrases> Phrases { get; set; }
+    public virtual DbSet<phrases> phrases { get; set; }
 
-    public virtual DbSet<Posts> Posts { get; set; }
+    public virtual DbSet<posts> posts { get; set; }
 
-    public virtual DbSet<SourceTranslates> SourceTranslates { get; set; }
+    public virtual DbSet<source_translates> source_translates { get; set; }
 
-    public virtual DbSet<Sources> Sources { get; set; }
+    public virtual DbSet<sources> sources { get; set; }
 
-    public virtual DbSet<SpeakingScores> SpeakingScores { get; set; }
+    public virtual DbSet<speaking_scores> speaking_scores { get; set; }
 
-    public virtual DbSet<Speakings> Speakings { get; set; }
+    public virtual DbSet<speakings> speakings { get; set; }
 
-    public virtual DbSet<Synonyms> Synonyms { get; set; }
+    public virtual DbSet<synonyms> synonyms { get; set; }
 
-    public virtual DbSet<Tts> Tts { get; set; }
+    public virtual DbSet<tts> tts { get; set; }
 
-    public virtual DbSet<Users> Users { get; set; }
+    public virtual DbSet<users> users { get; set; }
 
-    public virtual DbSet<Words> Words { get; set; }
+    public virtual DbSet<words> words { get; set; }
 
-    public virtual DbSet<WritingAnswers> WritingAnswers { get; set; }
+    public virtual DbSet<writing_answers> writing_answers { get; set; }
 
-    public virtual DbSet<WritingQuestions> WritingQuestions { get; set; }
+    public virtual DbSet<writing_questions> writing_questions { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseNpgsql("Name=DefaultConnection");
@@ -60,244 +60,147 @@ public partial class AppDbContext : DbContext
     {
         modelBuilder.HasPostgresExtension("elp", "dblink");
 
-        modelBuilder.Entity<Consts>(entity =>
+        modelBuilder.Entity<consts>(entity =>
         {
             entity
                 .HasNoKey()
                 .ToTable("consts", "elp");
 
-            entity.Property(e => e.Key)
-                .HasComment("yyyy")
-                .HasColumnName("key");
-            entity.Property(e => e.Value).HasColumnName("value");
-            entity.Property(e => e.Visible)
-                .HasDefaultValue(false)
-                .HasColumnName("visible");
+            entity.Property(e => e.key).HasComment("yyyy");
+            entity.Property(e => e.visible).HasDefaultValue(false);
         });
 
-        modelBuilder.Entity<Events>(entity =>
+        modelBuilder.Entity<events>(entity =>
         {
             entity
                 .HasNoKey()
                 .ToTable("events", "elp");
-
-            entity.Property(e => e.Data).HasColumnName("data");
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Status).HasColumnName("status");
-            entity.Property(e => e.Timestamp).HasColumnName("timestamp");
         });
 
-        modelBuilder.Entity<Examples>(entity =>
+        modelBuilder.Entity<examples>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("examples_pkey");
+            entity.HasKey(e => e.id).HasName("examples_pkey");
 
             entity.ToTable("examples", "elp");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Example).HasColumnName("example");
-            entity.Property(e => e.PartOfSpeech).HasColumnName("part_of_speech");
-            entity.Property(e => e.UserId).HasColumnName("user_id");
-            entity.Property(e => e.Word).HasColumnName("word");
         });
 
-        modelBuilder.Entity<Idioms>(entity =>
+        modelBuilder.Entity<idioms>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("idioms_pkey");
+            entity.HasKey(e => e.id).HasName("idioms_pkey");
 
             entity.ToTable("idioms", "elp");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Example).HasColumnName("example");
-            entity.Property(e => e.Idiom).HasColumnName("idiom");
-            entity.Property(e => e.Meaning).HasColumnName("meaning");
-            entity.Property(e => e.UserId).HasColumnName("user_id");
         });
 
-        modelBuilder.Entity<Log>(entity =>
+        modelBuilder.Entity<log>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("log_pkey");
+            entity.HasKey(e => e.id).HasName("log_pkey");
 
             entity.ToTable("log", "elp");
 
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.CreatedAt)
+            entity.Property(e => e.created_at)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("created_at");
-            entity.Property(e => e.Text).HasColumnName("text");
+                .HasColumnType("timestamp without time zone");
         });
 
-        modelBuilder.Entity<Meanings>(entity =>
+        modelBuilder.Entity<meanings>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("meanings_pkey");
+            entity.HasKey(e => e.id).HasName("meanings_pkey");
 
             entity.ToTable("meanings", "elp");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Meaning).HasColumnName("meaning");
-            entity.Property(e => e.PartOfSpeech).HasColumnName("part_of_speech");
-            entity.Property(e => e.UserId).HasColumnName("user_id");
-            entity.Property(e => e.Word).HasColumnName("word");
         });
 
-        modelBuilder.Entity<PartOfSpeechs>(entity =>
+        modelBuilder.Entity<part_of_speechs>(entity =>
         {
             entity
                 .HasNoKey()
                 .ToTable("part_of_speechs", "elp");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Name).HasColumnName("name");
         });
 
-        modelBuilder.Entity<Phrases>(entity =>
+        modelBuilder.Entity<phrases>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("phrases_pkey");
+            entity.HasKey(e => e.id).HasName("phrases_pkey");
 
             entity.ToTable("phrases", "elp");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Example).HasColumnName("example");
-            entity.Property(e => e.Meaning).HasColumnName("meaning");
-            entity.Property(e => e.Phrase).HasColumnName("phrase");
-            entity.Property(e => e.UserId).HasColumnName("user_id");
         });
 
-        modelBuilder.Entity<Posts>(entity =>
+        modelBuilder.Entity<posts>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("posts_pkey");
+            entity.HasKey(e => e.id).HasName("posts_pkey");
 
             entity.ToTable("posts", "elp");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Content).HasColumnName("content");
-            entity.Property(e => e.Title).HasColumnName("title");
-            entity.Property(e => e.UserId).HasColumnName("user_id");
         });
 
-        modelBuilder.Entity<SourceTranslates>(entity =>
+        modelBuilder.Entity<source_translates>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("source_translates_pkey");
+            entity.HasKey(e => e.id).HasName("source_translates_pkey");
 
             entity.ToTable("source_translates", "elp");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Chunk).HasColumnName("chunk");
-            entity.Property(e => e.SourceId).HasColumnName("source_id");
-            entity.Property(e => e.Translate).HasColumnName("translate");
-            entity.Property(e => e.UserId).HasColumnName("user_id");
         });
 
-        modelBuilder.Entity<Sources>(entity =>
+        modelBuilder.Entity<sources>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("sources_pkey");
+            entity.HasKey(e => e.id).HasName("sources_pkey");
 
             entity.ToTable("sources", "elp");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Name).HasColumnName("name");
-            entity.Property(e => e.Source).HasColumnName("source");
-            entity.Property(e => e.UserId).HasColumnName("user_id");
         });
 
-        modelBuilder.Entity<SpeakingScores>(entity =>
+        modelBuilder.Entity<speaking_scores>(entity =>
         {
             entity
                 .HasNoKey()
                 .ToTable("speaking_scores", "elp");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Score).HasColumnName("score");
-            entity.Property(e => e.SpeakingId).HasColumnName("speaking_id");
-            entity.Property(e => e.Text).HasColumnName("text");
-            entity.Property(e => e.TextListened).HasColumnName("text_listened");
         });
 
-        modelBuilder.Entity<Speakings>(entity =>
+        modelBuilder.Entity<speakings>(entity =>
         {
             entity
                 .HasNoKey()
                 .ToTable("speakings", "elp");
-
-            entity.Property(e => e.Answer).HasColumnName("answer");
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Question).HasColumnName("question");
         });
 
-        modelBuilder.Entity<Synonyms>(entity =>
+        modelBuilder.Entity<synonyms>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("synonyms_pkey");
+            entity.HasKey(e => e.id).HasName("synonyms_pkey");
 
             entity.ToTable("synonyms", "elp");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Note).HasColumnName("note");
-            entity.Property(e => e.Synonym).HasColumnName("synonym");
-            entity.Property(e => e.UserId).HasColumnName("user_id");
-            entity.Property(e => e.Word).HasColumnName("word");
         });
 
-        modelBuilder.Entity<Tts>(entity =>
+        modelBuilder.Entity<tts>(entity =>
         {
             entity
                 .HasNoKey()
                 .ToTable("tts", "elp");
-
-            entity.Property(e => e.AudioBase64).HasColumnName("audio_base64");
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Text).HasColumnName("text");
         });
 
-        modelBuilder.Entity<Users>(entity =>
+        modelBuilder.Entity<users>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("users_pkey");
+            entity.HasKey(e => e.id).HasName("users_pkey");
 
             entity.ToTable("users", "elp");
 
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.CreatedAt)
-                .HasDefaultValueSql("now()")
-                .HasColumnName("created_at");
-            entity.Property(e => e.Email).HasColumnName("email");
-            entity.Property(e => e.FullName).HasColumnName("full_name");
-            entity.Property(e => e.IsActive)
-                .HasDefaultValue(true)
-                .HasColumnName("is_active");
-            entity.Property(e => e.PasswordHash).HasColumnName("password_hash");
-            entity.Property(e => e.Username).HasColumnName("username");
+            entity.Property(e => e.created_at).HasDefaultValueSql("now()");
+            entity.Property(e => e.is_active).HasDefaultValue(true);
         });
 
-        modelBuilder.Entity<Words>(entity =>
+        modelBuilder.Entity<words>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("words_pkey");
+            entity.HasKey(e => e.id).HasName("words_pkey");
 
             entity.ToTable("words", "elp");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.UserId).HasColumnName("user_id");
-            entity.Property(e => e.Word).HasColumnName("word");
         });
 
-        modelBuilder.Entity<WritingAnswers>(entity =>
+        modelBuilder.Entity<writing_answers>(entity =>
         {
             entity
                 .HasNoKey()
                 .ToTable("writing_answers", "elp");
-
-            entity.Property(e => e.Answer).HasColumnName("answer");
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.QuestionId).HasColumnName("question_id");
-            entity.Property(e => e.Review).HasColumnName("review");
         });
 
-        modelBuilder.Entity<WritingQuestions>(entity =>
+        modelBuilder.Entity<writing_questions>(entity =>
         {
             entity
                 .HasNoKey()
                 .ToTable("writing_questions", "elp");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Question).HasColumnName("question");
         });
 
         OnModelCreatingPartial(modelBuilder);

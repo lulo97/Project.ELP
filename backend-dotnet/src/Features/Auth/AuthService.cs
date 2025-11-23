@@ -26,32 +26,32 @@ public class AuthService
         if (string.IsNullOrWhiteSpace(password))
             return ApiResponse<object>.Fail("Password is null!");
 
-        var exists = await _db.Users.AnyAsync(u => u.Username == username);
+        var exists = await _db.users.AnyAsync(u => u.username == username);
         if (exists)
             return ApiResponse<object>.Fail("User already exists!");
 
-        var user = new Users
+        var user = new users
         {
-            Username = username,
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword(password)
+            username = username,
+            password_hash = BCrypt.Net.BCrypt.HashPassword(password)
         };
 
-        await _db.Users.AddAsync(user);
+        await _db.users.AddAsync(user);
 
         return ApiResponse.Ok();
     }
 
     public async Task<ApiResponse<object>> Login(string username, string password, HttpResponse response)
     {
-        var user = await _db.Users.FirstOrDefaultAsync(u => u.Username == username);
+        var user = await _db.users.FirstOrDefaultAsync(u => u.username == username);
         if (user == null)
             return ApiResponse<object>.Fail($"User '{username}' not exist!");
 
         //Salt length/work factor doesn't matter when compare hash
-        if (!BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
+        if (!BCrypt.Net.BCrypt.Verify(password, user.password_hash))
             return ApiResponse<object>.Fail("Password incorrect!");
 
-        var token = CreateJwt(user.Username);
+        var token = CreateJwt(user.username);
 
         response.Cookies.Append("token", token, new CookieOptions
         {
@@ -79,7 +79,7 @@ public class AuthService
             return ApiResponse<AuthResponse>.Fail("No token provided");
 
         //eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InRlc3QxIiwibmJmIjoxNzYzODYwNDMxLCJleHAiOjE3Njc0NjA0MzEsImlhdCI6MTc2Mzg2MDQzMX0.4WZzF1zKgINVQzVEzMlUHuqwQAX-kbrGonoINc9HtAE
-        Console.WriteLine("Token: " + token);
+        //Console.WriteLine("Token: " + token);
 
         var handler = new JwtSecurityTokenHandler();
         var jwt = handler.ReadJwtToken(token);
@@ -89,11 +89,11 @@ public class AuthService
         // Type: nbf, Value: 1763860431
         // Type: exp, Value: 1767460431
         // Type: iat, Value: 1763860431
-        Console.WriteLine("JWT Claims:");
-        foreach (var claim in jwt.Claims)
-        {
-            Console.WriteLine($"Type: {claim.Type}, Value: {claim.Value}");
-        }
+        //Console.WriteLine("JWT Claims:");
+        //foreach (var claim in jwt.Claims)
+        //{
+        //    Console.WriteLine($"Type: {claim.Type}, Value: {claim.Value}");
+        //}
 
         var authResponse = new AuthResponse
         {

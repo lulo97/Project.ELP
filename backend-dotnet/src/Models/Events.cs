@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace Models;
 
-public partial class Events
+public partial class events
 {
-    public string? Id { get; set; }
+    public string? id { get; set; }
 
-    public string? Timestamp { get; set; }
+    public string? timestamp { get; set; }
 
-    public string? Status { get; set; }
+    public string? status { get; set; }
 
-    public string? Data { get; set; }
+    public string? data { get; set; }
 }

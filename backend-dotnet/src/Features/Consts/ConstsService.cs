@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Models;
 using Utils;
 using static Features.ConstsTranslation;
-using static Utils.ApiResponse<Models.Consts>;
+using static Utils.ApiResponse<Models.consts>;
 
 public class ConstsService
 {
@@ -13,16 +13,16 @@ public class ConstsService
         _context = context;
     }
 
-    public async Task<ApiResponse<List<Consts>>> GetAsync(
+    public async Task<ApiResponse<List<consts>>> GetAsync(
         string? key = null,
         int pageIndex = 1,
         int pageSize = 20,
         string language = "en")
     {
-        var query = _context.Consts.AsQueryable();
+        var query = _context.consts.AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(key))
-            query = query.Where(c => c.Key!.ToLower().Contains(key.ToLower()));
+            query = query.Where(c => c.key!.ToLower().Contains(key.ToLower()));
 
         query = query
             .Skip((pageIndex - 1) * pageSize)
@@ -30,49 +30,48 @@ public class ConstsService
 
         var data = await query.ToListAsync();
 
-        return ApiResponse<List<Consts>>.Ok(data);
+        return ApiResponse<List<consts>>.Ok(data);
     }
 
-    public async Task<ApiResponse<Consts>> AddAsync(Consts record, string language = "en")
+    public async Task<ApiResponse<consts>> AddAsync(consts record, string language = "en")
     {
-        if (string.IsNullOrWhiteSpace(record.Key))
+        if (string.IsNullOrWhiteSpace(record.key))
             return Fail(ErrorKeyEmpty, language);
 
-        var existing = await _context.Consts
-            .FirstOrDefaultAsync(e => e.Key == record.Key);
+        var existing = await _context.consts
+            .FirstOrDefaultAsync(e => e.key == record.key);
 
         if (existing != null)
             return Fail(ErrorKeyDuplicate, language);
 
-        _context.Consts.Add(record);
+        _context.consts.Add(record);
         await _context.SaveChangesAsync();
-        return ApiResponse<Consts>.Ok(record);
+        return ApiResponse<consts>.Ok(record);
     }
 
-    public async Task<ApiResponse<Consts>> UpdateAsync(Consts record, string language = "en")
+    public async Task<ApiResponse<consts>> UpdateAsync(consts record, string language = "en")
     {
-        if (string.IsNullOrWhiteSpace(record.Key))
+        if (string.IsNullOrWhiteSpace(record.key))
             return Fail(ErrorKeyEmpty, language);
 
-        var existingRecord = await _context.Consts.FindAsync(record.Key);
-
+        var existingRecord = await _context.consts.FindAsync(record.key);
         if (existingRecord == null)
             return Fail(ErrorNotExist, language);
 
         _context.Entry(existingRecord).CurrentValues.SetValues(record);
         await _context.SaveChangesAsync();
-        return ApiResponse<Consts>.Ok(existingRecord);
+        return ApiResponse<consts>.Ok(existingRecord);
     }
 
-    public async Task<ApiResponse<Consts>> DeleteAsync(string key, string language = "en")
+    public async Task<ApiResponse<consts>> DeleteAsync(string key, string language = "en")
     {
-        var row = await _context.Consts.FindAsync(key);
+        var row = await _context.consts.FindAsync(key);
 
         if (row == null)
             return Fail(ErrorNotExist, language);
 
-        _context.Consts.Remove(row);
+        _context.consts.Remove(row);
         await _context.SaveChangesAsync();
-        return ApiResponse<Consts>.Ok();
+        return ApiResponse<consts>.Ok();
     }
 }

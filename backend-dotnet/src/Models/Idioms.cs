@@ -3,15 +3,15 @@ using System.Collections.Generic;
 
 namespace Models;
 
-public partial class Idioms
+public partial class idioms
 {
-    public string Id { get; set; } = null!;
+    public string id { get; set; } = null!;
 
-    public string Idiom { get; set; } = null!;
+    public string idiom { get; set; } = null!;
 
-    public string Meaning { get; set; } = null!;
+    public string meaning { get; set; } = null!;
 
-    public string? Example { get; set; }
+    public string? example { get; set; }
 
-    public string UserId { get; set; } = null!;
+    public string user_id { get; set; } = null!;
 }

@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace Models;
 
-public partial class Posts
+public partial class posts
 {
-    public string Id { get; set; } = null!;
+    public string id { get; set; } = null!;
 
-    public string Title { get; set; } = null!;
+    public string title { get; set; } = null!;
 
-    public string Content { get; set; } = null!;
+    public string content { get; set; } = null!;
 
-    public string UserId { get; set; } = null!;
+    public string user_id { get; set; } = null!;
 }

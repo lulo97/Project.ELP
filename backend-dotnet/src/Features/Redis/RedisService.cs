@@ -1,8 +1,7 @@
-using System.Text.Json;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Models;
 using StackExchange.Redis;
+using System.Text.Json;
 
 public class RedisService
 {
@@ -17,9 +16,9 @@ public class RedisService
 
     public async Task InitAsync()
     {
-        var constsRows = await _appDbContext.Consts
+        var constsRows = await _appDbContext.consts
             .AsNoTracking() //Remove cache select query result
-            .Where(row => row.Visible == true)
+            .Where(row => row.visible == true)
             .ToListAsync();
 
         var db = _redis.GetDatabase(0);

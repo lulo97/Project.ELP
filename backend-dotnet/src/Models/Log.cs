@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace Models;
 
-public partial class Log
+public partial class log
 {
-    public string Id { get; set; } = null!;
+    public string id { get; set; } = null!;
 
-    public DateTime CreatedAt { get; set; }
+    public DateTime created_at { get; set; }
 
-    public string Text { get; set; } = null!;
+    public string text { get; set; } = null!;
 }

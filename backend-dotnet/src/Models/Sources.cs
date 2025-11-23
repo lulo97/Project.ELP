@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace Models;
 
-public partial class Sources
+public partial class sources
 {
-    public string Id { get; set; } = null!;
+    public string id { get; set; } = null!;
 
-    public string Source { get; set; } = null!;
+    public string source { get; set; } = null!;
 
-    public string Name { get; set; } = null!;
+    public string name { get; set; } = null!;
 
-    public string UserId { get; set; } = null!;
+    public string user_id { get; set; } = null!;
 }

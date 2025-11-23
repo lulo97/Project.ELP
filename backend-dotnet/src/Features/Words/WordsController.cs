@@ -20,52 +20,38 @@ namespace Controllers
         // GET api/words?word=&userId=&pageIndex=&pageSize=&language=
         [HttpGet]
         [Authorize] //Error 401 Unauthorized
-        public async Task<ApiResponse<List<Words>>> Get(HttpRequest req,
-            [FromQuery] string? word = null,
-            [FromQuery] int pageIndex = 1,
-            [FromQuery] int pageSize = 20,
+        public async Task<ApiResponse<List<words>>> Get(
+            [FromQuery] string? word,
+            [FromQuery] int? pageIndex, //Allow to passing query pageIndex = ""
+            [FromQuery] int? pageSize,
             [FromQuery] string language = "en"
-            )
+        )
         {
-            // Safely get token from cookie
-            if (!req.Cookies.TryGetValue("token", out var token) || string.IsNullOrEmpty(token))
-            {
-                throw new Exception("Token missing in cookies");
-            }
-
-            Console.WriteLine("token = " + token);
-
-            // If you want username from the JWT, parse claims
-            var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
-            var jwtToken = handler.ReadJwtToken(token);
-            var username = jwtToken.Claims.FirstOrDefault(c => c.Type == "username")?.Value
-                           ?? "unknown";
-
-            Console.WriteLine("username = " + username);
-
-            return await _service.GetAsync(word, pageIndex, pageSize, username);
+            var username = JwtHelper.GetUsernameFromToken(HttpContext.Request)!;
+            return await _service.Get(pageIndex ?? CONSTS.PAGE_INDEX, pageSize ?? CONSTS.PAGE_SIZE, username, word);
         }
-
 
         // POST api/words
         [HttpPost]
-        public async Task<ApiResponse<Words>> Add([FromBody] Words record, [FromQuery] string language = "en")
+        public async Task<ApiResponse<words>> Add([FromBody] WordRequestBody record, [FromQuery] string language = "en")
         {
-            return await _service.AddAsync(record, language);
+            record.username = JwtHelper.GetUsernameFromToken(HttpContext.Request)!;
+            return await _service.Add(record, language);
         }
 
         // PUT api/words/{id}
         [HttpPut("{id}")]
-        public async Task<ApiResponse<Words>> Update(string id, [FromBody] Words record, [FromQuery] string language = "en")
+        public async Task<ApiResponse<words>> Update(string id, [FromBody] WordRequestBody record, [FromQuery] string language = "en")
         {
-            return await _service.UpdateAsync(record, language);
+            record.username = JwtHelper.GetUsernameFromToken(HttpContext.Request)!;
+            return await _service.Update(record, language);
         }
 
         // DELETE api/words/{id}?language=
         [HttpDelete("{id}")]
-        public async Task<ApiResponse<bool>> Delete(int id, [FromQuery] string language = "en")
+        public async Task<ApiResponse<bool>> Delete(string id, [FromQuery] string language = "en")
         {
-            return await _service.DeleteAsync(id, language);
+            return await _service.Delete(id, language);
         }
     }
 }

@@ -61,7 +61,7 @@ function passingRequestToBackend(req, res) {
   proxyReq.on("error", (err) => {
     console.log(err);
     res.writeHead(500, { "Content-Type": "text/plain" });
-    res.end("500 - Proxy Error");
+    res.end(JSON.stringify(err));
   });
 }
 
@@ -115,7 +115,7 @@ const server = http.createServer((req, res) => {
     if (err) {
       console.log(err);
       res.writeHead(500, { "Content-Type": "text/plain" });
-      res.end("500 - Internal Server Error");
+      res.end(JSON.stringify(err));
       return;
     }
   });

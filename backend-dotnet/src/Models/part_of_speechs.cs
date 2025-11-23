@@ -3,11 +3,9 @@ using System.Collections.Generic;
 
 namespace Models;
 
-public partial class tts
+public partial class part_of_speechs
 {
     public string? id { get; set; }
 
-    public string? text { get; set; }
-
-    public string? audio_base64 { get; set; }
+    public string? name { get; set; }
 }
