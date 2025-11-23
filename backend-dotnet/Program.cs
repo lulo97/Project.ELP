@@ -12,7 +12,7 @@ using Serilog.Events;
 using Microsoft.AspNetCore.Authentication;
 
 Serilog.Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Information() // general minimum level
+    .MinimumLevel.Information()
     .MinimumLevel.Override("Microsoft.EntityFrameworkCore.Database.Command", LogEventLevel.Warning) // hide EF Core SQL
     .WriteTo.Console()
     .WriteTo.File("./log/log.log",
@@ -40,7 +40,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 //Inject features
-builder.Services.AddScoped<WordsRepository>();
 builder.Services.AddScoped<WordsService>();
 
 //Scope declare in Program not run yet, only someone calling service then it's running
@@ -66,6 +65,19 @@ builder.Services.AddScoped<JwtSettings>(sp =>
         HashSaltLength = int.Parse(HashSaltLength)
     };
 });
+
+//InvalidOperationException: No authenticationScheme was specified, and there was no DefaultChallengeScheme found. The default schemes can be set using either AddAuthentication(string defaultScheme) or AddAuthentication(Action<AuthenticationOptions> configureOptions).
+builder.Services.AddAuthentication("Bearer")
+    .AddJwtBearer("Bearer", options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidateIssuerSigningKey = false,
+            ValidateLifetime = false
+        };
+    });
 
 //AuthService depend on JwtSettings and AppDbContext
 builder.Services.AddScoped<AuthService>();
@@ -146,7 +158,6 @@ using (var scope = app.Services.CreateScope())
     var redisService = scope.ServiceProvider.GetRequiredService<RedisService>();
     await redisService.InitAsync();
 }
-
 
 app.UseHttpsRedirection();
 

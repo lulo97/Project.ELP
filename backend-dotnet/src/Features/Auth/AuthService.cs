@@ -1,3 +1,4 @@
+using DTO;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Models;
@@ -96,7 +97,7 @@ public class AuthService
 
         var authResponse = new AuthResponse
         {
-            user = new Auth
+            user = new JwtResponse
             {
                 username = jwt.Claims.First(c => c.Type == "unique_name").Value,
                 iat = jwt.IssuedAt,

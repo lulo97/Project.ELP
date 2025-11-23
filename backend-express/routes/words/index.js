@@ -15,11 +15,8 @@ async function getWords(req, res, next) {
     const { word, where_options } = req.query;
     const username = await getUsernameFromToken(req.cookies?.token);
 
-    console.log({username})
-
+    //[{"field":"word","comparison_operation":"="}]
     const p_json_params = where_options ? JSON.stringify(where_options) : "";
-
-    console.log({p_json_params})
 
     const result = await executeProcedure("prc_crud_words", [
       { name: "p_id", type: "text", value: null },

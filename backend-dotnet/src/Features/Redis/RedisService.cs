@@ -19,7 +19,7 @@ public class RedisService
     {
         var constsRows = await _appDbContext.Consts
             .AsNoTracking() //Remove cache select query result
-            .Where(row => row.Visible == false)
+            .Where(row => row.Visible == true)
             .ToListAsync();
 
         var db = _redis.GetDatabase(0);
@@ -36,7 +36,14 @@ public class RedisService
         if (keyCountAfter != 0)
             throw new Exception("Redis flush failed: keys remain after FLUSHDB!");
 
-        var jsonData = JsonSerializer.Serialize(constsRows);
+        var jsonData = JsonSerializer.Serialize(
+            constsRows,
+            new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                DictionaryKeyPolicy = JsonNamingPolicy.CamelCase
+            }
+        );
 
         await db.StringSetAsync("CONSTS", jsonData);
 

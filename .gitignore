@@ -10,6 +10,8 @@ lerna-debug.log*
 .env
 .env.*
 
+.vs
+
 frontend-react/node_modules
 frontend-react/dist
 *.dll
