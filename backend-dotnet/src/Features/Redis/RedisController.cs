@@ -16,6 +16,7 @@ namespace Controller
         }
 
         // GET /api/redis?key=someKey
+        [HttpGet]
         public async Task<ApiResponse<object?>> Get([FromQuery] string key)
         {
             if (string.IsNullOrWhiteSpace(key))

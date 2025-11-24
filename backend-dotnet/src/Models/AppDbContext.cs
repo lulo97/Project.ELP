@@ -146,16 +146,16 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<speaking_scores>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("speaking_scores", "elp");
+            entity.HasKey(e => e.id).HasName("speaking_scores_pk");
+
+            entity.ToTable("speaking_scores", "elp");
         });
 
         modelBuilder.Entity<speakings>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("speakings", "elp");
+            entity.HasKey(e => e.id).HasName("speakings_pk");
+
+            entity.ToTable("speakings", "elp");
         });
 
         modelBuilder.Entity<synonyms>(entity =>
@@ -167,9 +167,9 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<tts>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("tts", "elp");
+            entity.HasKey(e => e.id).HasName("tts_pk");
+
+            entity.ToTable("tts", "elp");
         });
 
         modelBuilder.Entity<users>(entity =>
@@ -191,16 +191,16 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<writing_answers>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("writing_answers", "elp");
+            entity.HasKey(e => e.id).HasName("writing_answers_pk");
+
+            entity.ToTable("writing_answers", "elp");
         });
 
         modelBuilder.Entity<writing_questions>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("writing_questions", "elp");
+            entity.HasKey(e => e.id).HasName("writing_questions_pk");
+
+            entity.ToTable("writing_questions", "elp");
         });
 
         OnModelCreatingPartial(modelBuilder);

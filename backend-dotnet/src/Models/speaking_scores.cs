@@ -5,7 +5,7 @@ namespace Models;
 
 public partial class speaking_scores
 {
-    public string? id { get; set; }
+    public string id { get; set; } = null!;
 
     public string? speaking_id { get; set; }
 

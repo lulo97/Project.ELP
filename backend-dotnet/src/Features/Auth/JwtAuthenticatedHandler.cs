@@ -8,6 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 
 public class JwtAuthenticatedHandler : AuthenticationHandler<AuthenticationSchemeOptions>
 {
+    [Obsolete]
     public JwtAuthenticatedHandler(
         IOptionsMonitor<AuthenticationSchemeOptions> options,
         ILoggerFactory logger,

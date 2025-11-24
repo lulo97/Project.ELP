@@ -5,7 +5,7 @@ namespace Models;
 
 public partial class tts
 {
-    public string? id { get; set; }
+    public string id { get; set; } = null!;
 
     public string? text { get; set; }
 

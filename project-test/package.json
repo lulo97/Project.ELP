@@ -1,0 +1,28 @@
+{
+  "name": "projectjesttest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "test:words": "jest src/words.test.js",
+    "test:examples": "jest src/examples.test.js",
+    "test:idioms": "jest src/idioms.test.js",
+    "test:phrases": "jest src/phrases.test.js",
+    "test:posts": "jest src/posts.test.js",
+    "test:source_translates": "jest src/source_translates.test.js",
+    "test:sources": "jest src/sources.test.js",
+    "test:speaking_scores": "jest src/speaking_scores.test.js",
+    "test:speakings": "jest src/speakings.test.js",
+    "test:synonyms": "jest src/synonyms.test.js",
+    "test:tts": "jest src/tts.test.js",
+    "test:writing_answers": "jest src/writing_answers.test.js",
+    "test:writing_questions": "jest src/writing_questions.test.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^30.2.0",
+    "supertest": "^7.1.4"
+  }
+}

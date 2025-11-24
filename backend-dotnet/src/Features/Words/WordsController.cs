@@ -21,37 +21,37 @@ namespace Controllers
         [HttpGet]
         [Authorize] //Error 401 Unauthorized
         public async Task<ApiResponse<List<words>>> Get(
-            [FromQuery] string? word,
-            [FromQuery] int? pageIndex, //Allow to passing query pageIndex = ""
-            [FromQuery] int? pageSize,
-            [FromQuery] string language = "en"
+            [FromQuery] string? word
         )
         {
             var username = JwtHelper.GetUsernameFromToken(HttpContext.Request)!;
-            return await _service.Get(pageIndex ?? CONSTS.PAGE_INDEX, pageSize ?? CONSTS.PAGE_SIZE, username, word);
+            return await _service.Get(username, word);
         }
 
         // POST api/words
         [HttpPost]
-        public async Task<ApiResponse<words>> Add([FromBody] WordRequestBody record, [FromQuery] string language = "en")
+        [Authorize]
+        public async Task<ApiResponse<words>> Add([FromBody] WordRequestBody record)
         {
             record.username = JwtHelper.GetUsernameFromToken(HttpContext.Request)!;
-            return await _service.Add(record, language);
+            return await _service.Add(record);
         }
 
         // PUT api/words/{id}
         [HttpPut("{id}")]
-        public async Task<ApiResponse<words>> Update(string id, [FromBody] WordRequestBody record, [FromQuery] string language = "en")
+        [Authorize]
+        public async Task<ApiResponse<words>> Update(string id, [FromBody] WordRequestBody record)
         {
             record.username = JwtHelper.GetUsernameFromToken(HttpContext.Request)!;
-            return await _service.Update(record, language);
+            return await _service.Update(record);
         }
 
         // DELETE api/words/{id}?language=
         [HttpDelete("{id}")]
-        public async Task<ApiResponse<bool>> Delete(string id, [FromQuery] string language = "en")
+        [Authorize]
+        public async Task<ApiResponse<words>> Delete(string id)
         {
-            return await _service.Delete(id, language);
+            return await _service.Delete(id);
         }
     }
 }

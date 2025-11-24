@@ -1,16 +1,10 @@
 using Models;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Utils;
-using Microsoft.Extensions.Options;
 using StackExchange.Redis;
 using Serilog;
 using Serilog.Events;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
 
 Serilog.Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
@@ -42,6 +36,20 @@ builder.Services.AddSwaggerGen();
 
 //Inject features
 builder.Services.AddScoped<WordsService>();
+builder.Services.AddScoped<ExamplesService>();
+builder.Services.AddScoped<PartOfSpeechsService>();
+builder.Services.AddScoped<MeaningsService>();
+builder.Services.AddScoped<IdiomsService>();
+builder.Services.AddScoped<PhrasesService>();
+builder.Services.AddScoped<PostsService>();
+builder.Services.AddScoped<SourceTranslatesService>();
+builder.Services.AddScoped<SourcesService>();
+builder.Services.AddScoped<SpeakingScoresService>();
+builder.Services.AddScoped<SpeakingsService>();
+builder.Services.AddScoped<SynonymsService>();
+builder.Services.AddScoped<TtsService>();
+builder.Services.AddScoped<WritingAnswersService>();
+builder.Services.AddScoped<WritingQuestionsService>();
 
 //Scope declare in Program not run yet, only someone calling service then it's running
 builder.Services.AddScoped<JwtSettings>(sp =>
@@ -127,6 +135,8 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+app.UseMiddleware<PaginationMiddleware>();
 
 app.MapControllers();
 
