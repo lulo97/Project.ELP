@@ -66,9 +66,8 @@ function App() {
   useEffect(() => {
     async function checkAuthOnPublicPages() {
       const publicPages = ["/login", "/signup"];
-      console.log(publicPages,location.pathname,publicPages.includes(location.pathname))
       if (!publicPages.includes(location.pathname)) {
-        console.log("Not check")
+        //console.log("Not check")
         return;
       };
 

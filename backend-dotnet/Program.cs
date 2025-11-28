@@ -1,27 +1,11 @@
-using Models;
-using Microsoft.EntityFrameworkCore;
-using Utils;
-using StackExchange.Redis;
-using Serilog;
-using Serilog.Events;
 using Microsoft.AspNetCore.Authentication;
-
-Serilog.Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Information()
-    .MinimumLevel.Override("Microsoft.EntityFrameworkCore.Database.Command", LogEventLevel.Warning) // hide EF Core SQL
-    .WriteTo.Console()
-    .WriteTo.File("./log/log.log",
-        rollingInterval: RollingInterval.Day,
-        rollOnFileSizeLimit: true)
-    .CreateLogger();
+using Microsoft.EntityFrameworkCore;
+using Models;
+using Serilog;
+using StackExchange.Redis;
+using Utils;
 
 var builder = WebApplication.CreateBuilder(args);
-
-if (args.Length > 0 && args[0] == "test")
-{
-    Test.Run();
-    return;
-}
 
 builder.Host.UseSerilog();
 
@@ -50,6 +34,7 @@ builder.Services.AddScoped<SynonymsService>();
 builder.Services.AddScoped<TtsService>();
 builder.Services.AddScoped<WritingAnswersService>();
 builder.Services.AddScoped<WritingQuestionsService>();
+builder.Services.AddHttpClient<AIService>();
 
 //Scope declare in Program not run yet, only someone calling service then it's running
 builder.Services.AddScoped<JwtSettings>(sp =>
@@ -97,23 +82,20 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
 
 builder.Services.AddScoped<RedisService>();
 
+//CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 //App init
 var app = builder.Build();
-
-using (var scope = app.Services.CreateScope())
-{
-    //JWT Setting
-    var jwtSettings = scope.ServiceProvider.GetRequiredService<JwtSettings>();
-    Serilog.Log.Information("Builder - Services JWT Setting Loaded: " + jwtSettings.ToString());
-
-    //Inject ConnectionMultiplexer using by RedisService
-    var connectionMultiplexer = scope.ServiceProvider.GetRequiredService<IConnectionMultiplexer>();
-    Serilog.Log.Information("Builder - Services Connection Multiplexer Loaded: " + connectionMultiplexer.ToString());
-
-    //Inject RedisService
-    var redis = scope.ServiceProvider.GetRequiredService<RedisService>();
-    Serilog.Log.Information("Builder - Services Redis Loaded: " + redis.ToString());
-}
 
 if (app.Environment.IsDevelopment())
 {
@@ -129,6 +111,8 @@ using (var scope = app.Services.CreateScope())
     var redisService = scope.ServiceProvider.GetRequiredService<RedisService>();
     await redisService.InitAsync();
 }
+
+app.UseWebSockets();
 
 app.UseHttpsRedirection();
 

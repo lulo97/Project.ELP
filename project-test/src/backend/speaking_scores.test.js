@@ -1,23 +1,23 @@
 const request = require("supertest");
-const { CONFIG } = require("../config");
+const { CONFIG } = require("../../config");
 const { isObjectValid, isPaginationValid } = require("./utils/utils");
 
-const api = request(CONFIG.API_URL);
+const api = request(CONFIG.BACKEND.API_URL);
 
 let cookie = "";
 let id = "";
 
 const expectItem = (obj) => {
-  const properties = ["id", "text", "audio_base64"];
+  const properties = ["id", "speaking_id", "score", "text_listened", "text"];
   const valid = isObjectValid(obj, properties);
   expect(valid).toBe(true);
 };
 
-describe("API tts Test Scenario", () => {
+describe("API speaking_scores Test Scenario", () => {
   test("POST /api/auth/login", async () => {
     const res = await api
       .post("/api/auth/login")
-      .send({ username: CONFIG.USERNAME, password: CONFIG.PASSWORD });
+      .send({ username: CONFIG.BACKEND.USERNAME, password: CONFIG.BACKEND.PASSWORD });
 
     console.log("POST /api/auth/login: ", res.body);
 
@@ -32,8 +32,8 @@ describe("API tts Test Scenario", () => {
     console.log("Cookie received: " + cookie);
   });
 
-  test("GET /api/tts", async () => {
-    const res = await api.get("/api/tts").set("Cookie", cookie);
+  test("GET /api/speaking_scores", async () => {
+    const res = await api.get("/api/speaking_scores").set("Cookie", cookie);
 
     expect(res.body).toHaveProperty("data");
     expect(res.body).toHaveProperty("error");
@@ -45,14 +45,16 @@ describe("API tts Test Scenario", () => {
     expect(isPaginationValid(res.body)).toBe(true);
   });
 
-  test("POST /api/tts", async () => {
-    const res = await api.post("/api/tts").set("Cookie", cookie).send({
+  test("POST /api/speaking_scores", async () => {
+    const res = await api.post("/api/speaking_scores").set("Cookie", cookie).send({
       id: "",
-      text: "current_text", 
-      audio_base64: "current_audio_base64", 
+      speaking_id: "current_speaking_id", 
+      score: "100", 
+      text_listened: "current_text_listened", 
+      text: "current_text"
     });
 
-    console.log("POST /api/tts: ", res.body);
+    console.log("POST /api/speaking_scores: ", res.body);
 
     expect(res.body).toHaveProperty("data");
     expect(res.body).toHaveProperty("error");
@@ -64,27 +66,29 @@ describe("API tts Test Scenario", () => {
     console.log("Created id received: " + id);
   });
 
-  test(`PUT /api/tts/:id`, async () => {
+  test(`PUT /api/speaking_scores/:id`, async () => {
     if (!id) return console.log("Skipping update test — id is empty");
 
-    const res = await api.put(`/api/tts/${id}`).set("Cookie", cookie).send({
+    const res = await api.put(`/api/speaking_scores/${id}`).set("Cookie", cookie).send({
       id: id,
-      text: "updated_text", 
-      audio_base64: "updated_audio_base64", 
+      speaking_id: "updated_speaking_id", 
+      score: "99", 
+      text_listened: "updated_text_listened", 
+      text: "updated_text"
     });
 
-    console.log("PUT /api/tts: ", res.body);
+    console.log("PUT /api/speaking_scores: ", res.body);
 
     expect(res.body).toHaveProperty("data");
     expect(res.body).toHaveProperty("error");
   });
 
-  test(`DELETE /api/tts/:id`, async () => {
+  test(`DELETE /api/speaking_scores/:id`, async () => {
     if (!id) return console.log("Skipping delete test — id is empty");
 
-    const res = await api.delete(`/api/tts/${id}`).set("Cookie", cookie);
+    const res = await api.delete(`/api/speaking_scores/${id}`).set("Cookie", cookie);
 
-    console.log("DELETE /api/tts: ", res.body);
+    console.log("DELETE /api/speaking_scores: ", res.body);
 
     expect(res.body).toHaveProperty("data");
     expect(res.body).toHaveProperty("error");

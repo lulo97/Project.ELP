@@ -101,7 +101,7 @@ export function SpeechToText() {
     mediaStreamRef.current.getTracks().forEach((track) => track.stop());
 
     setRecording(false);
-    setLoading(true);
+    setLoading(true); 
 
     try {
       const wavBlob = encodeWAV(

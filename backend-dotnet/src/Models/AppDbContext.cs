@@ -17,8 +17,6 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<consts> consts { get; set; }
 
-    public virtual DbSet<events> events { get; set; }
-
     public virtual DbSet<examples> examples { get; set; }
 
     public virtual DbSet<idioms> idioms { get; set; }
@@ -68,13 +66,6 @@ public partial class AppDbContext : DbContext
 
             entity.Property(e => e.key).HasComment("yyyy");
             entity.Property(e => e.visible).HasDefaultValue(false);
-        });
-
-        modelBuilder.Entity<events>(entity =>
-        {
-            entity
-                .HasNoKey()
-                .ToTable("events", "elp");
         });
 
         modelBuilder.Entity<examples>(entity =>

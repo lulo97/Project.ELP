@@ -1,23 +1,23 @@
 const request = require("supertest");
-const { CONFIG } = require("../config");
+const { CONFIG } = require("../../config");
 const { isObjectValid, isPaginationValid } = require("./utils/utils");
 
-const api = request(CONFIG.API_URL);
+const api = request(CONFIG.BACKEND.API_URL);
 
 let cookie = "";
 let id = "";
 
 const expectItem = (obj) => {
-  const properties = ["id", "question_id", "answer", "review", "user_id"];
+  const properties = ["id", "title", "content", "user_id"];
   const valid = isObjectValid(obj, properties);
   expect(valid).toBe(true);
 };
 
-describe("API writing_answers Test Scenario", () => {
+describe("API posts Test Scenario", () => {
   test("POST /api/auth/login", async () => {
     const res = await api
       .post("/api/auth/login")
-      .send({ username: CONFIG.USERNAME, password: CONFIG.PASSWORD });
+      .send({ username: CONFIG.BACKEND.USERNAME, password: CONFIG.BACKEND.PASSWORD });
 
     console.log("POST /api/auth/login: ", res.body);
 
@@ -32,8 +32,8 @@ describe("API writing_answers Test Scenario", () => {
     console.log("Cookie received: " + cookie);
   });
 
-  test("GET /api/writing_answers", async () => {
-    const res = await api.get("/api/writing_answers").set("Cookie", cookie);
+  test("GET /api/posts", async () => {
+    const res = await api.get("/api/posts").set("Cookie", cookie);
 
     expect(res.body).toHaveProperty("data");
     expect(res.body).toHaveProperty("error");
@@ -45,15 +45,17 @@ describe("API writing_answers Test Scenario", () => {
     expect(isPaginationValid(res.body)).toBe(true);
   });
 
-  test("POST /api/writing_answers", async () => {
-    const res = await api.post("/api/writing_answers").set("Cookie", cookie).send({
-      id: "",
-      question_id: "current_question_id",
-      answer: "current_answer",
-      review: "current_review",
-    });
+  test("POST /api/posts", async () => {
+    const res = await api
+      .post("/api/posts")
+      .set("Cookie", cookie)
+      .send({
+        id: "",
+        title: "current_title",
+        content: "content",
+      });
 
-    console.log("POST /api/writing_answers: ", res.body);
+    console.log("POST /api/posts: ", res.body);
 
     expect(res.body).toHaveProperty("data");
     expect(res.body).toHaveProperty("error");
@@ -65,28 +67,30 @@ describe("API writing_answers Test Scenario", () => {
     console.log("Created id received: " + id);
   });
 
-  test(`PUT /api/writing_answers/:id`, async () => {
+  test(`PUT /api/posts/:id`, async () => {
     if (!id) return console.log("Skipping update test — id is empty");
 
-    const res = await api.put(`/api/writing_answers/${id}`).set("Cookie", cookie).send({
-      id: id,
-      question_id: "updated_question_id",
-      answer: "updated_answer",
-      review: "updated_review",
-    });
+    const res = await api
+      .put(`/api/posts/${id}`)
+      .set("Cookie", cookie)
+      .send({
+        id: id,
+        title: "updated_title",
+        content: "updated_content",
+      });
 
-    console.log("PUT /api/writing_answers: ", res.body);
+    console.log("PUT /api/posts: ", res.body);
 
     expect(res.body).toHaveProperty("data");
     expect(res.body).toHaveProperty("error");
   });
 
-  test(`DELETE /api/writing_answers/:id`, async () => {
+  test(`DELETE /api/posts/:id`, async () => {
     if (!id) return console.log("Skipping delete test — id is empty");
 
-    const res = await api.delete(`/api/writing_answers/${id}`).set("Cookie", cookie);
+    const res = await api.delete(`/api/posts/${id}`).set("Cookie", cookie);
 
-    console.log("DELETE /api/writing_answers: ", res.body);
+    console.log("DELETE /api/posts: ", res.body);
 
     expect(res.body).toHaveProperty("data");
     expect(res.body).toHaveProperty("error");

@@ -1,23 +1,23 @@
 const request = require("supertest");
-const { CONFIG } = require("../config");
+const { CONFIG } = require("../../config");
 const { isObjectValid, isPaginationValid } = require("./utils/utils");
 
-const api = request(CONFIG.API_URL);
+const api = request(CONFIG.BACKEND.API_URL);
 
 let cookie = "";
 let id = "";
 
 const expectItem = (obj) => {
-  const properties = ["id", "question", "user_id"];
+  const properties = ["id", "chunk", "source_id", "translate", "user_id"];
   const valid = isObjectValid(obj, properties);
   expect(valid).toBe(true);
 };
 
-describe("API writing_questions Test Scenario", () => {
+describe("API source_translates Test Scenario", () => {
   test("POST /api/auth/login", async () => {
     const res = await api
       .post("/api/auth/login")
-      .send({ username: CONFIG.USERNAME, password: CONFIG.PASSWORD });
+      .send({ username: CONFIG.BACKEND.USERNAME, password: CONFIG.BACKEND.PASSWORD });
 
     console.log("POST /api/auth/login: ", res.body);
 
@@ -32,8 +32,8 @@ describe("API writing_questions Test Scenario", () => {
     console.log("Cookie received: " + cookie);
   });
 
-  test("GET /api/writing_questions", async () => {
-    const res = await api.get("/api/writing_questions").set("Cookie", cookie);
+  test("GET /api/source_translates", async () => {
+    const res = await api.get("/api/source_translates").set("Cookie", cookie);
 
     expect(res.body).toHaveProperty("data");
     expect(res.body).toHaveProperty("error");
@@ -45,16 +45,18 @@ describe("API writing_questions Test Scenario", () => {
     expect(isPaginationValid(res.body)).toBe(true);
   });
 
-  test("POST /api/writing_questions", async () => {
+  test("POST /api/source_translates", async () => {
     const res = await api
-      .post("/api/writing_questions")
+      .post("/api/source_translates")
       .set("Cookie", cookie)
       .send({
         id: "",
-        question: "current_question",
+        chunk: "current_chunk",
+        translate: "translate",
+        source_id: "source_id",
       });
 
-    console.log("POST /api/writing_questions: ", res.body);
+    console.log("POST /api/source_translates: ", res.body);
 
     expect(res.body).toHaveProperty("data");
     expect(res.body).toHaveProperty("error");
@@ -66,31 +68,31 @@ describe("API writing_questions Test Scenario", () => {
     console.log("Created id received: " + id);
   });
 
-  test(`PUT /api/writing_questions/:id`, async () => {
+  test(`PUT /api/source_translates/:id`, async () => {
     if (!id) return console.log("Skipping update test — id is empty");
 
     const res = await api
-      .put(`/api/writing_questions/${id}`)
+      .put(`/api/source_translates/${id}`)
       .set("Cookie", cookie)
       .send({
         id: id,
-        question: "updated_question",
+        chunk: "updated_chunk",
+        translate: "updated_translate",
+        source_id: "updated_source_id",
       });
 
-    console.log("PUT /api/writing_questions: ", res.body);
+    console.log("PUT /api/source_translates: ", res.body);
 
     expect(res.body).toHaveProperty("data");
     expect(res.body).toHaveProperty("error");
   });
 
-  test(`DELETE /api/writing_questions/:id`, async () => {
+  test(`DELETE /api/source_translates/:id`, async () => {
     if (!id) return console.log("Skipping delete test — id is empty");
 
-    const res = await api
-      .delete(`/api/writing_questions/${id}`)
-      .set("Cookie", cookie);
+    const res = await api.delete(`/api/source_translates/${id}`).set("Cookie", cookie);
 
-    console.log("DELETE /api/writing_questions: ", res.body);
+    console.log("DELETE /api/source_translates: ", res.body);
 
     expect(res.body).toHaveProperty("data");
     expect(res.body).toHaveProperty("error");

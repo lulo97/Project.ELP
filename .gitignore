@@ -15,11 +15,14 @@ lerna-debug.log*
 frontend-react/node_modules
 frontend-react/dist
 *.dll
+*.sqlite
+*.gguf
 
 backend-dotnet/bin
 backend-dotnet/obj
 
-
+__pycache__
+venv
 node_modules
 dist
 dist-ssr

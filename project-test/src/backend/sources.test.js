@@ -1,23 +1,23 @@
 const request = require("supertest");
-const { CONFIG } = require("../config");
+const { CONFIG } = require("../../config");
 const { isObjectValid, isPaginationValid } = require("./utils/utils");
 
-const api = request(CONFIG.API_URL);
+const api = request(CONFIG.BACKEND.API_URL);
 
 let cookie = "";
 let id = "";
 
 const expectItem = (obj) => {
-  const properties = ["id", "idiom", "meaning", "example", "user_id"];
+  const properties = ["id", "source", "name", "user_id"];
   const valid = isObjectValid(obj, properties);
   expect(valid).toBe(true);
 };
 
-describe("API idioms Test Scenario", () => {
+describe("API sources Test Scenario", () => {
   test("POST /api/auth/login", async () => {
     const res = await api
       .post("/api/auth/login")
-      .send({ username: CONFIG.USERNAME, password: CONFIG.PASSWORD });
+      .send({ username: CONFIG.BACKEND.USERNAME, password: CONFIG.BACKEND.PASSWORD });
 
     console.log("POST /api/auth/login: ", res.body);
 
@@ -32,8 +32,8 @@ describe("API idioms Test Scenario", () => {
     console.log("Cookie received: " + cookie);
   });
 
-  test("GET /api/idioms", async () => {
-    const res = await api.get("/api/idioms").set("Cookie", cookie);
+  test("GET /api/sources", async () => {
+    const res = await api.get("/api/sources").set("Cookie", cookie);
 
     expect(res.body).toHaveProperty("data");
     expect(res.body).toHaveProperty("error");
@@ -45,15 +45,14 @@ describe("API idioms Test Scenario", () => {
     expect(isPaginationValid(res.body)).toBe(true);
   });
 
-  test("POST /api/idioms", async () => {
-    const res = await api.post("/api/idioms").set("Cookie", cookie).send({
+  test("POST /api/sources", async () => {
+    const res = await api.post("/api/sources").set("Cookie", cookie).send({
       id: "",
-      idiom: "current_idiom",
-      meaning: "meaning",
-      example: "example",
+      source: "current_source",
+      name: "name",
     });
 
-    console.log("POST /api/idioms: ", res.body);
+    console.log("POST /api/sources: ", res.body);
 
     expect(res.body).toHaveProperty("data");
     expect(res.body).toHaveProperty("error");
@@ -65,28 +64,27 @@ describe("API idioms Test Scenario", () => {
     console.log("Created id received: " + id);
   });
 
-  test(`PUT /api/idioms/:id`, async () => {
+  test(`PUT /api/sources/:id`, async () => {
     if (!id) return console.log("Skipping update test — id is empty");
 
-    const res = await api.put(`/api/idioms/${id}`).set("Cookie", cookie).send({
+    const res = await api.put(`/api/sources/${id}`).set("Cookie", cookie).send({
       id: id,
-      idiom: "updated_idiom",
-      meaning: "updated_meaning",
-      example: "updated_example",
+      source: "updated_source",
+      name: "updated_name",
     });
 
-    console.log("PUT /api/idioms: ", res.body);
+    console.log("PUT /api/sources: ", res.body);
 
     expect(res.body).toHaveProperty("data");
     expect(res.body).toHaveProperty("error");
   });
 
-  test(`DELETE /api/idioms/:id`, async () => {
+  test(`DELETE /api/sources/:id`, async () => {
     if (!id) return console.log("Skipping delete test — id is empty");
 
-    const res = await api.delete(`/api/idioms/${id}`).set("Cookie", cookie);
+    const res = await api.delete(`/api/sources/${id}`).set("Cookie", cookie);
 
-    console.log("DELETE /api/idioms: ", res.body);
+    console.log("DELETE /api/sources: ", res.body);
 
     expect(res.body).toHaveProperty("data");
     expect(res.body).toHaveProperty("error");

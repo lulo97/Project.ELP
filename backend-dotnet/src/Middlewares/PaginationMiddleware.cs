@@ -13,6 +13,13 @@ public class PaginationMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
+        if (context.Request.Path.StartsWithSegments("/api/ai/events") ||
+        context.WebSockets.IsWebSocketRequest)
+        {
+            await _next(context);
+            return;
+        }
+
         context.Request.EnableBuffering();
 
         string requestBody = "";
@@ -40,6 +47,7 @@ public class PaginationMiddleware
             !context.Response.ContentType.Contains("application/json", StringComparison.OrdinalIgnoreCase))
         {
             context.Response.Body = originalBodyStream;
+            //System.InvalidOperationException: 'Cannot write to response body after connection has been upgraded.'
             await context.Response.WriteAsync(responseBody);
             return;
         }
