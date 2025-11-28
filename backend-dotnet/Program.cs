@@ -4,16 +4,28 @@ using Models;
 using Serilog;
 using StackExchange.Redis;
 using Utils;
+using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
+
+Env.Load();
 
 builder.Host.UseSerilog();
 
 builder.Services.AddControllers();
 
+var host = Environment.GetEnvironmentVariable("POSTGRESQL_HOST");
+var port = Environment.GetEnvironmentVariable("POSTGRESQL_PORT");
+var database = Environment.GetEnvironmentVariable("POSTGRESQL_DATABASE");
+var user = Environment.GetEnvironmentVariable("POSTGRESQL_USER");
+var password = Environment.GetEnvironmentVariable("POSTGRESQL_PASSWORD");
+
+var connectionString = $"Host={host};Port={port};Database={database};Username={user};Password={password}";
+
+Console.WriteLine("PostgreSQL = " + connectionString);
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
-);
+    options.UseNpgsql(connectionString));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -35,6 +47,7 @@ builder.Services.AddScoped<TtsService>();
 builder.Services.AddScoped<WritingAnswersService>();
 builder.Services.AddScoped<WritingQuestionsService>();
 builder.Services.AddHttpClient<AIService>();
+builder.Services.AddHttpClient<YoutubeService>();
 
 //Scope declare in Program not run yet, only someone calling service then it's running
 builder.Services.AddScoped<JwtSettings>(sp =>
@@ -69,11 +82,12 @@ builder.Services.AddAuthentication("JwtScheme")
 
 builder.Services.AddAuthorization(); //Allow [Authorize] attribute to work
 
-//Redis
-var redisConnection = builder.Configuration.GetConnectionString("Redis")
-                      ?? builder.Configuration["Redis:ConnectionString"];
+//Redis 
+var redis_host = Environment.GetEnvironmentVariable("REDIS_HOST");
+var redis_port = Environment.GetEnvironmentVariable("REDIS_PORT");
+var redisConnection = $"{redis_host}:{redis_port}";
 
-if (redisConnection == null) throw new Exception("Redis connection string null!");
+Console.WriteLine("Redis = " + redisConnection);
 
 builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
 {

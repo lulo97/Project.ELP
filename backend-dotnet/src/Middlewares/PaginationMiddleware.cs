@@ -13,8 +13,10 @@ public class PaginationMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
-        if (context.Request.Path.StartsWithSegments("/api/ai/events") ||
-        context.WebSockets.IsWebSocketRequest)
+        if (
+            context.Request.Path.StartsWithSegments("/api/ai") ||
+            context.Request.Path.StartsWithSegments("/api/youtube")
+        )
         {
             await _next(context);
             return;

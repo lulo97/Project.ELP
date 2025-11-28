@@ -8,6 +8,7 @@ public class AIService
 {
     private readonly IConnectionMultiplexer redis;
     private readonly HttpClient client;
+    private readonly string AI_HOST = Environment.GetEnvironmentVariable("PG_HOST") ?? "http://localhost:8001";
     public AIService(HttpClient _client, IConnectionMultiplexer _redis)
     {
         client = _client;
@@ -18,7 +19,7 @@ public class AIService
         if (body == null)
             return ApiResponse.Fail("Request body null!");
 
-        string url = "http://localhost:8001/api";
+        string url = AI_HOST + "/api";
 
         string jsonBody = JsonSerializer.Serialize(body);
 
@@ -38,7 +39,7 @@ public class AIService
         if (string.IsNullOrWhiteSpace(id))
             return ApiResponse.Fail("Parameter 'id' is required");
 
-        string baseUrl = "http://localhost:8001/events";
+        string baseUrl = AI_HOST + "/events";
 
         string url = QueryHelpers.AddQueryString(baseUrl, "id", id);
 
