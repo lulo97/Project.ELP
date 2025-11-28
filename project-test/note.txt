@@ -1,1 +1,3 @@
 npm run test:words
+
+npx jest --forceExit src\backend\summary.test.js

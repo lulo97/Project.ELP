@@ -9,11 +9,12 @@ import { Button } from "../../components/Button";
 import { Pagination } from "../../components/Pagination";
 import { SearchTable } from "../../components/SearchTable";
 import { getTimeFromId } from "../../utils/getTimeFromId";
+import { AnimatedList } from "../../components/AnimatedList";
 
 const translation = {
   ...source_translation,
   ...view_sources_translation,
-}
+};
 
 const PAGE_SIZE = 5;
 
@@ -22,7 +23,7 @@ const DocumentCard = forwardRef(({ id, name, source, create_at }, ref) => {
   return (
     <div
       ref={ref}
-      className="mx-auto my-4 p-4 bg-white shadow-md rounded-2xl hover:shadow-xl transition-shadow duration-300 flex gap-10"
+      className="mx-auto my-4 p-4 bg-white shadow-md rounded-xl hover:shadow-xl transition-shadow duration-300 flex gap-10"
     >
       <div className="w-[85%] flex flex-col justify-between">
         <div className="flex justify-between">
@@ -63,6 +64,8 @@ export function ViewSources() {
   ]);
   const [paginationData, setPaginationData] = useState({});
   const firstCardRef = useRef(null);
+  const [firstCardHeight, setFirstCardHeight] = useState(0);
+  const [trigger, setTrigger] = useState(0);
 
   async function fetchData(
     { pageIndex, pageSize } = {
@@ -84,12 +87,22 @@ export function ViewSources() {
 
     setSources(result.data);
     setPaginationData(result.pagination);
+    setTrigger(x => x + 1)
   }
 
   useEffect(() => {
     fetchData();
   }, []);
 
+  // Wait for firstCardRef to be assigned after sources change
+  useEffect(() => {
+    if (firstCardRef.current) {
+      setFirstCardHeight(firstCardRef.current.offsetHeight);
+    } else {
+      setFirstCardHeight(0);
+    }
+  }, [sources]);
+  
   return (
     <div className="p-4 bg-gray-100 min-h-[90vh]">
       <PageTitle title={getTranslation("Title", translation)} />
@@ -100,30 +113,32 @@ export function ViewSources() {
         fetchRows={fetchData}
       />
 
-      {(!sources || sources.length == 0) && <div>{getTranslation("NoSource", translation)}</div>}
-      {sources &&
-        sources.length > 0 &&
-        sources.map((ele, index) => {
-          return (
-            <DocumentCard
-              ref={index === 0 ? firstCardRef : null}
-              id={ele.id}
-              name={ele.name}
-              source={ele.source}
-              create_at={getTimeFromId(ele.id)}
-            />
-          );
-        })}
+      {sources.length === 0 && (
+        <div>{getTranslation("NoSource", translation)}</div>
+      )}
 
-      {firstCardRef.current &&
-        sources.length < PAGE_SIZE &&
+      <AnimatedList trigger={trigger}>
+        {sources.map((ele, index) => (
+          <DocumentCard
+            key={ele.id}
+            ref={index === 0 ? firstCardRef : null}
+            id={ele.id}
+            name={ele.name}
+            source={ele.source}
+            create_at={getTimeFromId(ele.id)}
+          />
+        ))}
+      </AnimatedList>
+
+      {/* Filler divs to maintain layout if fewer than PAGE_SIZE items */}
+      {/* {sources.length < PAGE_SIZE &&
         Array.from({ length: PAGE_SIZE - sources.length }).map((_, i) => (
           <div
             key={i}
-            style={{ height: `${firstCardRef.current.offsetHeight}px` }}
+            style={{ height: `${firstCardHeight}px` }}
             className="bg-transparent"
           ></div>
-        ))}
+        ))} */}
 
       <Pagination fetchData={fetchData} paginationData={paginationData} />
     </div>

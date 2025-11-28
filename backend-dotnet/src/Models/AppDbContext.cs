@@ -6,10 +6,6 @@ namespace Models;
 
 public partial class AppDbContext : DbContext
 {
-    public AppDbContext()
-    {
-    }
-
     public AppDbContext(DbContextOptions<AppDbContext> options)
         : base(options)
     {
@@ -50,9 +46,6 @@ public partial class AppDbContext : DbContext
     public virtual DbSet<writing_answers> writing_answers { get; set; }
 
     public virtual DbSet<writing_questions> writing_questions { get; set; }
-
-    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    //    => optionsBuilder.UseNpgsql("Name=DefaultConnection");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

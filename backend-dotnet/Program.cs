@@ -10,6 +10,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 Env.Load();
 
+var appPort = Environment.GetEnvironmentVariable("PORT") ?? "3200";
+
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(int.Parse(appPort));
+});
+
 builder.Host.UseSerilog();
 
 builder.Services.AddControllers();
@@ -22,7 +29,7 @@ var password = Environment.GetEnvironmentVariable("POSTGRESQL_PASSWORD");
 
 var connectionString = $"Host={host};Port={port};Database={database};Username={user};Password={password}";
 
-Console.WriteLine("PostgreSQL = " + connectionString);
+//Console.WriteLine("PostgreSQL = " + connectionString);
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
@@ -87,7 +94,7 @@ var redis_host = Environment.GetEnvironmentVariable("REDIS_HOST");
 var redis_port = Environment.GetEnvironmentVariable("REDIS_PORT");
 var redisConnection = $"{redis_host}:{redis_port}";
 
-Console.WriteLine("Redis = " + redisConnection);
+//Console.WriteLine("Redis = " + redisConnection);
 
 builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
 {
@@ -111,13 +118,10 @@ builder.Services.AddCors(options =>
 //App init
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    // URL = /swagger/index.html
-    // JSON = /swagger/v1/swagger.json
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// URL = /swagger/index.html
+// JSON = /swagger/v1/swagger.json
+app.UseSwagger();
+app.UseSwaggerUI();
 
 //Init redist keys after build
 using (var scope = app.Services.CreateScope())

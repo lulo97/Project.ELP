@@ -92,7 +92,7 @@ export function Pagination({
   }
 
   return (
-    <div className="flex justify-between items-center p-4 border-t bg-white flex-wrap gap-3">
+    <div className="flex justify-between items-center p-4 border-t bg-white flex-wrap gap-3 shadow-md">
       {/* Left info */}
       <span className="text-sm text-gray-600">
         {getTranslation("PaginationInfo")

@@ -21,6 +21,8 @@ frontend-react/dist
 backend-dotnet/bin
 backend-dotnet/obj
 
+publish
+
 __pycache__
 venv
 node_modules
