@@ -31,6 +31,7 @@ loadEnv();
 
 const { PORT, API_TARGET } = process.env;
 const DIST_DIR = path.join(__dirname, "dist");
+console.log("Backend =", API_TARGET)
 
 /* Minimal server
   - Forwarding url starting with /api to backend in request object

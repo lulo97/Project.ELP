@@ -10,8 +10,6 @@ import { TranslateDetail } from "./TranslateDetail";
 import { Popup } from "./Popup";
 import { getTranslation as _getTranslation } from "../../utils/getTranslation";
 import { translation } from "./Read.Translate";
-import { HighlightHtmlText } from "./HighlightHtmlText";
-import { ALLOW_SELECTED, useSelectedText } from "../../hooks/useSelectedText";
 
 const getTranslation = (key) => _getTranslation(key, translation);
 
@@ -37,10 +35,8 @@ export const EMPTY_STATE = {
   chunks: [],
 };
 
-export function Read() {
+export function ReadOld() {
   const source_id = new URLSearchParams(useLocation().search).get("source_id");
-
-  const { selectedText } = useSelectedText();
 
   const [state, setState] = useState(EMPTY_STATE);
 
@@ -60,26 +56,6 @@ export function Read() {
   useEffect(() => {
     fetchData();
   }, []);
-
-  useEffect(() => {
-    if (selectedText.length == 0) return;
-    if (state.open_popup) return;
-
-    const _word = selectedText.trim();
-
-    if (_word.length == 0) return;
-
-    setState((state) => {
-      return {
-        ...state,
-        open_popup: true,
-        word_row: {
-          ...state.word_row,
-          word: _word,
-        },
-      };
-    });
-  }, [selectedText]);
 
   function isChunksEdit() {
     const string_original_chunks = JSON.stringify(
@@ -120,14 +96,6 @@ export function Read() {
     });
   }
 
-  function splitSource() {
-    return state.source_row.source.split("<br><br>").map((ele) => {
-      return `<p class=${ALLOW_SELECTED}>${ele
-        .replaceAll("<p>", "")
-        .replaceAll("</p>", "")}</p>`;
-    });
-  }
-
   if (!state.source_row.id) return <div>Loading...</div>;
 
   const title = getTranslation("Title").replace(
@@ -150,10 +118,14 @@ export function Read() {
         )}
       </div>
 
-      {splitSource().map((ele, idx) => {
+      {state.chunks.map((ele, idx) => {
         return (
           <div key={idx}>
-            <HighlightHtmlText htmlString={ele} words={["is"]} />
+            <ClickableWordParagraph
+              chunk={ele.chunk}
+              state={state}
+              setState={setState}
+            />
             <TranslateDetail
               translate={ele.translate}
               idx={idx}

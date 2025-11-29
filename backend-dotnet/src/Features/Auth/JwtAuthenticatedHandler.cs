@@ -67,7 +67,7 @@ public class JwtAuthenticatedHandler : AuthenticationHandler<AuthenticationSchem
             return Task.FromResult(AuthenticateResult.Fail(new Exception($"Token expired at {expDate} UTC. Current time: {now} UTC")));
         }
 
-        Console.WriteLine($"Process authorize from {Request.Path} with token = {token}, parsed username = {username}, exp = {exp}, iat = {iat}\n");
+        Console.WriteLine($"Process authorize from {Request.Path} with token = {token[..10]}..., parsed username = {username}, exp = {exp}, iat = {iat}\n");
 
         var claims = jwt.Claims;
         var identity = new ClaimsIdentity(claims, "CookieJwt");

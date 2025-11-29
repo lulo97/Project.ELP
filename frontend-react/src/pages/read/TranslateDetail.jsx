@@ -5,7 +5,12 @@ import { translation } from "./Read.Translate";
 export function TranslateDetail({ translate, idx, handleSaveTranslateChunk }) {
   return (
     <details className="pl-1" open={!!translate}>
-      <summary className="text-gray-500">{getTranslation("Translate", translation)}</summary>
+      <summary
+        style={{ userSelect: "none", cursor: "pointer" }}
+        className="text-gray-500 mb-1 text-sm"
+      >
+        {getTranslation("Translate", translation)}
+      </summary>
       <Textarea
         isFitContent={true}
         value={translate}

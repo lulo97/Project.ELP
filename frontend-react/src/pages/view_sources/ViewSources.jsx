@@ -30,7 +30,10 @@ const DocumentCard = forwardRef(({ id, name, source, create_at }, ref) => {
           <h2 className="text-xl font-semibold mb-2">{name}</h2>
           <span className="text-gray-500 whitespace-nowrap">{create_at}</span>
         </div>
-        <p className="text-gray-700 text-sm line-clamp-3">{source}</p>
+        <div
+          className="text-gray-700 text-sm line-clamp-3"
+          dangerouslySetInnerHTML={{ __html: source }}
+        />
       </div>
       <div className="flex-grow flex flex-col gap-2">
         <Button
@@ -87,7 +90,7 @@ export function ViewSources() {
 
     setSources(result.data);
     setPaginationData(result.pagination);
-    setTrigger(x => x + 1)
+    setTrigger((x) => x + 1);
   }
 
   useEffect(() => {
@@ -102,7 +105,7 @@ export function ViewSources() {
       setFirstCardHeight(0);
     }
   }, [sources]);
-  
+
   return (
     <div className="p-4 bg-gray-100 min-h-[90vh]">
       <PageTitle title={getTranslation("Title", translation)} />

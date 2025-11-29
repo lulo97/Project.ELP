@@ -15,18 +15,19 @@ export function CommonPopup({
   height = "",
   customButton = null,
 }) {
-  const selectedText = useSelectedText();
+  const { selectedText } = useSelectedText();
 
   if (!show) return null;
 
   let footerClassname = "px-6 py-3 border-t flex justify-end gap-2";
-  if (isShowConfirmButton && !customButton) footerClassname = footerClassname.replace("justify-end", "justify-between")
+  if (isShowConfirmButton && !customButton)
+    footerClassname = footerClassname.replace("justify-end", "justify-between");
 
   return (
     <div
       onClick={(e) => {
         if (selectedText && selectedText.length > 0) return;
-        handleClose()
+        handleClose();
       }}
       className="fixed inset-0 flex items-center justify-center bg-black/30 z-50"
     >

@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Models;
 using Utils;
-using static Utils.Utils;
 using static Utils.ApiResponse<Models.sources>;
+using static Utils.Utils;
 
 public class SourcesService
 {
@@ -23,11 +23,13 @@ public class SourcesService
         if (!string.IsNullOrWhiteSpace(name))
             query = query.Where(s => s.name.ToLower().Contains(name.ToLower()));
 
-        query = from s in query
-                join u in _context.users
-                    on s.user_id equals u.id
-                where u.username == username
-                select s;
+        query =
+            from s in query
+            join u in _context.users
+                on s.user_id equals u.id
+            where u.username == username
+            orderby Convert.ToDouble(s.id) descending
+            select s;
 
         var data = await query.ToListAsync();
         return ApiResponse<List<sources>>.Ok(data: data);
@@ -39,6 +41,10 @@ public class SourcesService
 
         if (string.IsNullOrWhiteSpace(record.source))
             return Fail("ErrorSourceEmpty");
+
+        var result_source_malicious = IsHtmlMalicious(record.source);
+        if (result_source_malicious.safe == false)
+            return Fail(result_source_malicious.reason);
 
         if (string.IsNullOrWhiteSpace(record.name))
             return Fail("ErrorNameEmpty");

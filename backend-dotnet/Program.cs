@@ -55,6 +55,7 @@ builder.Services.AddScoped<WritingAnswersService>();
 builder.Services.AddScoped<WritingQuestionsService>();
 builder.Services.AddHttpClient<AIService>();
 builder.Services.AddHttpClient<YoutubeService>();
+builder.Services.AddScoped<ReadService>();
 
 //Scope declare in Program not run yet, only someone calling service then it's running
 builder.Services.AddScoped<JwtSettings>(sp =>

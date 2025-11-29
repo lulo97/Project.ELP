@@ -66,7 +66,7 @@ export function ClickableWordParagraph({
   setCurrentWord = () => {},
   openPopup = () => {},
 }) {
-  const selectedText = useSelectedText();
+  const { selectedText } = useSelectedText();
 
   /**
    * Input: [ { value, type }, ... ]

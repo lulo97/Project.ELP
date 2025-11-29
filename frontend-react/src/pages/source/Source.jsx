@@ -80,33 +80,33 @@ export function Source() {
         rows={rows}
         openPopup={openPopup}
         additionButtons={[
-          (row) => (
-            <Button
-              className="py-0 h-full"
-              text={getTranslation("Read")}
-              onClick={() =>
-                (window.location.href = `/read?source_name=${row.name}`)
-              }
-            />
-          ),
-          (row) => (
-            <Button
-              className="py-0 h-full"
-              text={getTranslation("ReadSentence", translation)}
-              onClick={() =>
-                (window.location.href = `/read_sentence?source_name=${row.name}`)
-              }
-            />
-          ),
-          (row) => (
-            <Button
-              className="py-0 h-full"
-              text={getTranslation("WordList", translation)}
-              onClick={() =>
-                (window.location.href = `/read_word_list?source_name=${row.name}`)
-              }
-            />
-          ),
+          // (row) => (
+          //   <Button
+          //     className="py-0 h-full"
+          //     text={getTranslation("Read")}
+          //     onClick={() =>
+          //       (window.location.href = `/read?source_name=${row.name}`)
+          //     }
+          //   />
+          // ),
+          // (row) => (
+          //   <Button
+          //     className="py-0 h-full"
+          //     text={getTranslation("ReadSentence", translation)}
+          //     onClick={() =>
+          //       (window.location.href = `/read_sentence?source_name=${row.name}`)
+          //     }
+          //   />
+          // ),
+          // (row) => (
+          //   <Button
+          //     className="py-0 h-full"
+          //     text={getTranslation("WordList", translation)}
+          //     onClick={() =>
+          //       (window.location.href = `/read_word_list?source_name=${row.name}`)
+          //     }
+          //   />
+          // ),
         ]}
         paginationData={paginationData}
         fetchData={fetchRows}

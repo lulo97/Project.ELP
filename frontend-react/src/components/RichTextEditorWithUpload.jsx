@@ -8,6 +8,9 @@ import {
   getDefaultKeyBinding,
 } from "draft-js";
 import "draft-js/dist/Draft.css";
+import draftToHtml from "draftjs-to-html";
+import { convertToRaw } from "draft-js";
+import htmlToDraft from "html-to-draftjs";
 
 // Toolbar button definition
 const INLINE_STYLES = [
@@ -16,7 +19,15 @@ const INLINE_STYLES = [
   { label: "Underline", style: "UNDERLINE", className: "underline" },
 ];
 
-function ToolbarButton({ label, style, active, onToggle, extraClass, isUpload, onUploadClick }) {
+function ToolbarButton({
+  label,
+  style,
+  active,
+  onToggle,
+  extraClass,
+  isUpload,
+  onUploadClick,
+}) {
   if (isUpload) {
     return (
       <button
@@ -50,25 +61,35 @@ export function RichTextEditorWithUpload({
   onChange,
   placeholder = "Start typing...",
 }) {
+  if (!onChange) throw Error("onChange must not null!");
+
   const fileInputRef = useRef(null);
 
-  const [editorState, setEditorState] = useState(() =>
-    initialValue
-      ? EditorState.createWithContent(ContentState.createFromText(initialValue))
-      : EditorState.createEmpty()
-  );
+  const [editorState, setEditorState] = useState(() => {
+    if (!initialValue) return EditorState.createEmpty();
+
+    const blocksFromHTML = htmlToDraft(initialValue);
+    const { contentBlocks, entityMap } = blocksFromHTML;
+
+    const contentState = ContentState.createFromBlockArray(
+      contentBlocks,
+      entityMap
+    );
+
+    return EditorState.createWithContent(contentState);
+  });
 
   const currentStyle = editorState.getCurrentInlineStyle();
 
   const toggleInlineStyle = (style) => {
     const newState = RichUtils.toggleInlineStyle(editorState, style);
     setEditorState(newState);
-    onChange?.(newState.getCurrentContent().getPlainText());
+    onChange(draftToHtml(convertToRaw(newState.getCurrentContent())));
   };
 
   const handleEditorChange = (state) => {
     setEditorState(state);
-    onChange?.(state.getCurrentContent().getPlainText());
+    onChange(draftToHtml(convertToRaw(state.getCurrentContent())));
   };
 
   const keyBindingFn = (e) => {
@@ -82,16 +103,20 @@ export function RichTextEditorWithUpload({
       const currentContent = editorState.getCurrentContent();
       const selection = editorState.getSelection();
       const newContent = Modifier.insertText(currentContent, selection, "    ");
-      const newState = EditorState.push(editorState, newContent, "insert-characters");
+      const newState = EditorState.push(
+        editorState,
+        newContent,
+        "insert-characters"
+      );
       setEditorState(newState);
-      onChange?.(newState.getCurrentContent().getPlainText());
+      onChange(draftToHtml(convertToRaw(newState.getCurrentContent())));
       return "handled";
     }
 
     const newState = RichUtils.handleKeyCommand(editorState, command);
     if (newState) {
       setEditorState(newState);
-      onChange?.(newState.getCurrentContent().getPlainText());
+      onChange(draftToHtml(convertToRaw(newState.getCurrentContent())));
       return "handled";
     }
 
@@ -106,9 +131,11 @@ export function RichTextEditorWithUpload({
       return;
     }
     const text = await file.text();
-    const newState = EditorState.createWithContent(ContentState.createFromText(text));
+    const newState = EditorState.createWithContent(
+      ContentState.createFromText(text)
+    );
     setEditorState(newState);
-    onChange?.(text);
+    onChange(text);
   };
 
   const handleUploadClick = () => {

@@ -17,7 +17,10 @@ describe("API sources Test Scenario", () => {
   test("POST /api/auth/login", async () => {
     const res = await api
       .post("/api/auth/login")
-      .send({ username: CONFIG.BACKEND.USERNAME, password: CONFIG.BACKEND.PASSWORD });
+      .send({
+        username: CONFIG.BACKEND.USERNAME,
+        password: CONFIG.BACKEND.PASSWORD,
+      });
 
     console.log("POST /api/auth/login: ", res.body);
 
@@ -62,6 +65,20 @@ describe("API sources Test Scenario", () => {
     expectItem(data); //If this fail then this test will exit (id wouldn't be set)
     id = data.id;
     console.log("Created id received: " + id);
+  });
+
+  test("POST malicious html /api/sources", async () => {
+    const res = await api.post("/api/sources").set("Cookie", cookie).send({
+      id: "",
+      source: "<p onclick='alert(1)'>Hello</p>",
+      name: "name",
+    });
+
+    console.log("POST malicious html /api/sources: ", res.body);
+
+    expect(res.body).toHaveProperty("data");
+    expect(res.body).toHaveProperty("error");
+    expect(res.body.error).not.toBeNull();
   });
 
   test(`PUT /api/sources/:id`, async () => {
