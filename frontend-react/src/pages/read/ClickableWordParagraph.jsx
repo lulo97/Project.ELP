@@ -5,7 +5,7 @@ import { Tooltip } from "../../components/Tooltip";
 import { NEW_LINE_CHARACTER, splitParagraph } from "../../utils/splitParagraph";
 import { useSelectedText } from "../../hooks/useSelectedText";
 import { getConsts } from "../../utils/const";
-import { EMPTY_STATE } from "../read/Read";
+import { EMPTY_STATE } from "./utils";
 
 function getWordColor({ unit, words }) {
   const consts = getConsts();

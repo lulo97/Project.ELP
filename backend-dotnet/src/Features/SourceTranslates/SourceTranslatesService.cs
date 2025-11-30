@@ -37,11 +37,8 @@ public class SourceTranslatesService
     {
         record.user_id = _context.users.FirstOrDefault(x => x.username == record.username)!.id;
 
-        if (string.IsNullOrWhiteSpace(record.chunk))
-            return Fail("ErrorChunkEmpty");
-
-        if (string.IsNullOrWhiteSpace(record.translate))
-            return Fail("ErrorTranslateEmpty");
+        if (record.chunks is null || record.chunks.Count == 0)
+            return Fail("ErrorChunksEmpty");
 
         if (string.IsNullOrWhiteSpace(record.source_id))
             return Fail("ErrorSourceIdEmpty");
@@ -49,68 +46,23 @@ public class SourceTranslatesService
         if (string.IsNullOrWhiteSpace(record.user_id))
             return Fail("ErrorUserIdEmpty");
 
-        var existing = await _context.source_translates
-            .FirstOrDefaultAsync(e => e.chunk == record.chunk && e.source_id == record.source_id && e.user_id == record.user_id);
+        //Delete all old source_translates
+        await _context.source_translates
+            .Where(x => x.source_id == record.source_id)
+            .ExecuteDeleteAsync();
 
-        if (existing != null)
-            return Fail("ErrorDuplicateTranslate");
-
-        var new_record = new source_translates
+        var newRecords = record.chunks.Select(item => new source_translates
         {
             id = GetRandomId(),
-            chunk = record.chunk,
-            translate = record.translate,
+            chunk = item.chunk,
+            translate = item.translate,
             source_id = record.source_id,
             user_id = record.user_id
-        };
+        });
 
-        _context.source_translates.Add(new_record);
+        await _context.source_translates.AddRangeAsync(newRecords);
+
         await _context.SaveChangesAsync();
-        return Ok(new_record);
-    }
-
-    public async Task<ApiResponse<source_translates>> Update(SourceTranslateRequestBody record)
-    {
-        record.user_id = _context.users.FirstOrDefault(x => x.username == record.username)!.id;
-
-        if (string.IsNullOrWhiteSpace(record.id))
-            return Fail("ErrorIdEmpty");
-
-        if (string.IsNullOrWhiteSpace(record.chunk))
-            return Fail("ErrorChunkEmpty");
-
-        if (string.IsNullOrWhiteSpace(record.translate))
-            return Fail("ErrorTranslateEmpty");
-
-        if (string.IsNullOrWhiteSpace(record.source_id))
-            return Fail("ErrorSourceIdEmpty");
-
-        if (string.IsNullOrWhiteSpace(record.user_id))
-            return Fail("ErrorUserIdEmpty");
-
-        var existing = await _context.source_translates
-            .FirstOrDefaultAsync(e => e.chunk == record.chunk && e.source_id == record.source_id && e.user_id == record.user_id && e.id != record.id);
-
-        if (existing != null)
-            return Fail("ErrorDuplicateTranslate");
-
-        var existingRecord = await _context.source_translates.FindAsync(record.id);
-
-        if (existingRecord == null) return Fail("ErrorNotFound");
-
-        _context.Entry(existingRecord).CurrentValues.SetValues(record);
-        await _context.SaveChangesAsync();
-        return Ok(existingRecord);
-    }
-
-    public async Task<ApiResponse<source_translates>> Delete(string id)
-    {
-        var existing = await _context.source_translates.FindAsync(id);
-        if (existing == null)
-            return Fail("ErrorNotExist");
-
-        _context.source_translates.Remove(existing);
-        await _context.SaveChangesAsync();
-        return ApiResponse<source_translates>.Ok(null);
+        return Ok();
     }
 }

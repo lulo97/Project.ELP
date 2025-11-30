@@ -1,8 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Models;
+using System.Text.Json;
 using Utils;
-using static Utils.Utils;
 using static Utils.ApiResponse<Models.words>;
+using static Utils.Utils;
 
 public class WordsService
 {
@@ -15,9 +16,45 @@ public class WordsService
 
     public async Task<ApiResponse<List<words>>> Get(
         string userName,
-        string? word = null)
+        string? word = null,
+        string? where_options = null)
     {
+        //where_options=[{ "field":"word","comparison_operation":"="}]
+        List<WhereOption>? options = null;
+
+        if (!string.IsNullOrWhiteSpace(where_options))
+        {
+            options = JsonSerializer.Deserialize<List<WhereOption>>(where_options);
+        }
+
         var query = _context.words.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(word))
+        {
+            query = query.Where(w => w.word.ToLower().Contains(word.ToLower()));
+        }
+
+        if (options != null && word != null)
+        {
+            foreach (var opt in options)
+            {
+                if (opt.field == "word")
+                {
+                    switch (opt.comparison_operation)
+                    {
+                        case "=":
+                            query = query.Where(w => w.word == word);
+                            break;
+                        case "!=":
+                            query = query.Where(w => w.word != word);
+                            break;
+                        case "LIKE":
+                            query = query.Where(w => w.word.Contains(word));
+                            break;
+                    }
+                }
+            }
+        }
 
         if (!string.IsNullOrWhiteSpace(word))
             query = query.Where(w => w.word.ToLower().Contains(word.ToLower()));

@@ -2,7 +2,6 @@ import { useLocation } from "react-router-dom";
 import { useEffect, useState, useCallback } from "react";
 import { getReadData } from "../../services/read";
 import { message } from "../../providers/MessageProvider";
-import { ClickableWordParagraph } from "../read/ClickableWordParagraph";
 import { PageTitle } from "../../components/PageTitle";
 import { Button } from "../../components/Button";
 import { addSourceTranslates } from "../../services/source_translates";
@@ -12,30 +11,17 @@ import { getTranslation as _getTranslation } from "../../utils/getTranslation";
 import { translation } from "./Read.Translate";
 import { HighlightHtmlText } from "./HighlightHtmlText";
 import { ALLOW_SELECTED, useSelectedText } from "../../hooks/useSelectedText";
+import { AnimatedList } from "../../components/AnimatedList";
+import {
+  EMPTY_STATE,
+  transformSourceRawIntoChunks,
+  compareObjects,
+} from "./utils";
+import { FloatingSettings } from "../../components/FloatingSettings";
+import { SplitPane } from "../../components/SplitPane";
+import { GlobalTooltip } from "./GlobalTooltip";
 
 const getTranslation = (key) => _getTranslation(key, translation);
-
-export const EMPTY_STATE = {
-  words: [],
-  idioms: [],
-  phrases: [],
-  meanings: [],
-  source_translates: [],
-  source_row: {
-    id: null,
-    source: null,
-    name: null,
-    user_id: null,
-  },
-  word_row: {
-    id: null,
-    word: null,
-    user_id: null,
-  },
-  open_popup: false,
-  original_chunks: [],
-  chunks: [],
-};
 
 export function Read() {
   const source_id = new URLSearchParams(useLocation().search).get("source_id");
@@ -47,12 +33,19 @@ export function Read() {
   async function fetchData() {
     const result = await getReadData({ source_id: source_id });
 
-    if (result.error) message({ type: "error", text: result.error });
+    if (result.error) {
+      message({ type: "error", text: result.error });
+      return;
+    }
+
+    const chunks = transformSourceRawIntoChunks(result.data);
 
     setState((state) => {
       return {
         ...state,
         ...result.data,
+        chunks: chunks,
+        original_chunks: chunks,
       };
     });
   }
@@ -64,10 +57,10 @@ export function Read() {
   useEffect(() => {
     if (selectedText.length == 0) return;
     if (state.open_popup) return;
-
     const _word = selectedText.trim();
-
-    if (_word.length == 0) return;
+    if (!_word || _word.length == 0 || _word.includes(" ")) return;
+    const symbols = ["+", "-", "*", "/", "=", "<", ">", ".", ",", "'", '"'];
+    if (symbols.includes(_word)) return;
 
     setState((state) => {
       return {
@@ -82,17 +75,14 @@ export function Read() {
   }, [selectedText]);
 
   function isChunksEdit() {
-    const string_original_chunks = JSON.stringify(
-      state.original_chunks.toSorted()
-    );
-    const string_chunks = JSON.stringify(state.chunks.toSorted());
-    return string_original_chunks == string_chunks;
+    return compareObjects(state.original_chunks, state.chunks);
   }
 
-  async function handleSaveChunks() {
+  async function handleSaveChunksInDatabase() {
     const body = {
       source_id: state.source_row.id,
       chunks: state.chunks
+        //Remove all empty translate
         .filter((ele) => ele.translate)
         .map((ele) => ({
           chunk: ele.chunk,
@@ -100,7 +90,11 @@ export function Read() {
         })),
     };
 
-    await addSourceTranslates({ body: body });
+    const result = await addSourceTranslates({ body: body });
+    if (result.error) {
+      message({ type: "error", text: result.error });
+      return;
+    }
     await fetchData();
   }
 
@@ -120,13 +114,12 @@ export function Read() {
     });
   }
 
-  function splitSource() {
-    return state.source_row.source.split("<br><br>").map((ele) => {
-      return `<p class=${ALLOW_SELECTED}>${ele
-        .replaceAll("<p>", "")
-        .replaceAll("</p>", "")}</p>`;
-    });
-  }
+  useEffect(() => {
+    document.documentElement.classList.add("overflow-y-scroll");
+    return () => {
+      document.documentElement.classList.remove("overflow-y-scroll");
+    };
+  }, []);
 
   if (!state.source_row.id) return <div>Loading...</div>;
 
@@ -134,6 +127,25 @@ export function Read() {
     "{name}",
     state.source_row.name
   );
+
+  function getHighlightHtmlText(chunk) {
+    return (
+      <HighlightHtmlText
+        htmlString={chunk}
+        words={state.words.map((ele) => ele.word)}
+        idioms={state.idioms.map((ele) => ele.idiom)}
+        phrases={state.phrases.map((ele) => ele.phrase)}
+      />
+    );
+    // return (
+    //   <HighlightHtmlText
+    //     htmlString={chunk}
+    //     words={["is", "open"]}
+    //     idioms={["targets and extension"]}
+    //     phrases={["upon each other"]}
+    //   />
+    // );
+  }
 
   return (
     <div className="p-4 min-h-[90vh]">
@@ -144,29 +156,139 @@ export function Read() {
             <Button
               className="opacity-75"
               text={getTranslation("SaveTranslate")}
-              onClick={handleSaveChunks}
+              onClick={handleSaveChunksInDatabase}
             />
           </div>
         )}
       </div>
 
-      {splitSource().map((ele, idx) => {
-        return (
-          <div key={idx}>
-            <HighlightHtmlText htmlString={ele} words={["is"]} />
-            <TranslateDetail
-              translate={ele.translate}
-              idx={idx}
-              handleSaveTranslateChunk={handleSaveTranslateChunk}
-            />
-            <br />
-          </div>
-        );
-      })}
+      {state.horizontal_layout && (
+        <AnimatedList>
+          {state.chunks.map((ele, idx) => {
+            if (!state.show_translate)
+              return (
+                <div key={idx}>
+                  {getHighlightHtmlText(ele.chunk)}
+                  <br />
+                </div>
+              );
+
+            return (
+              <div key={idx}>
+                <SplitPane
+                  right={
+                    <TranslateDetail
+                      translate={ele.translate}
+                      idx={idx}
+                      handleSaveTranslateChunk={handleSaveTranslateChunk}
+                    />
+                  }
+                  left={getHighlightHtmlText(ele.chunk)}
+                  initialLeftWidth={60}
+                  className={"flex flex-1 gap-2 min-h-0"}
+                  parent_component="YoutubeListening"
+                  divider_width="w-2"
+                />{" "}
+                <br />{" "}
+              </div>
+            );
+          })}
+        </AnimatedList>
+      )}
+
+      {!state.horizontal_layout && (
+        <AnimatedList>
+          {state.chunks.map((ele, idx) => {
+            return (
+              <div key={idx}>
+                {getHighlightHtmlText(ele.chunk)}
+                {state.show_translate && (
+                  <TranslateDetail
+                    translate={ele.translate}
+                    idx={idx}
+                    handleSaveTranslateChunk={handleSaveTranslateChunk}
+                  />
+                )}
+                <br />
+              </div>
+            );
+          })}
+        </AnimatedList>
+      )}
 
       {state.open_popup && (
         <Popup state={state} setState={setState} fetchData={fetchData} />
       )}
+
+      <FloatingSettings>
+        <SettingsList
+          settings={[
+            {
+              id: "showTranslate",
+              label: "Show translate",
+              onClick: () => {
+                localStorage.setItem("show_translate", !state.show_translate);
+                setState((old_state) => ({
+                  ...old_state,
+                  show_translate: !old_state.show_translate,
+                  trigger: old_state.trigger + 1,
+                }));
+              },
+              checked: state.show_translate,
+            },
+            {
+              id: "horizontalLayout",
+              label: "Horizontal layout",
+              onClick: () => {
+                localStorage.setItem(
+                  "horizontal_layout",
+                  !state.horizontal_layout
+                );
+                setState((old_state) => ({
+                  ...old_state,
+                  horizontal_layout: !old_state.horizontal_layout,
+                  trigger: old_state.trigger + 1,
+                }));
+              },
+              checked: state.horizontal_layout,
+            },
+          ]}
+        />
+      </FloatingSettings>
+      <GlobalTooltip
+        meanings={state.meanings}
+        idioms={state.idioms}
+        phrases={state.phrases}
+        trigger={state.trigger}
+      />
+    </div>
+  );
+}
+
+function SettingsList({
+  settings = [
+    { id: "darkMode", label: "Enable Dark Mode" },
+    { id: "notifications", label: "Show Notifications" },
+    { id: "autoSave", label: "Auto Save Drafts" },
+    { id: "beta", label: "Join Beta Features" },
+  ],
+}) {
+  return (
+    <div className="space-y-3">
+      {settings.map((s) => (
+        <label
+          key={s.id}
+          className="flex items-center justify-between cursor-pointer"
+        >
+          <span className="text-gray-700">{s.label}</span>
+          <input
+            checked={s.checked}
+            onClick={() => s.onClick()}
+            type="checkbox"
+            className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+          />
+        </label>
+      ))}
     </div>
   );
 }

@@ -33,7 +33,7 @@ export function AnimatedList({ children, trigger = 0 }) {
     if (
       JSON.stringify(refToKeys(items)) == JSON.stringify(oldListRef.current)
     ) {
-      console.log("Same");
+     // console.log("Same");
       return;
     }
 
@@ -47,7 +47,7 @@ export function AnimatedList({ children, trigger = 0 }) {
     const items = listRef.current.querySelectorAll(".animated-item");
 
     runAnimation(items);
-    console.log("Run by trigger");
+    //console.log("Run by trigger");
   }, [trigger]);
 
   return (

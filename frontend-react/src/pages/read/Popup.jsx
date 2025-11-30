@@ -5,7 +5,7 @@ import { VerticalTab } from "../../components/VerticalTab.jsx";
 import { TabWord } from "./tab_word/TabWord.jsx";
 import { TabMeaning } from "./tab_meaning/TabMeaning.jsx";
 import { TabExample } from "./tab_example/TabExample.jsx";
-import { EMPTY_STATE } from "./Read.jsx";
+import { EMPTY_STATE } from "./utils";
 import { message } from "../../providers/MessageProvider.jsx";
 import { getTranslation } from "../../utils/getTranslation.js";
 import { translation } from "./Read.Translate.js";
@@ -56,6 +56,7 @@ export function Popup({
       return {
         ...old_state,
         open_popup: false,
+        word_row: EMPTY_STATE.word_row,
       };
     });
     fetchData();

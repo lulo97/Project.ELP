@@ -2,36 +2,38 @@ const http = require("http");
 const fs = require("fs");
 const path = require("path");
 const { URL } = require("url");
+const { exec } = require("child_process");
+const os = require("os");
 
-function loadEnv(envFilePath = path.join(__dirname, '.env')) {
+function loadEnv(envFilePath = path.join(__dirname, ".env")) {
   if (!fs.existsSync(envFilePath)) return;
 
-  const envContent = fs.readFileSync(envFilePath, 'utf-8');
+  const envContent = fs.readFileSync(envFilePath, "utf-8");
 
   const env_keys = [];
 
-  envContent.split(/\r?\n/).forEach(line => {
+  envContent.split(/\r?\n/).forEach((line) => {
     line = line.trim();
-    if (!line || line.startsWith('#')) return;
+    if (!line || line.startsWith("#")) return;
 
-    const eqIndex = line.indexOf('=');
+    const eqIndex = line.indexOf("=");
     if (eqIndex === -1) return;
 
     const key = line.slice(0, eqIndex).trim();
     const value = line.slice(eqIndex + 1).trim();
 
-    process.env[key] = value.replace(/^["']|["']$/g, '');
-    env_keys.push(key)
+    process.env[key] = value.replace(/^["']|["']$/g, "");
+    env_keys.push(key);
   });
 
-  console.log(`Loaded ${env_keys}`)
+  console.log(`Loaded ${env_keys}`);
 }
 
 loadEnv();
 
 const { PORT, API_TARGET } = process.env;
 const DIST_DIR = path.join(__dirname, "dist");
-console.log("Backend =", API_TARGET)
+console.log("Backend =", API_TARGET);
 
 /* Minimal server
   - Forwarding url starting with /api to backend in request object
@@ -120,6 +122,13 @@ const server = http.createServer((req, res) => {
       return;
     }
   });
+});
+
+server.on("error", (err) => {
+  if (err.code === "EADDRINUSE") {
+    console.error(`❌ Port ${PORT} is already in use.`);
+    process.exit(0);
+  }
 });
 
 server.listen(PORT, () => {

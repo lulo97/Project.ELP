@@ -35,22 +35,5 @@ namespace Controllers
             record.username = JwtHelper.GetUsernameFromToken(HttpContext.Request)!;
             return await _service.Add(record);
         }
-
-        // PUT api/sourcetranslates/{id}
-        [HttpPut("{id}")]
-        [Authorize]
-        public async Task<ApiResponse<source_translates>> Update(string id, [FromBody] SourceTranslateRequestBody record)
-        {
-            record.username = JwtHelper.GetUsernameFromToken(HttpContext.Request)!;
-            return await _service.Update(record);
-        }
-
-        // DELETE api/sourcetranslates/{id}
-        [HttpDelete("{id}")]
-        [Authorize]
-        public async Task<ApiResponse<source_translates>> Delete(string id)
-        {
-            return await _service.Delete(id);
-        }
     }
 }

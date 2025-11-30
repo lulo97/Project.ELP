@@ -20,12 +20,15 @@ namespace Controllers
         // GET api/words?word=&userId=&pageIndex=&pageSize=&language=
         [HttpGet]
         [Authorize] //Error 401 Unauthorized
+
+        //where_options = [{"field":"word","comparison_operation":"="}]
         public async Task<ApiResponse<List<words>>> Get(
-            [FromQuery] string? word
+            [FromQuery] string? word,
+            [FromQuery] string? where_options
         )
         {
             var username = JwtHelper.GetUsernameFromToken(HttpContext.Request)!;
-            return await _service.Get(username, word);
+            return await _service.Get(username, word, where_options);
         }
 
         // POST api/words

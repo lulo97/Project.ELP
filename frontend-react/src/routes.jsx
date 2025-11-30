@@ -28,11 +28,11 @@ import { YoutubeListening } from "./pages/youtube_listening/YoutubeListening";
 import { Test } from "./components/Test";
 
 export const routes = [
-  {
-    name: "Test",
-    path: "Test",
-    element: <Test />,
-  },
+  // {
+  //   name: "Test",
+  //   path: "Test",
+  //   element: <Test />,
+  // },
   {
     name: "System",
     isAdmin: true,

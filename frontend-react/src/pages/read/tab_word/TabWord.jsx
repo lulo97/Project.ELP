@@ -3,7 +3,7 @@ import { CommonAudio } from "../../../components/CommonAudio";
 import { PopupField } from "../../../components/PopupField";
 import { useEffect, useState } from "react";
 import { message } from "../../../providers/MessageProvider";
-import { EMPTY_STATE } from "../Read";
+import { EMPTY_STATE } from "../utils";
 import { addWord } from "../../../services/word";
 import { getTranslation } from "../../../utils/getTranslation";
 import { translation } from "../Read.Translate";

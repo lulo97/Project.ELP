@@ -8,6 +8,7 @@ export function SplitPane({
   max = 80,
   className = "",
   parent_component = "",
+  divider_width = "w-1",
 }) {
   const [leftWidth, setLeftWidth] = useState(initialLeftWidth);
   const containerRef = useRef(null);
@@ -46,7 +47,7 @@ export function SplitPane({
 
         {/* DIVIDER */}
         <div
-          className="w-1 bg-gray-300 hover:bg-gray-500 cursor-col-resize"
+          className={`${divider_width} bg-gray-300 hover:bg-gray-500 cursor-col-resize`}
           onMouseDown={onMouseDown}
         />
 
