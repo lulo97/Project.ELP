@@ -12,6 +12,9 @@ lerna-debug.log*
 
 .vs
 
+*.rar
+*.zip
+
 frontend-react/node_modules
 frontend-react/dist
 *.dll
