@@ -1,7 +1,9 @@
 const express = require("express");
 const { executeProcedure } = require("../../database/executeProcedure.js");
 const { getRandomId } = require("../../utils/getRandomId.js");
-const { paginationMiddleware } = require("../../middleware/paginationMiddleware.js");
+const {
+  paginationMiddleware,
+} = require("../../middleware/paginationMiddleware.js");
 const { verifyToken } = require("../../middleware/verifyToken.js");
 const { getUsernameFromToken } = require("../../utils/getUsernameFromToken.js");
 
@@ -56,7 +58,7 @@ async function addSource(req, res) {
       { name: "p_note", type: "text", value: note || null },
       { name: "p_username", type: "text", value: username },
       { name: "p_action", type: "text", value: "CREATE" },
-      { name: "p_rows", type: "CURSOR", value: null },
+      { name: "p_rows", type: "CURSOR", value: "cursor_" + getRandomId() },
       { name: "p_error", type: "text", value: null },
       { name: "p_json_params", type: "text", value: null },
     ]);
@@ -65,7 +67,7 @@ async function addSource(req, res) {
       return res.status(400).json({ error: result.p_error, data: null });
     }
 
-    res.json({ error: null, data: { id, name, source, note } });
+    res.json({ error: null, data: result.p_rows[0] });
   } catch (err) {
     console.error("addSource error:", err);
     res.status(500).json({ error: err.message, data: null });

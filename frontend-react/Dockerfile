@@ -5,6 +5,6 @@ WORKDIR /app
 COPY dist ./dist
 COPY app.js ./
 
-EXPOSE 3100
+EXPOSE 3101
 
 CMD ["node", "app.js"]

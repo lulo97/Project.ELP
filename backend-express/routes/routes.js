@@ -1,4 +1,3 @@
-const todos = require("./todos/index.js");
 const words = require("./words/index.js");
 const sources = require("./sources/index.js");
 const meanings = require("./meanings/index.js");
@@ -19,8 +18,6 @@ const synonyms = require("./synonyms/index.js");
 const posts = require("./posts/index.js");
 const source_translates = require("./source_translates/index.js");
 const word_details = require("./word_details/index.js");
-const ai = require("./ai/index.js");
-const events = require("./events/index.js");
 const auth = require("./auth/index.js");
 const read = require("./read/index.js");
 const youtube = require("./youtube/index.js");
@@ -31,7 +28,6 @@ const routes = [
     path: "/api/helloworld",
     handler: (req, res) => res.json({ message: "Hello World" }),
   },
-  { path: "/api/todos", handler: todos },
   { path: "/api/words", handler: words },
   { path: "/api/sources", handler: sources },
   { path: "/api/meanings", handler: meanings },
@@ -52,8 +48,6 @@ const routes = [
   { path: "/api/posts", handler: posts },
   { path: "/api/source_translates", handler: source_translates },
   { path: "/api/word_details", handler: word_details },
-  { path: "/api/ai", handler: ai },
-  { path: "/api/events", handler: events },
   { path: "/api/auth", handler: auth },
   { path: "/api/read", handler: read },
   { path: "/api/youtube", handler: youtube },

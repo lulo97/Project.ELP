@@ -57,7 +57,7 @@ async function addWord(req, res) {
       { name: "p_word", type: "text", value: word },
       { name: "p_username", type: "text", value: username },
       { name: "p_action", type: "text", value: "CREATE" },
-      { name: "p_rows", type: "CURSOR", value: null },
+      { name: "p_rows", type: "CURSOR", value: "cursor_" + getRandomId() },
       { name: "p_error", type: "text", value: null },
       { name: "p_json_params", type: "text", value: null },
     ]);
@@ -66,7 +66,7 @@ async function addWord(req, res) {
       return res.status(400).json({ error: result.p_error, data: null });
     }
 
-    res.json({ error: null, data: { id, word } });
+    res.json({ error: null, data: result.p_rows[0] });
   } catch (err) {
     console.error("addWord error:", err);
     res.status(500).json({ error: err.message, data: null });
@@ -85,7 +85,7 @@ async function updateWord(req, res) {
       { name: "p_word", type: "text", value: word },
       { name: "p_username", type: "text", value: username },
       { name: "p_action", type: "text", value: "UPDATE" },
-      { name: "p_rows", type: "CURSOR", value: null },
+      { name: "p_rows", type: "CURSOR", value: "cursor_" + getRandomId() },
       { name: "p_error", type: "text", value: null },
       { name: "p_json_params", type: "text", value: null },
     ]);
@@ -94,7 +94,7 @@ async function updateWord(req, res) {
       return res.status(400).json({ error: result.p_error, data: null });
     }
 
-    res.json({ error: null, data: { id, word } });
+    res.json({ error: null, data: result.p_rows[0] });
   } catch (err) {
     console.error("updateWord error:", err);
     res.status(500).json({ error: err.message, data: null });

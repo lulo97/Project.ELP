@@ -56,7 +56,7 @@ async function addPhrase(req, res) {
       { name: "p_example", type: "text", value: example },
       { name: "p_username", type: "text", value: username },
       { name: "p_action", type: "text", value: "CREATE" },
-      { name: "p_rows", type: "CURSOR", value: null },
+      { name: "p_rows", type: "CURSOR", value: "cursor_" + getRandomId() },
       { name: "p_error", type: "text", value: null },
       { name: "p_json_params", type: "text", value: null },
     ]);
@@ -65,7 +65,7 @@ async function addPhrase(req, res) {
       return res.status(400).json({ error: result.p_error, data: null });
     }
 
-    res.json({ error: null, data: { id, phrase, meaning, example } });
+    res.json({ error: null, data: result.p_rows[0] });
   } catch (err) {
     console.error("addPhrase error:", err);
     res.status(500).json({ error: err.message, data: null });

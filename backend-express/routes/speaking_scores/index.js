@@ -1,99 +1,161 @@
 const express = require("express");
-const { executeSelect, execute } = require("../../database/execute.js");
+const { executeProcedure } = require("../../database/executeProcedure.js");
 const { getRandomId } = require("../../utils/getRandomId.js");
-const {
-  paginationMiddleware,
-} = require("../../middleware/paginationMiddleware.js");
-const { getCreatedTimeString } = require("../../utils/getCreatedTimeString.js");
+const { paginationMiddleware } = require("../../middleware/paginationMiddleware.js");
+const { verifyToken } = require("../../middleware/verifyToken.js");
+const { getUsernameFromToken } = require("../../utils/getUsernameFromToken.js");
 
 const router = express.Router();
 
+/* ================================================
+   GET SPEAKING SCORES
+================================================ */
 async function getSpeakingScores(req, res, next) {
-  const { id, speaking_id, score, text_listened, text } = req.query;
+  try {
+    const { id, speaking_id, score, text_listened, text } = req.query;
+    const username = await getUsernameFromToken(req.cookies?.token);
 
-  let sql = `SELECT *, ${getCreatedTimeString()} FROM speaking_scores`;
-  const params = [];
-  const conditions = [];
+    const result = await executeProcedure("prc_crud_speaking_scores", [
+      { name: "p_id", type: "text", value: id || null },
+      { name: "p_speaking_id", type: "text", value: speaking_id || null },
+      { name: "p_score", type: "text", value: score || null },
+      { name: "p_text_listened", type: "text", value: text_listened || null },
+      { name: "p_text", type: "text", value: text || null },
+      { name: "p_username", type: "text", value: username },
+      { name: "p_action", type: "text", value: "READ" },
+      { name: "p_rows", type: "CURSOR", value: "cursor_" + getRandomId() },
+      { name: "p_error", type: "text", value: null },
+      { name: "p_json_params", type: "text", value: null },
+    ]);
 
-  if (id) {
-    conditions.push("id = ?");
-    params.push(id);
-  }
-  if (speaking_id) {
-    conditions.push("speaking_id = ?");
-    params.push(speaking_id);
-  }
-  if (score) {
-    conditions.push("score = ?");
-    params.push(score);
-  }
-  if (text_listened) {
-    conditions.push("text_listened = ?");
-    params.push(text_listened);
-  }
-  if (text) {
-    conditions.push("text = ?");
-    params.push(text);
-  }
+    if (result.p_error) {
+      res.locals.error = result.p_error;
+      res.locals.data = [];
+    } else {
+      res.locals.error = null;
+      res.locals.data = result.p_rows || [];
+    }
 
-  if (conditions.length > 0) {
-    sql += " WHERE " + conditions.join(" AND ");
+    next();
+  } catch (err) {
+    console.error("getSpeakingScores error:", err);
+    res.locals.data = [];
+    res.locals.error = err.message;
+    next();
   }
-
-  sql += " ORDER BY CAST(id AS UNSIGNED) desc";
-  const result = await executeSelect({ sql, params });
-  res.locals.data = result;
-  res.locals.error = null;
-  next();
 }
 
-async function addSpeakingScores(req, res) {
-  const { speaking_id, score, text_listened, text } = req.body;
-  const id = getRandomId();
+/* ================================================
+   ADD SPEAKING SCORE
+================================================ */
+async function addSpeakingScore(req, res) {
+  try {
+    const { speaking_id, score, text_listened, text } = req.body;
+    const username = await getUsernameFromToken(req.cookies?.token);
+    const id = getRandomId();
 
-  const sql = `
-        INSERT INTO speaking_scores (id, speaking_id, score, text_listened, text)
-        VALUES (?, ?, ?, ?, ?)
-    `;
+    const result = await executeProcedure("prc_crud_speaking_scores", [
+      { name: "p_id", type: "text", value: id },
+      { name: "p_speaking_id", type: "text", value: speaking_id },
+      { name: "p_score", type: "text", value: score || null },
+      { name: "p_text_listened", type: "text", value: text_listened || null },
+      { name: "p_text", type: "text", value: text || null },
+      { name: "p_username", type: "text", value: username },
+      { name: "p_action", type: "text", value: "CREATE" },
+      { name: "p_rows", type: "CURSOR", value: "cursor_" + getRandomId() },
+      { name: "p_error", type: "text", value: null },
+      { name: "p_json_params", type: "text", value: null },
+    ]);
 
-  const result = await execute({
-    sql,
-    params: [id, speaking_id, score, text_listened, text],
-  });
+    if (result.p_error) {
+      return res.status(400).json({ error: result.p_error, data: null });
+    }
 
-  res.json({ data: result, error: null });
+    const data = result.p_rows[0];
+    res.json({ error: null, data });
+
+  } catch (err) {
+    console.error("addSpeakingScore error:", err);
+    res.status(500).json({ error: err.message, data: null });
+  }
 }
 
-async function updateSpeakingScores(req, res) {
-  const { id } = req.params;
-  const { speaking_id, score, text_listened, text } = req.body;
+/* ================================================
+   UPDATE SPEAKING SCORE
+================================================ */
+async function updateSpeakingScore(req, res) {
+  try {
+    const { id } = req.params;
+    const { speaking_id, score, text_listened, text } = req.body;
+    const username = await getUsernameFromToken(req.cookies?.token);
 
-  const sql = `
-        UPDATE speaking_scores
-        SET speaking_id = ?, score = ?, text_listened = ?, text = ?
-        WHERE id = ?
-    `;
+    const result = await executeProcedure("prc_crud_speaking_scores", [
+      { name: "p_id", type: "text", value: id },
+      { name: "p_speaking_id", type: "text", value: speaking_id },
+      { name: "p_score", type: "text", value: score || null },
+      { name: "p_text_listened", type: "text", value: text_listened || null },
+      { name: "p_text", type: "text", value: text || null },
+      { name: "p_username", type: "text", value: username },
+      { name: "p_action", type: "text", value: "UPDATE" },
+      { name: "p_rows", type: "CURSOR", value: null },
+      { name: "p_error", type: "text", value: null },
+      { name: "p_json_params", type: "text", value: null },
+    ]);
 
-  const result = await execute({
-    sql,
-    params: [speaking_id, score, text_listened, text, id],
-  });
+    if (result.p_error) {
+      return res.status(400).json({ error: result.p_error, data: null });
+    }
 
-  res.json({ data: result, error: null });
+    res.json({
+      error: null,
+      data: { id, speaking_id, score, text_listened, text },
+    });
+
+  } catch (err) {
+    console.error("updateSpeakingScore error:", err);
+    res.status(500).json({ error: err.message, data: null });
+  }
 }
 
-async function deleteSpeakingScores(req, res) {
-  const { id } = req.params;
+/* ================================================
+   DELETE SPEAKING SCORE
+================================================ */
+async function deleteSpeakingScore(req, res) {
+  try {
+    const { id } = req.params;
+    const username = await getUsernameFromToken(req.cookies?.token);
 
-  const sql = "DELETE FROM speaking_scores WHERE id = ?";
-  const result = await execute({ sql, params: [id] });
+    const result = await executeProcedure("prc_crud_speaking_scores", [
+      { name: "p_id", type: "text", value: id },
+      { name: "p_speaking_id", type: "text", value: null },
+      { name: "p_score", type: "text", value: null },
+      { name: "p_text_listened", type: "text", value: null },
+      { name: "p_text", type: "text", value: null },
+      { name: "p_username", type: "text", value: username },
+      { name: "p_action", type: "text", value: "DELETE" },
+      { name: "p_rows", type: "CURSOR", value: null },
+      { name: "p_error", type: "text", value: null },
+      { name: "p_json_params", type: "text", value: null },
+    ]);
 
-  res.json({ data: result, error: null });
+    if (result.p_error) {
+      return res.status(400).json({ error: result.p_error, data: null });
+    }
+
+    res.json({ error: null, data: { id } });
+
+  } catch (err) {
+    console.error("deleteSpeakingScore error:", err);
+    res.status(500).json({ error: err.message, data: null });
+  }
 }
 
-router.get("/", getSpeakingScores, paginationMiddleware);
-router.post("/", addSpeakingScores);
-router.put("/:id", updateSpeakingScores);
-router.delete("/:id", deleteSpeakingScores);
+/* ================================================
+   ROUTES
+================================================ */
+router.get("/", verifyToken, getSpeakingScores, paginationMiddleware);
+router.post("/", verifyToken, addSpeakingScore);
+router.put("/:id", verifyToken, updateSpeakingScore);
+router.delete("/:id", verifyToken, deleteSpeakingScore);
 
 module.exports = router;

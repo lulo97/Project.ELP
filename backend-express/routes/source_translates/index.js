@@ -62,7 +62,7 @@ async function saveSourceTranslates(req, res) {
       { name: "p_source_id", type: "text", value: source_id },
       { name: "p_username", type: "text", value: username },
       { name: "p_action", type: "text", value: "CREATE" },
-      { name: "p_rows", type: "CURSOR", value: null },
+      { name: "p_rows", type: "CURSOR", value: "cursor_" + getRandomId() },
       { name: "p_error", type: "text", value: null },
       { name: "p_json_params", type: "text", value: null },
     ]);
@@ -73,7 +73,7 @@ async function saveSourceTranslates(req, res) {
 
     res.json({
       error: null,
-      data: { source_id, chunks },
+      data:  result.p_rows[0],
     });
   } catch (err) {
     console.error("saveSourceTranslates error:", err);
