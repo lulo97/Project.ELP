@@ -117,7 +117,9 @@ async function stream_audio(req, res) {
 
     // Set headers (important for stream)
     res.setHeader("Content-Type", "audio/mpeg");
-    res.setHeader("Transfer-Encoding", "chunked");
+
+    //Error: HPE_INVALID_TRANSFER_ENCODING: Transfer-Encoding can't be present with Content-Length
+    //res.setHeader("Transfer-Encoding", "chunked");
 
     const nodeStream = Readable.fromWeb(response.body);
 

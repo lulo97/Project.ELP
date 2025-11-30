@@ -135,7 +135,7 @@ export function QuestionGenerator() {
           <>
             {state.loadingSubmit && (
               <span className="flex items-center justify-center gap-2">
-                {spinner} {getTranslation("Submitting")} {getEventsData()}
+                <Spinner /> {getTranslation("Submitting")} {getEventsData()}
               </span>
             )}
             {!state.loadingSubmit && getTranslation("Submit")}

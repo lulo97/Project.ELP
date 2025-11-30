@@ -1,69 +1,139 @@
 const express = require("express");
-const { executeSelect, execute } = require("../../database/execute.js");
+const { executeProcedure } = require("../../database/executeProcedure.js");
 const { getRandomId } = require("../../utils/getRandomId.js");
-const { paginationMiddleware } = require("../../middleware/paginationMiddleware.js")
+const { paginationMiddleware } = require("../../middleware/paginationMiddleware.js");
+const { verifyToken } = require("../../middleware/verifyToken.js");
+const { getUsernameFromToken } = require("../../utils/getUsernameFromToken.js");
 
 const router = express.Router();
 
+// -------------------- GET WRITING ANSWERS --------------------
 async function getWritingAnswers(req, res, next) {
   try {
-    const { question } = req.query;
+    const { question_id } = req.query;
+    const username = await getUsernameFromToken(req.cookies?.token);
 
-    let sql = `
-SELECT 
-  wa.* 
-FROM WRITING_ANSWERS wa 
-JOIN WRITING_QUESTIONS wq ON wa.question_id = wq.id
-`;
-    const params = [];
+    const result = await executeProcedure("prc_crud_writing_answers", [
+      { name: "p_id", type: "text", value: null },
+      { name: "p_question_id", type: "text", value: question_id || null },
+      { name: "p_answer", type: "text", value: null },
+      { name: "p_review", type: "text", value: null },
+      { name: "p_action", type: "text", value: "READ" },
+      { name: "p_username", type: "text", value: username || null },
+      { name: "p_rows", type: "CURSOR", value: "cursor_" + getRandomId() },
+      { name: "p_error", type: "text", value: null },
+    ]);
 
-    if (question) {
-      sql += " WHERE wq.question = ?";
-      params.push(question);
+    if (result.p_error) {
+      res.locals.error = result.p_error;
+      res.locals.data = [];
+    } else {
+      res.locals.error = null;
+      res.locals.data = result.p_rows || [];
     }
 
-
-  sql += " ORDER BY CAST(wa.id AS UNSIGNED) asc";
-  const result = await executeSelect({ sql, params });
-
-    res.locals.data = result;
     next();
   } catch (err) {
-    console.error(err)
+    console.error("getWritingAnswers error:", err);
+    res.locals.data = [];
     res.locals.error = err.message;
     next();
   }
 }
 
-async function addWritingAnswer(req, res, next) {
-  const { question_id, answer, review } = req.body;
-  const id = getRandomId();
-  const sql = "INSERT INTO WRITING_ANSWERS (id, question_id, answer, review) VALUES (?, ?, ?, ?)";
-  const result = await execute({ sql: sql, params: [id, question_id, answer, review] })
-  res.json({ data: result, error: null });
+// -------------------- ADD WRITING ANSWER --------------------
+async function addWritingAnswer(req, res) {
+  try {
+    const { question_id, answer, review } = req.body;
+    const username = await getUsernameFromToken(req.cookies?.token);
+    const id = getRandomId();
+
+    const result = await executeProcedure("prc_crud_writing_answers", [
+      { name: "p_id", type: "text", value: id },
+      { name: "p_question_id", type: "text", value: question_id },
+      { name: "p_answer", type: "text", value: answer },
+      { name: "p_review", type: "text", value: review },
+      { name: "p_action", type: "text", value: "CREATE" },
+      { name: "p_username", type: "text", value: username || null },
+      { name: "p_rows", type: "CURSOR", value: "cursor_" + getRandomId() },
+      { name: "p_error", type: "text", value: null },
+    ]);
+
+    if (result.p_error) {
+      return res.status(400).json({ error: result.p_error, data: null });
+    }
+
+    // return the created row (procedure opens cursor for the inserted id)
+    const data = (result.p_rows && result.p_rows[0]) || null;
+    res.json({ error: null, data });
+  } catch (err) {
+    console.error("addWritingAnswer error:", err);
+    res.status(500).json({ error: err.message, data: null });
+  }
 }
 
-async function updateWritingAnswer(req, res, next) {
-  const { id } = req.params;
-  const { question_id, answer, review } = req.body;
-  const sql = "UPDATE WRITING_ANSWERS SET question_id = ?, answer = ?, review = ? WHERE id = ?";
-  const result = await execute({ sql: sql, params: [question_id, answer, review, id] })
-  res.json({ data: result, error: null });
+// -------------------- UPDATE WRITING ANSWER --------------------
+async function updateWritingAnswer(req, res) {
+  try {
+    const { id } = req.params;
+    const { question_id, answer, review } = req.body;
+    const username = await getUsernameFromToken(req.cookies?.token);
+
+    const result = await executeProcedure("prc_crud_writing_answers", [
+      { name: "p_id", type: "text", value: id },
+      { name: "p_question_id", type: "text", value: question_id },
+      { name: "p_answer", type: "text", value: answer },
+      { name: "p_review", type: "text", value: review },
+      { name: "p_action", type: "text", value: "UPDATE" },
+      { name: "p_username", type: "text", value: username || null },
+      { name: "p_rows", type: "CURSOR", value: "cursor_" + getRandomId() },
+      { name: "p_error", type: "text", value: null },
+    ]);
+
+    if (result.p_error) {
+      return res.status(400).json({ error: result.p_error, data: null });
+    }
+
+    const data = (result.p_rows && result.p_rows[0]) || { id, question_id, answer, review };
+    res.json({ error: null, data });
+  } catch (err) {
+    console.error("updateWritingAnswer error:", err);
+    res.status(500).json({ error: err.message, data: null });
+  }
 }
 
-async function deleteWritingAnswer(req, res, next) {
-  const { id } = req.params;
-  const sql = "DELETE FROM WRITING_ANSWERS WHERE id = ?";
-  const result = await execute({ sql: sql, params: [id] })
-  res.json({ data: result, error: null });
+// -------------------- DELETE WRITING ANSWER --------------------
+async function deleteWritingAnswer(req, res) {
+  try {
+    const { id } = req.params;
+    const username = await getUsernameFromToken(req.cookies?.token);
+
+    const result = await executeProcedure("prc_crud_writing_answers", [
+      { name: "p_id", type: "text", value: id },
+      { name: "p_question_id", type: "text", value: null },
+      { name: "p_answer", type: "text", value: null },
+      { name: "p_review", type: "text", value: null },
+      { name: "p_action", type: "text", value: "DELETE" },
+      { name: "p_username", type: "text", value: username || null },
+      { name: "p_rows", type: "CURSOR", value: null },
+      { name: "p_error", type: "text", value: null },
+    ]);
+
+    if (result.p_error) {
+      return res.status(400).json({ error: result.p_error, data: null });
+    }
+
+    res.json({ error: null, data: { id } });
+  } catch (err) {
+    console.error("deleteWritingAnswer error:", err);
+    res.status(500).json({ error: err.message, data: null });
+  }
 }
 
-router.get("/", getWritingAnswers, paginationMiddleware);
-
-router.post("/", addWritingAnswer);
-
-router.put("/:id", updateWritingAnswer);
-
-router.delete("/:id", deleteWritingAnswer);
+// -------------------- ROUTES --------------------
+router.get("/", verifyToken, getWritingAnswers, paginationMiddleware);
+router.post("/", verifyToken, addWritingAnswer);
+router.put("/:id", verifyToken, updateWritingAnswer);
+router.delete("/:id", verifyToken, deleteWritingAnswer);
 
 module.exports = router;

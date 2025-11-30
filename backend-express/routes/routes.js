@@ -22,6 +22,7 @@ const auth = require("./auth/index.js");
 const read = require("./read/index.js");
 const youtube = require("./youtube/index.js");
 const consts = require("./consts/index.js");
+const ai = require("./ai/index.js")
 
 const routes = [
   {
@@ -52,6 +53,7 @@ const routes = [
   { path: "/api/read", handler: read },
   { path: "/api/youtube", handler: youtube },
   { path: "/api/consts", handler: consts },
+  { path: "/api/ai", handler: ai },
 ];
 
 module.exports = function (app) {
