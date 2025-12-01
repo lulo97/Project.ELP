@@ -1,6 +1,6 @@
 import { Button } from "../../components/Button";
 import { Input } from "../../components/Input";
-import { FillInBankTemplate } from "../exercise/FillInBankTemplate";
+import { FillInBankTemplate } from "../exercise/fill_in_blank/FillInBankTemplate";
 import { callAI } from "../../services/ai";
 import { combineTextsByMinWords } from "../../utils/combineTextsByMinWords";
 import { selectRandomIncreasing } from "../../utils/selectRandomIncreasing";

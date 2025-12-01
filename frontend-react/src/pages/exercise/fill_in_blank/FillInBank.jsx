@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { getFillInBlank } from "../../services/exercise";
-import { Button } from "../../components/Button";
-import { Input } from "../../components/Input";
-import { callAI } from "../../services/ai";
+import { getFillInBlank } from "../../../services/exercise";
+import { Button } from "../../../components/Button";
+import { Input } from "../../../components/Input";
+import { callAI } from "../../../services/ai";
 
 /**
  * Hide random characters from a word.

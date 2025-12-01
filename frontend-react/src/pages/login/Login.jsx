@@ -46,7 +46,8 @@ export function LogIn() {
       );
 
       if (previousLocations.length >= 2) {
-        window.location.href = previousLocations[previousLocations.length - 2].path;
+        window.location.href =
+          previousLocations[previousLocations.length - 2].path;
       } else {
         window.location.href = "/";
       }
@@ -69,6 +70,7 @@ export function LogIn() {
             label={getTranslation("Username", translation)}
             fieldComponent={
               <Input
+                className="py-0"
                 placeholder={getTranslation("Username", translation)}
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
@@ -79,6 +81,7 @@ export function LogIn() {
             label={getTranslation("Password", translation)}
             fieldComponent={
               <Input
+                className="py-0"
                 type="password"
                 placeholder={getTranslation("Password", translation)}
                 value={password}

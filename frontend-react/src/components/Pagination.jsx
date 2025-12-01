@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { getTranslation } from "../utils/getTranslation";
+import { useDeviceType } from "../hooks/useDeviceType";
+import { PaginationMobile } from "./PaginationMobile";
 
 function getPageNumbers(totalPages, currentPage) {
   const pages = [];
@@ -56,6 +58,10 @@ export function Pagination({
     pageIndex: 1,
   },
 }) {
+  if (useDeviceType() == "mobile") {
+    return <PaginationMobile fetchData={fetchData} paginationData={paginationData} />;
+  }
+
   const [selectedPage, setSelectedPage] = useState(1);
   const [inputValue, setInputValue] = useState("");
 

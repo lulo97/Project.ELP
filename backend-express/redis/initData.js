@@ -8,8 +8,7 @@ async function initData() {
     const existing = await client.get("CONSTS");
 
     if (existing !== null) {
-      console.log("Redis data already initialized!");
-      //console.log(await client.get("CONSTS"))
+      console.log("Redis data already initialized: " + JSON.parse(existing).map(ele => ele.key));
       return;
     }
 

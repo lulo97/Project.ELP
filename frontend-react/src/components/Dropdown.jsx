@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 
-export default function Dropdown({
+export function Dropdown({
   children,
   menu = [{ key: "key", content: "content", onClick: () => {} }],
   closeOnSelect = true,

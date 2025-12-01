@@ -1,5 +1,9 @@
 import { CommonPopup } from "../../components/CommonPopup";
 import { PopupField } from "../../components/PopupField";
+import { getTranslation as _getTranslation } from "../../utils/getTranslation";
+import { translation } from "./Word.Translation";
+
+const getTranslation = (key) => _getTranslation(key, translation);
 
 export function Popup({
   show,
@@ -10,20 +14,21 @@ export function Popup({
   handleConfirm,
   handleClose,
 }) {
+
   return (
     <CommonPopup
       show={show}
-      title={title}
+      title={getTranslation(title)}
       handleConfirm={() => handleConfirm({ action })}
       handleClose={handleClose}
     >
       <PopupField
-        label="Id"
+        label={getTranslation("Id")}
         fieldComponent={<input value={row.id} disabled />}
       />
 
       <PopupField
-        label="Word"
+        label={getTranslation("Word")}
         fieldComponent={
           <input
             value={row.word}

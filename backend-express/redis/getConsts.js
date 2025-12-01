@@ -10,7 +10,10 @@ async function initConstsNotVisible() {
 
   consts = result;
 
-  console.log("Init consts with visible = false!, records length =", result.length)
+  console.log(
+    "Init consts with visible = false: records =",
+    JSON.stringify(result.map((ele) => ele.key))
+  );
 }
 
 /**
@@ -26,11 +29,10 @@ function getConsts(key) {
   }
 
   if (!consts) {
-    throw Error("Consts with visible = false is not initilizated!")
+    throw Error("Consts with visible = false is not initilizated!");
   }
 
-  
-  const output = consts.find(ele => ele.key == key);
+  const output = consts.find((ele) => ele.key == key);
 
   if ([null, undefined, ""].includes(output)) {
     throw Error("Error when find record in CONSTS table with key =", key);

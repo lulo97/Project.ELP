@@ -8,7 +8,7 @@ import { getRandomId } from "../../utils/getRandomId";
 import { getTranslation as _getTranslation } from "../../utils/getTranslation";
 import { translation } from "./McqGenerator.Translation";
 import { message } from "../../providers/MessageProvider";
-import { MultipleChoiceTemplate } from "../exercise/MultipleChoiceTemplate";
+import { MultipleChoiceTemplate } from "../exercise/multiple_choice/MultipleChoiceTemplate";
 import { Spinner } from "../../components/Spinner";
 import { useEventsPoll } from "../../hooks/useEventsPoll";
 

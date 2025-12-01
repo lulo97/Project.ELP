@@ -8,7 +8,7 @@ async function build() {
       bundle: true,
       outfile: 'dist/bundle.js',
       sourcemap: true,
-      minify: true, // usually true for production
+      minify: false, // usually true for production
       jsx: 'automatic',
       define: { 'process.env.NODE_ENV': '"production"' },
       loader: { '.js': 'jsx', '.jsx': 'jsx' },

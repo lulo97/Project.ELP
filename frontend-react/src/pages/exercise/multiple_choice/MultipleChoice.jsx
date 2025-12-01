@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import { getMultipleChoiceQuestion } from "../../services/exercise";
-import { buildMultipleChoiceQuestion } from "../../utils/exercise";
+import { getMultipleChoiceQuestion } from "../../../services/exercise";
+import { buildMultipleChoiceQuestion } from "../../../utils/exercise";
 import { MultipleChoiceTemplate } from "./MultipleChoiceTemplate";
-import { getTranslation } from "../../utils/getTranslation";
-import { Button } from "../../components/Button";
-import { translation } from "./Exercise.Translation";
+import { getTranslation } from "../../../utils/getTranslation";
+import { Button } from "../../../components/Button";
+import { translation } from "../Exercise.Translation";
+import { MultipleChoiceMobile } from "./MultipleChoice.Mobile";
+import { useDeviceType } from "../../../hooks/useDeviceType";
 
 const EMPTY_STATE = {
   question: "",
@@ -61,6 +63,25 @@ export function MultipleChoice() {
       </>
     );
   };
+
+  if (useDeviceType() == 'mobile') {
+    return (
+    <MultipleChoiceMobile
+      question={state.question}
+      correct_answer={state.correct_answer}
+      choices={state.choices}
+      current_choice={state.current_choice}
+      submitted={state.submitted}
+      setCurrentChoice={(choice) =>
+        setState((prev) => ({ ...prev, current_choice: choice }))
+      }
+      onSubmit={() =>
+        setState((prev) => ({ ...prev, submitted: true }))
+      }
+      onNext={fetchData}
+    />
+  );
+  }
 
   return (
     <MultipleChoiceTemplate

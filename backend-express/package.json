@@ -4,9 +4,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "_dev": "cd .. && cd frontend-react && node esbuild.config.js && cd .. && node backend-express/app.js",
-    "dev": "nodemon --exec \"npm run _dev\"",
-    "build": "cd frontend && node esbuild.config.js && cd .. && xcopy frontend\\dist dist\\frontend\\dist /E /I /Y /Q && node esbuild.config.js"
+    "_dev": "node esbuild.config.js && node dist/app.js",
+    "dev": "nodemon --exec \"npm run _dev\""
   },
   "author": "",
   "license": "ISC",

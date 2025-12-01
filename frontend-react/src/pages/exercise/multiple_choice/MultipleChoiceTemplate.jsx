@@ -1,28 +1,30 @@
 import { useState } from "react";
-import { Button } from "../../components/Button";
-import { Radio } from "../../components/Radio";
-import { getTranslation } from "../../utils/getTranslation";
-import { translation } from "./Exercise.Translation";
+import { Button } from "../../../components/Button";
+import { Radio } from "../../../components/Radio";
+import { getTranslation } from "../../../utils/getTranslation";
+import { translation } from "../Exercise.Translation";
+import { CARD } from "../../../ui_converntion/Card";
+import { Heading1 } from "../../../components/heading/Heading1";
 
 const SIZE_VARIANTS = {
   small: {
     question: "text-sm font-medium",
     listGap: "gap-0.5 my-1",
-    label: "text-sm",
+    label: "",
     button: "text-sm px-3 py-1.5",
     padding: "p-1",
   },
   medium: {
     question: "text-xl font-medium",
     listGap: "gap-3 my-3",
-    label: "text-base",
+    label: "",
     button: "text-base px-4 py-2",
     padding: "p-3",
   },
   large: {
     question: "text-2xl font-semibold",
     listGap: "gap-4 my-4",
-    label: "text-lg",
+    label: "",
     button: "text-lg px-5 py-3",
     padding: "p-4",
   },
@@ -50,8 +52,8 @@ export function MultipleChoiceTemplate({
   }
 
   return (
-    <div className={`${styles.padding}`}>
-      <div className={styles.question}>{question}</div>
+    <div id={MultipleChoiceTemplate.name} >
+      <Heading1>{question}</Heading1>
 
       <ul className={`flex flex-col ${styles.listGap}`}>
         {choices.map((choiceOption, index) => (

@@ -1,12 +1,16 @@
-import { useMemo, useState } from "react";
-import { FillInBank } from "./FillInBank";
-import { MultipleChoice } from "./MultipleChoice";
-import { GivingExample } from "./GivingExample";
+import { useMemo, useState, useEffect } from "react";
+import { FillInBank } from "./fill_in_blank/FillInBank";
+import { MultipleChoice } from "./multiple_choice/MultipleChoice";
+import { GivingExample } from "./giving_example/GivingExample";
 import { Radio } from "../../components/Radio";
 import { Button } from "../../components/Button";
 import { PageTitle } from "../../components/PageTitle";
 import { getTranslation as _getTranslation } from "../../utils/getTranslation";
 import { translation } from "./Exercise.Translation";
+import { useDeviceType } from "../../hooks/useDeviceType";
+import { ExerciseMobile } from "./Exercise.Mobile";
+import { CARD } from "../../ui_converntion/Card";
+import { Heading1 } from "../../components/heading/Heading1";
 
 const getTranslation = (key) => _getTranslation(key, translation, "Exercise");
 
@@ -19,10 +23,22 @@ const EXERCISE = {
 
 export function Exercise() {
   const [tick, setTick] = useState(0);
+  const device = useDeviceType();
 
   const [choice, setChoice] = useState(EXERCISE.MCQ);
 
-  const cardStyle = "p-4 bg-white shadow-sm rounded-2xl border border-gray-100";
+  const cardStyle = `${CARD.PADDING} bg-white ${CARD.SHADOW} ${CARD.CORNER_RADIUS} ${CARD.BORDER}`;
+  
+  if (device == "mobile") {
+    return (
+      <ExerciseMobile
+        tick={tick}
+        setTick={setTick}
+        choice={choice}
+        setChoice={setChoice}
+      />
+    );
+  }
 
   return (
     <div className="p-4 bg-gray-100 min-h-[90vh] flex flex-col">
@@ -30,9 +46,11 @@ export function Exercise() {
 
       <div className={`flex justify-between items-center mb-4 ${cardStyle}`}>
         <div className="">
-          <h2 className="text-lg font-semibold text-gray-800 mb-2">
-            {getTranslation("PickYouType")}
-          </h2>
+          <Heading1
+            className="mb-2"
+            _children={getTranslation("PickYouType")}
+          />
+
           <div className="flex flex-wrap gap-3 mb-2">
             <Radio
               value={EXERCISE.MCQ}

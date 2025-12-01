@@ -13,6 +13,10 @@ import { Input } from "../../components/Input";
 import { SearchTable } from "../../components/SearchTable";
 import { Popup as PopupDetail } from "../read/Popup";
 import { message } from "../../providers/MessageProvider";
+import { getTranslation as _getTranslation } from "../../utils/getTranslation";
+import { translation } from "./Word.Translation";
+
+const getTranslation = (key) => _getTranslation(key, translation);
 
 const EMPTY_ROW = { id: "", word: "" };
 
@@ -23,7 +27,7 @@ export function Word() {
   const [action, setAction] = useState("ADD");
   const [paginationData, setPaginationData] = useState({});
   const [searchValues, setSearchValues] = useState([
-    { id: "word", label: "Word", value: "" },
+    { id: "word", label: getTranslation("Word"), value: "" },
   ]);
   const [showPopupDetail, setShowPopupDetail] = useState(false);
   const [selectedWord, setSelectedWord] = useState(EMPTY_ROW);
@@ -87,9 +91,9 @@ export function Word() {
   return (
     <div className="p-4">
       <div className="justify-between items-center mb-3">
-        <PageTitle title={"Word Manager"} />
+        <PageTitle title={getTranslation("Title")} />
         <Button
-          text={"Add"}
+          text={getTranslation("Add")}
           onClick={() => openPopup({ currentRow: EMPTY_ROW, action: "ADD" })}
         />
       </div>
@@ -137,7 +141,7 @@ export function Word() {
       {selectedWord.word && (
         <PopupDetail
           show={showPopupDetail}
-          title="Add"
+          title={"Add"}
           word={selectedWord.word}
           handleClose={handleClosePopupDetail}
         />

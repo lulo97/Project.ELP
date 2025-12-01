@@ -26,6 +26,7 @@ import { LogIn } from "./pages/login/Login";
 import { ViewSources } from "./pages/view_sources/ViewSources";
 import { YoutubeListening } from "./pages/youtube_listening/YoutubeListening";
 import { Test } from "./components/Test";
+import { Users } from "./pages/users/Users";
 
 export const routes = [
   // {
@@ -36,7 +37,9 @@ export const routes = [
   {
     name: "System",
     isAdmin: true,
-    children: [],
+    children: [
+      { name: "Users", path: "users", element: <Users /> },
+    ],
   },
   {
     name: "Library",

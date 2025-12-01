@@ -73,7 +73,7 @@ export const global_translation = {
   },
   Close: {
     vi: "Đóng",
-    en: "Close"
+    en: "Close",
   },
   Submit: {
     vi: "Nộp bài",
@@ -82,5 +82,9 @@ export const global_translation = {
   Loading: {
     vi: "Đang tải...",
     en: "Loading...",
-  }
+  },
+  NoData: {
+    vi: "Không có dữ liệu",
+    en: "No data",
+  },
 };

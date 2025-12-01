@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { getAllWordDetails } from "../../services/word_detail";
-import { addExample } from "../../services/example";
-import { Button } from "../../components/Button";
-import { getTranslation as _getTranslation } from "../../utils/getTranslation";
-import { translation } from "./Exercise.Translation";
+import { getAllWordDetails } from "../../../services/word_detail";
+import { addExample } from "../../../services/example";
+import { Button } from "../../../components/Button";
+import { getTranslation as _getTranslation } from "../../../utils/getTranslation";
+import { translation } from "../Exercise.Translation";
 
 const getTranslation = (key) =>
   _getTranslation(key, translation, "GivingExample");

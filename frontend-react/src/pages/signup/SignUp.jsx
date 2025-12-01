@@ -14,9 +14,9 @@ export function SignUp() {
 
   async function handleSignUp() {
     if (password !== confirm) {
-      message({ 
-        text: getTranslation("PasswordsDoNotMatch", translation), 
-        type: "error" 
+      message({
+        text: getTranslation("PasswordsDoNotMatch", translation),
+        type: "error",
       });
       return;
     }
@@ -32,10 +32,14 @@ export function SignUp() {
       const result = await response.json();
 
       if (result.error) {
-        throw new Error(result.error || getTranslation("SignUpFailed", translation));
+        throw new Error(
+          result.error || getTranslation("SignUpFailed", translation)
+        );
       }
 
-      message({ text: getTranslation("AccountCreatedSuccessfully", translation) });
+      message({
+        text: getTranslation("AccountCreatedSuccessfully", translation),
+      });
       setUsername("");
       setPassword("");
       setConfirm("");
@@ -47,7 +51,7 @@ export function SignUp() {
   }
 
   return (
-    <div className="flex items-center justify-center mt-24 px-4">
+    <div className="flex items-center justify-center mt-16 px-4">
       <div className="w-full max-w-md rounded-2xl bg-white/70 backdrop-blur-lg shadow-xl p-8 space-y-6 border border-gray-100">
         <h2 className="text-2xl font-semibold text-center text-gray-800">
           {getTranslation("CreateYourAccount", translation)}
@@ -58,6 +62,7 @@ export function SignUp() {
             label={getTranslation("Username", translation)}
             fieldComponent={
               <Input
+                className="py-0"
                 placeholder={getTranslation("Username", translation)}
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
@@ -68,6 +73,7 @@ export function SignUp() {
             label={getTranslation("Password", translation)}
             fieldComponent={
               <Input
+                className="py-0"
                 type="password"
                 placeholder={getTranslation("Password", translation)}
                 value={password}
@@ -79,6 +85,7 @@ export function SignUp() {
             label={getTranslation("ConfirmPassword", translation)}
             fieldComponent={
               <Input
+                className="py-0"
                 type="password"
                 placeholder={getTranslation("ConfirmPassword", translation)}
                 value={confirm}
@@ -90,7 +97,11 @@ export function SignUp() {
 
         <div className="pt-4">
           <Button
-            text={loading ? getTranslation("SigningUp", translation) : getTranslation("SignUp", translation)}
+            text={
+              loading
+                ? getTranslation("SigningUp", translation)
+                : getTranslation("SignUp", translation)
+            }
             onClick={handleSignUp}
             disabled={loading}
             className="w-full py-2 text-lg font-medium text-white rounded-xl shadow-md hover:shadow-lg transition-all duration-200"

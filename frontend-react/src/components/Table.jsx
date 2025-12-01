@@ -5,6 +5,8 @@ import { Button } from "./Button";
 import { Pagination } from "./Pagination";
 import { Fragment } from "react";
 import { getTranslation } from "../utils/getTranslation";
+import { useDeviceType } from "../hooks/useDeviceType";
+import { TableMobile } from "./TableMobile";
 
 export function Table({
   translation = {},
@@ -18,6 +20,20 @@ export function Table({
   fetchData = () => {},
   paginationData = {},
 }) {
+  if (useDeviceType() == "mobile") {
+    return (
+      <TableMobile
+        translation={translation}
+        columns={columns}
+        rows={rows}
+        openPopup={openPopup}
+        showActionColumn={true}
+        fetchData={fetchData}
+        paginationData={paginationData}
+      />
+    );
+  }
+
   return (
     <div className="overflow-x-auto rounded-lg shadow">
       <table className="w-full border-collapse bg-white text-sm text-left">

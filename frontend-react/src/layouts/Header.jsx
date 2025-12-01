@@ -4,14 +4,18 @@ import { routes } from "../routes";
 import { getConsts } from "../utils/const";
 import { getUserByToken } from "../services/auth";
 import { Button } from "../components/Button";
-import Dropdown from "../components/Dropdown";
+import { Dropdown } from "../components/Dropdown";
 import { OutlinedButton } from "../components/OutlinedButton";
 import { translation } from "./Header.Translation";
 import { getTranslation } from "../utils/getTranslation";
 import { message } from "../providers/MessageProvider";
+import { useDeviceType } from "../hooks/useDeviceType";
+import { HeaderMobile } from "./Header.Mobile";
 
 export function Header({ language, handleChangeLanguage }) {
   const [userName, setUsername] = useState("");
+  const [menuOpen, setMenuOpen] = useState(false);
+  const device = useDeviceType();
 
   async function fetchData() {
     const show_error = [
@@ -65,6 +69,21 @@ export function Header({ language, handleChangeLanguage }) {
       },
     },
   ];
+
+  if (device == "mobile") {
+    return (
+      <HeaderMobile
+        menuOpen={menuOpen}
+        setMenuOpen={setMenuOpen}
+        routes={routes}
+        userName={userName}
+        avatarMenu={avatarMenu}
+        translation={translation}
+        language={language}
+        handleChangeLanguage={handleChangeLanguage}
+      />
+    );
+  }
 
   return (
     <header className="flex items-center justify-between px-8 py-4 bg-white/70 backdrop-blur-md shadow-md sticky top-0 z-50 h-[10vh]">
