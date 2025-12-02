@@ -19,7 +19,9 @@ export function Speaking() {
   const [action, setAction] = useState("ADD");
   const [paginationData, setPaginationData] = useState({});
 
-  async function fetchRows({ pageIndex, pageSize } = { pageIndex: null, pageSize: 5 }) {
+  async function fetchRows(
+    { pageIndex, pageSize } = { pageIndex: null, pageSize: 5 }
+  ) {
     const result = await getAllSpeakings({ pageIndex, pageSize });
     setRows(result.data);
     setPaginationData(result.pagination);
@@ -32,16 +34,25 @@ export function Speaking() {
   }
 
   async function handleConfirm({ action }) {
+    let result;
     if (action == "ADD") {
-      await addSpeaking({ row: currentRow });
+      result = await addSpeaking({ row: currentRow });
     }
 
     if (action == "EDIT") {
-      await updateSpeaking({ row: currentRow });
+      result = await updateSpeaking({ row: currentRow });
     }
 
     if (action == "DELETE") {
-      await deleteSpeaking({ row: currentRow });
+      result = await deleteSpeaking({ row: currentRow });
+    }
+
+    if (result.error) {
+      message({
+        type: "error",
+        text: result.error,
+      });
+      return;
     }
 
     fetchRows();
@@ -70,7 +81,7 @@ export function Speaking() {
         columns={[
           { id: "id", name: "Id" },
           { id: "question", name: "Question" },
-          { id: "answer", name: "Answer" }
+          { id: "answer", name: "Answer" },
         ]}
         rows={rows}
         openPopup={openPopup}

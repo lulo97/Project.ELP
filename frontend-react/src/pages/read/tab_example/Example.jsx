@@ -34,16 +34,25 @@ export function Example({
   }
 
   async function handleConfirm({ action }) {
+    let result;
     if (action == "ADD") {
-      await addExample({ row: currentRow });
+      result = await addExample({ row: currentRow });
     }
 
     if (action == "EDIT") {
-      await updateExample({ row: currentRow });
+      result = await updateExample({ row: currentRow });
     }
 
     if (action == "DELETE") {
-      await deleteExample({ row: currentRow });
+      result = await deleteExample({ row: currentRow });
+    }
+
+    if (result.error) {
+      message({
+        type: "error",
+        text: result.error,
+      });
+      return;
     }
 
     fetchExistingRows();

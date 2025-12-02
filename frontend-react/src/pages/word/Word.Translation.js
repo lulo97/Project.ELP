@@ -6,5 +6,9 @@ export const translation = {
   Word: {
     vi: "Từ vựng",
     en: "Word",
+  },
+  AddDetail: {
+    vi: "Thêm chi tiết",
+    en: "Adding detail"
   }
 };

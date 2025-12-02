@@ -31,16 +31,25 @@ export function Meaning({
   }
 
   async function handleConfirm({ action }) {
+    let result = null;
     if (action == "ADD") {
-      await addMeaning({ row: currentRow });
+      result = await addMeaning({ row: currentRow });
     }
 
     if (action == "EDIT") {
-      await updateMeaning({ row: currentRow });
+      result = await updateMeaning({ row: currentRow });
     }
 
     if (action == "DELETE") {
-      await deleteMeaning({ row: currentRow });
+      result = await deleteMeaning({ row: currentRow });
+    }
+
+    if (result.error) {
+      message({
+        type: "error",
+        text: result.error,
+      });
+      return;
     }
 
     fetchExistingRows();
@@ -67,7 +76,10 @@ export function Meaning({
           { id: "id", name: getTranslation("Id") },
           { id: "meaning", name: getTranslation("Meaning", translation) },
           { id: "word", name: getTranslation("Word", translation) },
-          { id: "part_of_speech", name: getTranslation("PartOfSpeech", translation) },
+          {
+            id: "part_of_speech",
+            name: getTranslation("PartOfSpeech", translation),
+          },
         ]}
         rows={existingRows}
         openPopup={openPopup}

@@ -66,6 +66,10 @@ async function executeProcedure(
 
     await client.query("COMMIT");
 
+    if (output.p_error) {
+      console.log("Error from procedure: ", output.p_error)
+    }
+
     return output;
   } catch (error) {
     await client.query("ROLLBACK");

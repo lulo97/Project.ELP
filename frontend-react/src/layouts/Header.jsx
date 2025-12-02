@@ -25,6 +25,7 @@ export function Header({ language, handleChangeLanguage }) {
       "/exercise",
       "/mcq_generator",
       "/youtube_listening",
+      "/question_generator",
     ].includes(window.location.pathname);
     const user = await getUserByToken(!show_error);
     if (!user || !user.username) return;

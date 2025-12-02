@@ -8,16 +8,18 @@ using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Host.UseSerilog();
+
 Env.Load();
 
 var appPort = Environment.GetEnvironmentVariable("PORT") ?? "3200";
+
+Console.WriteLine("Running with port = " + appPort);
 
 builder.WebHost.ConfigureKestrel(options =>
 {
     options.ListenAnyIP(int.Parse(appPort));
 });
-
-builder.Host.UseSerilog();
 
 builder.Services.AddControllers();
 

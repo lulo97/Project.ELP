@@ -7,6 +7,7 @@ import { Fragment } from "react";
 import { getTranslation } from "../utils/getTranslation";
 import { useDeviceType } from "../hooks/useDeviceType";
 import { TableMobile } from "./TableMobile";
+import { useState, useEffect } from "react";
 
 export function Table({
   translation = {},
@@ -20,7 +21,9 @@ export function Table({
   fetchData = () => {},
   paginationData = {},
 }) {
-  if (useDeviceType() == "mobile") {
+  const deviceType = useDeviceType();
+
+  if (deviceType == "mobile") {
     return (
       <TableMobile
         translation={translation}
@@ -30,6 +33,7 @@ export function Table({
         showActionColumn={true}
         fetchData={fetchData}
         paginationData={paginationData}
+        additionButtons={additionButtons}
       />
     );
   }

@@ -43,8 +43,8 @@ export async function getMeaningsByWord({ word, pageIndex = "", pageSize = "" })
 
   const query = new URLSearchParams({
     word,
-    pageIndex: String(pageIndex),
-    pageSize: String(pageSize),
+    pageIndex: String(pageIndex || ""),
+    pageSize: String(pageSize || ""),
     where_options: JSON.stringify(whereOptions),
   });
 

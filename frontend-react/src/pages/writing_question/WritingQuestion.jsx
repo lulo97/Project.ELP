@@ -34,14 +34,24 @@ export function WritingQuestion() {
   }
 
   async function handleConfirm({ action }) {
+    let result;
+
     if (action === "ADD") {
-      await addWritingQuestion({ row: currentRow });
+      result = await addWritingQuestion({ row: currentRow });
     }
     if (action === "EDIT") {
-      await updateWritingQuestion({ row: currentRow });
+      result = await updateWritingQuestion({ row: currentRow });
     }
     if (action === "DELETE") {
-      await deleteWritingQuestion({ row: currentRow });
+      result = await deleteWritingQuestion({ row: currentRow });
+    }
+
+    if (result.error) {
+      message({
+        type: "error",
+        text: result.error,
+      });
+      return;
     }
 
     fetchRows();

@@ -8,7 +8,7 @@ public class AIService
 {
     private readonly IConnectionMultiplexer redis;
     private readonly HttpClient client;
-    private readonly string AI_HOST = Environment.GetEnvironmentVariable("PG_HOST") ?? "http://localhost:8001";
+    private readonly string AI_HOST = Environment.GetEnvironmentVariable("AI_HOST") ?? "http://localhost:8001";
     public AIService(HttpClient _client, IConnectionMultiplexer _redis)
     {
         client = _client;

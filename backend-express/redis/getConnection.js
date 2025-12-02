@@ -1,7 +1,7 @@
 const redis = require("redis");
 
 let client = null;
-let maximum_error_count = 3;
+let maximum_error_count = 10;
 let current_error_count = 0;
 
 const redisHost = process.env.REDIS_HOST || "redis://localhost:6379";

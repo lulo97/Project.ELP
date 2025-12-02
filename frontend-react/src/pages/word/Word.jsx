@@ -11,10 +11,11 @@ import { PageTitle } from "../../components/PageTitle";
 import { Button } from "../../components/Button";
 import { Input } from "../../components/Input";
 import { SearchTable } from "../../components/SearchTable";
-import { Popup as PopupDetail } from "../read/Popup";
+import { PopupDetail } from "./PopupDetail";
 import { message } from "../../providers/MessageProvider";
 import { getTranslation as _getTranslation } from "../../utils/getTranslation";
 import { translation } from "./Word.Translation";
+import { useDeviceType } from "../../hooks/useDeviceType";
 
 const getTranslation = (key) => _getTranslation(key, translation);
 
@@ -70,7 +71,7 @@ export function Word() {
     setShowPopup(false);
 
     if (result.error) {
-      message({ type: "error", text: result.error })
+      message({ type: "error", text: result.error });
     }
   }
 
@@ -116,8 +117,8 @@ export function Word() {
         additionButtons={[
           (row) => (
             <Button
-              className="py-0 h-full"
-              text={"Add detail"}
+              className={`h-full`}
+              text={getTranslation("AddDetail")}
               onClick={() => {
                 setShowPopupDetail(true);
                 setSelectedWord(row);
@@ -141,7 +142,6 @@ export function Word() {
       {selectedWord.word && (
         <PopupDetail
           show={showPopupDetail}
-          title={"Add"}
           word={selectedWord.word}
           handleClose={handleClosePopupDetail}
         />
