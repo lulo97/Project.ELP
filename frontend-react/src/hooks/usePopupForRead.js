@@ -17,4 +17,3 @@ export function usePopupForRead(refresh) {
 
   return { currentWord, showPopup, openPopup, handleClose, setCurrentWord };
 }
-

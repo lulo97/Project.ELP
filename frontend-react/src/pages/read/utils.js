@@ -1,8 +1,4 @@
 import { ALLOW_SELECTED } from "../../hooks/useSelectedText";
-import { getConsts } from "../../utils/const";
-import {
-  getStandardizeWord,
-} from "../../utils/standardizeWord";
 
 export const EMPTY_STATE = {
   words: [],
@@ -25,16 +21,16 @@ export const EMPTY_STATE = {
   original_chunks: [],
   chunks: [],
   show_translate:
-    localStorage.getItem("show_translate") === "true" ? true : false,
+    localStorage.getItem("show_translate") === "true",
   horizontal_layout:
-    localStorage.getItem("horizontal_layout") === "true" ? true : false,
+    localStorage.getItem("horizontal_layout") === "true",
   trigger: 0,
 };
 
 export function compareObjects(obj1, obj2) {
   const string_obj1 = JSON.stringify(obj1.toSorted());
   const string_obj2 = JSON.stringify(obj2.toSorted());
-  return string_obj1 == string_obj2;
+  return string_obj1 === string_obj2;
 }
 
 export function transformSourceRawIntoChunks(
@@ -43,11 +39,10 @@ export function transformSourceRawIntoChunks(
     source_translates: EMPTY_STATE.source_translates,
   }
 ) {
-
-  //<p>Hello <br>  <br> world</p> -> [Hello, World]
-  //<p>Hello <br><br> world</p> -> [Hello, World]
-  //<p>Hello <br>  \n world</p> -> [Hello, World]
-  //<p>Hello \n \n world</p> -> [Hello, World]
+  // <p>Hello <br>  <br> world</p> -> [Hello, World]
+  // <p>Hello <br><br> world</p> -> [Hello, World]
+  // <p>Hello <br>  \n world</p> -> [Hello, World]
+  // <p>Hello \n \n world</p> -> [Hello, World]
   function transformText(a) {
     let b = a;
     b = b.replace(/\n/g, "<br>");
@@ -58,7 +53,7 @@ export function transformSourceRawIntoChunks(
 
   let chunks = transformText(api_response.source_row.source)
 
-  //[Hello, World] -> [<p>Hello</p>, <p>World</p>]
+  // [Hello, World] -> [<p>Hello</p>, <p>World</p>]
   chunks = chunks.map((ele) => ({
     chunk: `<p class=${ALLOW_SELECTED}>${ele
       .replaceAll("<p>", "")
@@ -80,7 +75,7 @@ export function transformSourceRawIntoChunks(
   if (api_response.source_translates.length > 0) {
     chunks = chunks.map((ele) => {
       const existing_translate = api_response.source_translates.find(
-        (x) => x.chunk == ele.chunk
+        (x) => x.chunk === ele.chunk
       );
       return {
         ...ele,
@@ -92,13 +87,13 @@ export function transformSourceRawIntoChunks(
   return chunks;
 }
 
-function getWordColor({ type, word, words }) {
-  const consts = getConsts();
-  if (type === "idiom") return consts.IDIOM_COLOR;
-  if (type === "phrase") return consts.PHRASE_COLOR;
-  if (type === "word") {
-    const standardized = getStandardizeWord({ word: word });
-    return words.map(ele => ele.word).includes(standardized) ? consts.WORD_COLOR : "black";
-  }
-  return "black";
-}
+// function getWordColor({ type, word, words }) {
+//   const consts = getConsts();
+//   if (type === "idiom") return consts.IDIOM_COLOR;
+//   if (type === "phrase") return consts.PHRASE_COLOR;
+//   if (type === "word") {
+//     const standardized = getStandardizeWord({ word: word });
+//     return words.map(ele => ele.word).includes(standardized) ? consts.WORD_COLOR : "black";
+//   }
+//   return "black";
+// }

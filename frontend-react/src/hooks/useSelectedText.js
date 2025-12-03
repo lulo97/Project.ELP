@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-//Declare className=ALLOW_SELECTED to allow this hook to catch selected text
+// Declare className=ALLOW_SELECTED to allow this hook to catch selected text
 export const ALLOW_SELECTED = "ALLOW_SELECTED";
 
 export function useSelectedText() {

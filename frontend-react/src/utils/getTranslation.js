@@ -16,7 +16,7 @@ export function getTranslation(key = "", translation = {}, component = "") {
     return key;
   }
 
-  const translated_object = _translation[key] ||  global_translation[key];
+  const translated_object = _translation[key] || global_translation[key];
   
   const translated = translated_object[language];
 

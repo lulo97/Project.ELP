@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, } from "react";
 
 /*
 Pooling data from server
@@ -8,7 +8,7 @@ Have a flag to stop pooling (status = DONE)
 export function useEventsPoll() {
   const [data, setData] = useState(null);
 
-  //Using useRef to prevent rerender
+  // Using useRef to prevent rerender
   const pollingRef = useRef(false);
   const eventIdRef = useRef(null);
   const oldEventRef = useRef(null);
@@ -79,7 +79,7 @@ export function useEventsPoll() {
   }
 
   function getEventsData() {
-    if (!data || data.length == 0) return null;
+    if (!data || data.length === 0) return null;
     const last_item = data[0];
     const seperator = last_item.data ? " - " : "";
     return `[${last_item.status}${seperator}${last_item.data}]`;

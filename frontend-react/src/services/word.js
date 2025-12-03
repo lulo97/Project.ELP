@@ -13,7 +13,7 @@ export async function getWord({ word, where_options }) {
       },
     }
   );
-  return await result.json();;
+  return await result.json();
 }
 
 export async function getAllWords({ pageIndex, pageSize, word }) {

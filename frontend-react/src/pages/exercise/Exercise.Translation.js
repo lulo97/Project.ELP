@@ -35,12 +35,12 @@ export const translation = {
   GivingExample: {
     Title: { en: "Giving Example", vi: "Đưa ví dụ" },
     Label: { en: "Your example", vi: "Ví dụ của bạn" },
-    Placeholder: { en: "Type an example for {word}...", vi: "Cho một ví dụ của từ {word}..."},
+    Placeholder: { en: "Type an example for {word}...", vi: "Cho một ví dụ của từ {word}..." },
     NoExamples: {
       en: "No examples yet — be the first to add one!",
       vi: "Chưa có ví dụ — hãy thêm một ví dụ!",
     },
-    Examples: { en: "Examples", vi: "Các ví dụ"}
+    Examples: { en: "Examples", vi: "Các ví dụ" }
   },
 
   MultipleChoice: {

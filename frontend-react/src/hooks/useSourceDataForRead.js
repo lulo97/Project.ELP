@@ -56,7 +56,7 @@ export function useSourceDataForRead(source_name) {
 
     setExistTranslatedChunks(existTranslatedChunks || []);
 
-    //setState() is not updated same time as async/await so I have to manually passing api result
+    // setState() is not updated same time as async/await so I have to manually passing api result
     return existTranslatedChunks || [];
   }
 
@@ -66,7 +66,7 @@ export function useSourceDataForRead(source_name) {
     Not rely on the setState update
   */
   async function fetchTranslations({ _existTranslatedChunks }) {
-    let __existTranslatedChunks = _existTranslatedChunks;
+    const __existTranslatedChunks = _existTranslatedChunks;
 
     if (!currentSource?.id) return;
 
@@ -75,7 +75,7 @@ export function useSourceDataForRead(source_name) {
         .split("\n")
         .filter((ele) => ele.trim().length > 0);
 
-      let newTranslatedChunks = chunks.map((chunk) => ({
+      const newTranslatedChunks = chunks.map((chunk) => ({
         chunk,
         translate: "",
         split: splitParagraph({
@@ -87,7 +87,7 @@ export function useSourceDataForRead(source_name) {
 
       const merged = newTranslatedChunks.map((ele, idx) => {
         const existTranslated = __existTranslatedChunks.find(
-          (trans) => trans.chunk == ele.chunk
+          (trans) => trans.chunk === ele.chunk
         );
         return {
           ...ele,
@@ -138,7 +138,7 @@ export function useSourceDataForRead(source_name) {
 
     if (translatedChunks && existTranslatedChunks) {
       const isEditTranslate =
-        getCompareString(translatedChunks) !=
+        getCompareString(translatedChunks) !==
         getCompareString(existTranslatedChunks);
 
       if (isEditTranslate) {

@@ -1,8 +1,9 @@
 function getUtilityBase(utilityPart) {
   if (utilityPart === "border") return "border-width";
   if (/^border-(\d+)$/.test(utilityPart)) return "border-width";
-  if (/^border-(solid|dashed|dotted|double|none)$/.test(utilityPart))
+  if (/^border-(solid|dashed|dotted|double|none)$/.test(utilityPart)) {
     return "border-style";
+  }
   if (/^border-(.+)/.test(utilityPart)) {
     const colorMatch = utilityPart.match(/^border-(.+)/);
     const val = colorMatch[1];
@@ -14,9 +15,12 @@ function getUtilityBase(utilityPart) {
 
   // Flex utilities
   if (utilityPart === "flex") return "flex-display";
-  if (/^flex-(col|row|row-reverse|col-reverse)$/.test(utilityPart))
+  if (/^flex-(col|row|row-reverse|col-reverse)$/.test(utilityPart)) {
     return "flex-direction";
-  if (/^flex-(1|auto|initial|none)$/.test(utilityPart)) return "flex-grow";
+  }
+  if (/^flex-(1|auto|initial|none)$/.test(utilityPart)) {
+    return "flex-grow";
+  }
 
   // Height and width
   if (/^(h|w)-.+/.test(utilityPart)) {
@@ -139,6 +143,7 @@ const testCases = [
   },
 ];
 
+// eslint-disable-next-line no-unused-vars
 function runTests(mergeFn) {
   testCases.forEach(({ input, expected, description }, i) => {
     const result = mergeFn(input);
@@ -153,4 +158,4 @@ function runTests(mergeFn) {
   });
 }
 
-//runTests(mergeTailwindClasses);
+// runTests(mergeTailwindClasses);
