@@ -28,7 +28,7 @@ export function Popup({
       return;
     }
 
-    const existing_word = result.data.length == 0 ? null : result.data[0];
+    const existing_word = result.data.length === 0 ? null : result.data[0];
 
     if (existing_word) {
       setState((old_state) => {
@@ -58,7 +58,7 @@ export function Popup({
         ...old_state,
         open_popup: false,
         word_row: EMPTY_STATE.word_row,
-        //trigger: old_state.trigger + 1
+        trigger: old_state.trigger + 1
       };
     });
   }
@@ -85,11 +85,11 @@ export function Popup({
           setCurrentTabId={setCurrentTabId}
         />
 
-        {currentTabId == "word" && (
+        {currentTabId === "word" && (
           <TabWord state={state} fetchWord={fetchWord} />
         )}
-        {currentTabId == "meaning" && <TabMeaning word={state.word_row.word} />}
-        {currentTabId == "example" && <TabExample word={state.word_row.word} />}
+        {currentTabId === "meaning" && <TabMeaning word={state.word_row.word} />}
+        {currentTabId === "example" && <TabExample word={state.word_row.word} />}
       </div>
     </CommonPopup>
   );

@@ -1,5 +1,5 @@
 import { useLocation } from "react-router-dom";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { getReadData } from "../../services/read";
 import { message } from "../../providers/MessageProvider";
 import { PageTitle } from "../../components/PageTitle";
@@ -10,7 +10,7 @@ import { Popup } from "./Popup";
 import { getTranslation as _getTranslation } from "../../utils/getTranslation";
 import { translation } from "./Read.Translate";
 import { HighlightHtmlText } from "./HighlightHtmlText";
-import { ALLOW_SELECTED, useSelectedText } from "../../hooks/useSelectedText";
+import { useSelectedText } from "../../hooks/useSelectedText";
 import { AnimatedList } from "../../components/AnimatedList";
 import {
   EMPTY_STATE,
@@ -58,7 +58,7 @@ export function Read() {
   }, []);
 
   useGlobalTripleClick(() => {
-    //Open popup
+    // Open popup
     setState((state) => {
       return {
         ...state,
@@ -70,7 +70,7 @@ export function Read() {
       };
     });
 
-    //Clear paragraph selected by triple click
+    // Clear paragraph selected by triple click
     const selection = window.getSelection();
     if (selection) {
       selection.removeAllRanges();
@@ -78,19 +78,19 @@ export function Read() {
   });
 
   useEffect(() => {
-    if (selectedText.length == 0) return;
+    if (selectedText.length === 0) return;
 
     if (state.open_popup) return;
 
     const _word = selectedText.trim();
 
-    if (!_word || _word.length == 0 || _word.includes(" ")) return;
+    if (!_word || _word.length === 0 || _word.includes(" ")) return;
 
     const symbols = ["+", "-", "*", "/", "=", "<", ">", ".", ",", "'", '"'];
 
     if (symbols.includes(_word)) return;
 
-    //Remember word selected by double click
+    // Remember word selected by double click
     setSelectedTextDoubleClick(_word);
   }, [selectedText]);
 
@@ -102,7 +102,7 @@ export function Read() {
     const body = {
       source_id: state.source_row.id,
       chunks: state.chunks
-        //Remove all empty translate
+        // Remove all empty translate
         .filter((ele) => ele.translate)
         .map((ele) => ({
           chunk: ele.chunk,
@@ -199,13 +199,14 @@ export function Read() {
       {state.horizontal_layout && (
         <AnimatedList>
           {state.chunks.map((ele, idx) => {
-            if (!state.show_translate)
+            if (!state.show_translate) {
               return (
                 <div key={idx}>
                   {getHighlightHtmlText(ele.chunk)}
                   <br />
                 </div>
               );
+            };
 
             return (
               <div key={idx}>
