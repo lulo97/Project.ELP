@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Avatar } from "../components/Avatar";
 import { routes } from "../routes";
 import { getConsts } from "../utils/const";
-import { getUserByToken } from "../services/auth";
+import { getUserByToken, logout, me } from "../services/auth";
 import { Button } from "../components/Button";
 import { Dropdown } from "../components/Dropdown";
 import { OutlinedButton } from "../components/OutlinedButton";
@@ -37,23 +37,21 @@ export function Header({ language, handleChangeLanguage }) {
   }, []);
 
   async function handleLogout() {
-    await fetch("/api/auth/logOut", {
-      method: "POST",
-      credentials: "include",
-    });
+    const result_logout = await logout();
 
-    const meRes = await fetch("/api/auth/me", {
-      method: "GET",
-      credentials: "include",
-    });
+    if (result_logout.error) {
+      message({ type: "error", text: result_logout.error })
+      return;
+    }
 
-    const meJson = await meRes.json();
+    const result_me = await me();
 
-    if (meJson.data) {
+    if (result_me.data) {
       message({
         type: "error",
         text: "Logout may have failed, /me still returns a user",
       });
+      return;
     } else {
       message({ text: "Logout verified successfully" });
     }
@@ -115,6 +113,8 @@ export function Header({ language, handleChangeLanguage }) {
               onClick: () => {
                 window.location.href = item.path;
               },
+              href: item.path,
+              as: "a",
             }));
 
             return (

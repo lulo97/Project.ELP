@@ -2,7 +2,7 @@ const { getRandomId } = require("../../utils/getRandomId.js");
 const { execute, executeSelect } = require("../../database/execute.js");
 
 async function getTTSData(text) {
-    const sql = "SELECT * FROM tts WHERE text = ?";
+    const sql = "SELECT * FROM tts WHERE text = $1";
 
     const result = await executeSelect({ sql, params: [text] });
 
@@ -23,7 +23,7 @@ async function saveTTSData({ text, audio_base64 }) {
 
     const sql = `
       INSERT INTO tts (id, text, audio_base64)
-      VALUES (?, ?, ?)
+      VALUES ($1, $2, $3)
     `;
 
     const result = await execute({

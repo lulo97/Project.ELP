@@ -5,6 +5,7 @@ import { PopupField } from "../../components/PopupField";
 import { message } from "../../providers/MessageProvider";
 import { translation } from "./Login.Translation";
 import { getTranslation } from "../../utils/getTranslation";
+import { me } from "../../services/auth";
 
 export function LogIn() {
   const [username, setUsername] = useState("");
@@ -31,7 +32,21 @@ export function LogIn() {
       const result = await response.json();
 
       if (result.error) {
-        throw new Error(result.error);
+        message({ type: "error", text: result.error });
+        return;
+      }
+
+      //Double check with api/me
+      const result_me = await me();
+
+      if (result_me.error) {
+        message({ type: "error", text: result_me.error });
+        return;
+      }
+
+      if (!result_me.data.user) {
+        message({ type: "error", text: "Login failed, api /me return user null!" });
+        return;
       }
 
       message({

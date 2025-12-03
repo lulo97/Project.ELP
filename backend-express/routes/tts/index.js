@@ -14,7 +14,7 @@ async function tts(req, res, next) {
         const existingTTSRow = await getTTSData(text);
 
         if (existingTTSRow) {
-            return res.json({ data: { audio_base64: existingTTSRow.audio_base64 }, error: null });
+            return res.json({ data: existingTTSRow, error: null });
         }
 
         const ttsHost = process.env.UTILS_HOST || 'http://localhost:3002';
@@ -24,7 +24,14 @@ async function tts(req, res, next) {
         //{ audio_base64: "" }
         const result_json = await result.json();
 
-        await saveTTSData({ text: text, audio_base64: result_json.audio_base64 })
+        if (result_json.error) {
+            return res.json({
+                data: null,
+                error: result_json.error
+            })
+        }
+
+        await saveTTSData({ text: text, audio_base64: result_json.data.audio_base64 })
 
         res.json({ data: result_json, error: null });
     } catch (err) {

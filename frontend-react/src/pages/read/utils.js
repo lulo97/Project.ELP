@@ -43,8 +43,20 @@ export function transformSourceRawIntoChunks(
     source_translates: EMPTY_STATE.source_translates,
   }
 ) {
+
+  //<p>Hello <br>  <br> world</p> -> [Hello, World]
   //<p>Hello <br><br> world</p> -> [Hello, World]
-  let chunks = api_response.source_row.source.split("<br><br>");
+  //<p>Hello <br>  \n world</p> -> [Hello, World]
+  //<p>Hello \n \n world</p> -> [Hello, World]
+  function transformText(a) {
+    let b = a;
+    b = b.replace(/\n/g, "<br>");
+    b = b.replaceAll("<p>", " ").replaceAll("</p>", " ");
+    const c = b.split(/<\s*br\s*>\s*<\s*br\s*>/i);
+    return c;
+  }
+
+  let chunks = transformText(api_response.source_row.source)
 
   //[Hello, World] -> [<p>Hello</p>, <p>World</p>]
   chunks = chunks.map((ele) => ({

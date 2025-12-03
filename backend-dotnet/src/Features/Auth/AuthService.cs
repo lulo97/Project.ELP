@@ -47,19 +47,29 @@ public class AuthService
         if (user == null)
             return ApiResponse<object>.Fail($"User '{username}' not exist!");
 
+        Console.WriteLine("Process username = " + username);
+
         //Salt length/work factor doesn't matter when compare hash
         if (!BCrypt.Net.BCrypt.Verify(password, user.password_hash))
             return ApiResponse<object>.Fail("Password incorrect!");
 
         var token = CreateJwt(user.username);
 
-        response.Cookies.Append("token", token, new CookieOptions
+        Console.WriteLine("Process token = " + token);
+
+        var options = new CookieOptions
         {
             HttpOnly = true,
-            Secure = true,
+            Secure = false, // set to true in production with HTTPS
             SameSite = SameSiteMode.Strict,
             MaxAge = TimeSpan.FromSeconds(_jwt.MaxAgeSeconds)
-        });
+        };
+
+        // Append the token to the response cookies
+        response.Cookies.Append("token", token, options);
+
+        // Log details
+        Console.WriteLine($"Done setting up token in cookies. Options => HttpOnly: {options.HttpOnly}, Secure: {options.Secure}, SameSite: {options.SameSite}, MaxAge (seconds): {options.MaxAge?.TotalSeconds}");
 
         return ApiResponse.Ok();
     }
@@ -95,11 +105,14 @@ public class AuthService
         //    Console.WriteLine($"Type: {claim.Type}, Value: {claim.Value}");
         //}
 
+        var username = jwt.Claims.FirstOrDefault(c => c.Type == "unique_name")?.Value
+                       ?? jwt.Claims.FirstOrDefault(c => c.Type == "username")?.Value;
+
         var authResponse = new AuthResponse
         {
             user = new JwtResponse
             {
-                username = jwt.Claims.First(c => c.Type == "unique_name").Value,
+                username = username,
                 iat = jwt.IssuedAt,
                 exp = jwt.ValidTo
             }

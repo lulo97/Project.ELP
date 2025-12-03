@@ -20,6 +20,7 @@ import {
 import { FloatingSettings } from "../../components/FloatingSettings";
 import { SplitPane } from "../../components/SplitPane";
 import { GlobalTooltip } from "./GlobalTooltip";
+import { useGlobalTripleClick } from "../../hooks/useGlobalTripleClick";
 
 const getTranslation = (key) => _getTranslation(key, translation);
 
@@ -29,6 +30,8 @@ export function Read() {
   const { selectedText } = useSelectedText();
 
   const [state, setState] = useState(EMPTY_STATE);
+
+  const [selectedTextDoubleClick, setSelectedTextDoubleClick] = useState("");
 
   async function fetchData() {
     const result = await getReadData({ source_id: source_id });
@@ -54,28 +57,45 @@ export function Read() {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    if (selectedText.length == 0) return;
-    if (state.open_popup) return;
-    const _word = selectedText.trim();
-    if (!_word || _word.length == 0 || _word.includes(" ")) return;
-    const symbols = ["+", "-", "*", "/", "=", "<", ">", ".", ",", "'", '"'];
-    if (symbols.includes(_word)) return;
-
+  useGlobalTripleClick(() => {
+    //Open popup
     setState((state) => {
       return {
         ...state,
         open_popup: true,
         word_row: {
           ...state.word_row,
-          word: _word,
+          word: selectedTextDoubleClick,
         },
       };
     });
+
+    //Clear paragraph selected by triple click
+    const selection = window.getSelection();
+    if (selection) {
+      selection.removeAllRanges();
+    }
+  });
+
+  useEffect(() => {
+    if (selectedText.length == 0) return;
+
+    if (state.open_popup) return;
+
+    const _word = selectedText.trim();
+
+    if (!_word || _word.length == 0 || _word.includes(" ")) return;
+
+    const symbols = ["+", "-", "*", "/", "=", "<", ">", ".", ",", "'", '"'];
+
+    if (symbols.includes(_word)) return;
+
+    //Remember word selected by double click
+    setSelectedTextDoubleClick(_word);
   }, [selectedText]);
 
   function isChunksEdit() {
-    return compareObjects(state.original_chunks, state.chunks);
+    return !compareObjects(state.original_chunks, state.chunks);
   }
 
   async function handleSaveChunksInDatabase() {
@@ -121,6 +141,20 @@ export function Read() {
     };
   }, []);
 
+  // useEffect(() => {
+  //   const id = setInterval(() => {
+  //     if (isChunksEdit()) {
+  //       message({
+  //         text: "Autosaved",
+  //         duration: 500,
+  //         position: "bottom-center",
+  //       });
+  //     }
+  //   }, 1000);
+
+  //   return () => clearInterval(id);
+  // }, [state.original_chunks, state.chunks]);
+
   if (!state.source_row.id) return <div>Loading...</div>;
 
   const title = getTranslation("Title").replace(
@@ -151,7 +185,7 @@ export function Read() {
     <div className="p-4 min-h-[90vh]">
       <div className="flex justify-between mb-4">
         <PageTitle title={title} />
-        {!isChunksEdit() && (
+        {isChunksEdit() && (
           <div className="fixed top-[60px] right-0 p-4 z-10">
             <Button
               className="opacity-75"
@@ -255,6 +289,52 @@ export function Read() {
           ]}
         />
       </FloatingSettings>
+
+      <FloatingSettings
+        title="Guide"
+        button_icon="💡"
+        position={{ bottom: "6", right: "20" }}
+        button_color="bg-indigo-500 text-white hover:bg-indigo-600"
+      >
+        {[
+          {
+            icon: "💡",
+            iconColor: "text-indigo-500",
+            text: "Triple click to show popup to insert word",
+          },
+          {
+            icon: "🔵",
+            iconColor: "text-blue-500",
+            text: "Text with color BLUE is saved words",
+          },
+          {
+            icon: "🔴",
+            iconColor: "text-red-500",
+            text: "Text with color RED is saved phrases",
+          },
+          {
+            icon: "🟢",
+            iconColor: "text-green-500",
+            text: "Text with color GREEN is saved idioms",
+          },
+          {
+            icon: "ℹ️",
+            iconColor: "text-gray-400",
+            text: "Hover on saved items to show their meanings",
+          },
+        ].map((item, index) => (
+          <div
+            key={index}
+            className="flex items-center gap-2 text-gray-700 mb-2"
+          >
+            <span className={`w-5 flex-shrink-0 text-center ${item.iconColor}`}>
+              {item.icon}
+            </span>
+            <span>{item.text}</span>
+          </div>
+        ))}
+      </FloatingSettings>
+
       <GlobalTooltip
         meanings={state.meanings}
         idioms={state.idioms}

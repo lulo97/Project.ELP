@@ -1,80 +1,56 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Models;
+using System.Net.Http;
+using System.Net.Http.Json;
 using Utils;
-using static Utils.Utils;
 using static Utils.ApiResponse<Models.tts>;
+using static Utils.Utils;
 
 public class TtsService
 {
     private readonly AppDbContext _context;
+    private readonly HttpClient _httpClient;
 
-    public TtsService(AppDbContext context)
+    public TtsService(AppDbContext context, HttpClient httpClient)
     {
         _context = context;
+        _httpClient = httpClient; // already an HttpClient, no CreateClient() needed
     }
 
-    public async Task<ApiResponse<List<tts>>> Get(
-        string? text = null)
+    // Fetch or create TTS for a given text
+    public async Task<ApiResponse<tts>> GetOrCreateTts(string text)
     {
-        var query = from t in _context.tts
-                    select t;
+        if (string.IsNullOrWhiteSpace(text))
+            return Fail("Missing text parameter");
 
-        if (!string.IsNullOrWhiteSpace(text))
-            query = query.Where(t => t.text!.ToLower().Contains(text.ToLower()));
+        // Check if TTS already exists
+        var existing = await _context.tts.FirstOrDefaultAsync(t => t.text!.ToLower() == text.ToLower());
+        if (existing != null)
+            return Ok(existing);
 
-        var data = await query.ToListAsync();
+        // Fetch TTS from external service
+        var ttsHost = Environment.GetEnvironmentVariable("UTILS_HOST") ?? "http://localhost:3002";
 
-        return ApiResponse<List<tts>>.Ok(data);
-    }
+        var response = await _httpClient.GetAsync($"{ttsHost}/tts?text={Uri.EscapeDataString(text)}");
 
-    public async Task<ApiResponse<tts>> Add(TtsRequestBody record)
-    {
-        if (string.IsNullOrWhiteSpace(record.text))
-            return Fail("ErrorTextEmpty");
+        if (!response.IsSuccessStatusCode)
+            return Fail($"Error fetching TTS: {response.StatusCode}");
 
+        var resultJson = await response.Content.ReadFromJsonAsync<TtsResponse>();
+        if (resultJson == null || string.IsNullOrWhiteSpace(resultJson.data.audio_base64))
+            return Fail("TTS service returned empty audio");
+
+        // Save to database
         var newRecord = new tts
         {
             id = GetRandomId(),
-            text = record.text,
-            audio_base64 = record.audio_base64
+            text = text,
+            audio_base64 = resultJson.data.audio_base64
         };
 
         _context.tts.Add(newRecord);
         await _context.SaveChangesAsync();
 
         return Ok(newRecord);
-    }
-
-    public async Task<ApiResponse<tts>> Update(TtsRequestBody record)
-    {
-        if (string.IsNullOrWhiteSpace(record.id))
-            return Fail("ErrorIdEmpty");
-
-        if (string.IsNullOrWhiteSpace(record.text))
-            return Fail("ErrorTextEmpty");
-
-        var existing = await _context.tts.FindAsync(record.id);
-
-        if (existing == null)
-            return Fail("ErrorNotFound");
-
-        existing.text = record.text;
-        existing.audio_base64 = record.audio_base64;
-
-        await _context.SaveChangesAsync();
-
-        return Ok(existing);
-    }
-
-    public async Task<ApiResponse<tts>> Delete(string id)
-    {
-        var existing = await _context.tts.FindAsync(id);
-        if (existing == null)
-            return Fail("ErrorNotExist");
-
-        _context.tts.Remove(existing);
-        await _context.SaveChangesAsync();
-
-        return ApiResponse<tts>.Ok(null);
     }
 }

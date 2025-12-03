@@ -9,6 +9,13 @@ SET CONTAINER_PORT=3101
 SET DOCKER_NETWORK=elp-network
 SET ENV_FILE=.env.production
 
+REM == BUILD ==
+echo Running npm run build...
+call npm run build >nul 2>&1
+IF %ERRORLEVEL% NEQ 0 (
+  echo Warning: npm run build failed or npm is not installed. Continuing...
+)
+
 REM =============================
 REM Stop and remove existing container
 REM =============================

@@ -20,3 +20,19 @@ export async function getUserByToken(show_error = false) {
 
   return result_json.data.user;
 }
+
+export async function logout() {
+  const res = await fetch("/api/auth/logOut", {
+    method: "POST",
+    credentials: "include",
+  });
+  return res.json();
+}
+
+export async function me() {
+  const res = await fetch("/api/auth/me", {
+    method: "GET",
+    credentials: "include",
+  });
+  return res.json();
+}

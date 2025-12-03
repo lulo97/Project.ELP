@@ -7,7 +7,13 @@ const api = request(CONFIG.BACKEND.API_URL);
 let cookie = "";
 let id = "";
 
-describe("API tts Test Scenario", () => {
+const expectItem = (obj) => {
+  const properties = ["id", "name"];
+  const valid = isObjectValid(obj, properties);
+  expect(valid).toBe(true);
+};
+
+describe("API Part of speech Test Scenario", () => {
   test("POST /api/auth/login", async () => {
     const res = await api
       .post("/api/auth/login")
@@ -26,17 +32,30 @@ describe("API tts Test Scenario", () => {
     console.log("Cookie received: " + cookie);
   });
 
-  test("GET /api/tts", async () => {
-    const res = await api.get("/api/tts?text=Hi").set("Cookie", cookie);
+  test("GET /api/part_of_speechs", async () => {
+    const res = await api.get("/api/part_of_speechs").set("Cookie", cookie);
+
+    console.log(res.body)
 
     expect(res.body).toHaveProperty("data");
     expect(res.body).toHaveProperty("error");
     expect(res.body.error).toBeNull();
 
-    expect(res.body.data).toHaveProperty("audio_base64");
-    expect(res.body.data).toHaveProperty("id");
-    expect(res.body.data).toHaveProperty("text");
+    expect(Array.isArray(res.body.data)).toBe(true);
+    res.body.data.forEach(expectItem);
+  });
 
+  test("GET /api/part_of_speechs?word=", async () => {
+    const res = await api.get("/api/part_of_speechs?word=fragile").set("Cookie", cookie);
+
+    console.log(res.body)
+
+    expect(res.body).toHaveProperty("data");
+    expect(res.body).toHaveProperty("error");
+    expect(res.body.error).toBeNull();
+
+    expect(Array.isArray(res.body.data)).toBe(true);
+    res.body.data.forEach(expectItem);
   });
 
   afterAll(() => {});

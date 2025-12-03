@@ -50,16 +50,17 @@ export function Popup({
     { id: "example", name: getTranslation("Example", translation), disable: !state.word_row.id },
   ];
 
-  function handleClose() {
+  async function handleClose() {
+    await fetchData();
     setCurrentTabId("word");
     setState((old_state) => {
       return {
         ...old_state,
         open_popup: false,
         word_row: EMPTY_STATE.word_row,
+        //trigger: old_state.trigger + 1
       };
     });
-    fetchData();
   }
 
   return (

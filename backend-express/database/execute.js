@@ -10,6 +10,7 @@ async function executeSelect({ sql, params = [] }) {
     const result = await client.query(sql, params);
     return result.rows;
   } catch (error) {
+    console.error({ sql, params })
     console.error("SELECT query error:", error);
     throw error;
   } finally {

@@ -1,7 +1,7 @@
 const CONFIG = {
   BACKEND: {
-    API_URL: "http://localhost:3201",
-    USERNAME: "test1",
+    API_URL: "http://localhost:3200",
+    USERNAME: "luong", // "test1",
     PASSWORD: "1",
   },
   LLM: {

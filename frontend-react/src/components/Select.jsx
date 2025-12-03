@@ -8,7 +8,12 @@ export function SelectNoStyle({
   className = "",
 }) {
   return (
-    <select className={className} value={value} disabled={disabled} onChange={onChange}>
+    <select
+      className={`border border-gray-300 ${className}`}
+      value={value}
+      disabled={disabled}
+      onChange={onChange}
+    >
       <option value="" selected>
         {getTranslation("SelectAnOption")}
       </option>

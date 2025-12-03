@@ -1,7 +1,9 @@
 import { useSelectedText } from "../hooks/useSelectedText";
 import { getTranslation } from "../utils/getTranslation";
 import { Button } from "./Button";
-import { useRef } from "react";
+import { useEffect } from "react";
+
+const CONFIRM_BUTTON_ID = "confirm-button-popup";
 
 export function CommonPopup({
   show,
@@ -16,6 +18,27 @@ export function CommonPopup({
   customButton = null,
 }) {
   const { selectedText } = useSelectedText();
+
+  useEffect(() => {
+    if (!show) return;
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Enter") {
+        const button = document.getElementById(CONFIRM_BUTTON_ID);
+        if (button) {
+          button.click();
+        }
+      }
+    };
+
+    // Listen for keydown events on the whole document
+    document.addEventListener("keydown", handleKeyDown);
+
+    // Cleanup on unmount
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
   if (!show) return null;
 
@@ -56,7 +79,11 @@ export function CommonPopup({
         <div className={footerClassname}>
           <Button text={getTranslation("Close")} onClick={handleClose} />
           {isShowConfirmButton && (
-            <Button text={getTranslation("Confirm")} onClick={handleConfirm} />
+            <Button
+              id={CONFIRM_BUTTON_ID}
+              text={getTranslation("Confirm")}
+              onClick={handleConfirm}
+            />
           )}
           {customButton}
         </div>

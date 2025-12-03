@@ -52,7 +52,7 @@ builder.Services.AddScoped<SourcesService>();
 builder.Services.AddScoped<SpeakingScoresService>();
 builder.Services.AddScoped<SpeakingsService>();
 builder.Services.AddScoped<SynonymsService>();
-builder.Services.AddScoped<TtsService>();
+builder.Services.AddHttpClient<TtsService>();
 builder.Services.AddScoped<WritingAnswersService>();
 builder.Services.AddScoped<WritingQuestionsService>();
 builder.Services.AddHttpClient<AIService>();

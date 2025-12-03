@@ -158,6 +158,12 @@ export function SpeakingExercise() {
   // --- Generate Audio once ---
   async function generateAudio(text) {
     const result = await tts(removeVietnameseDiacritics(text));
+
+    if (result.error) {
+      message({ type: "error", text: result.error });
+      return;
+    }
+
     const audio_base64 = result.data.audio_base64;
 
     const audioBytes = Uint8Array.from(atob(audio_base64), (c) =>

@@ -1,23 +1,31 @@
 import { useEffect, useRef, useState } from "react";
 
-export function GlobalTooltip({ meanings = [], idioms = [], phrases = [], trigger = 0 }) {
+export function GlobalTooltip({
+  meanings = [],
+  idioms = [],
+  phrases = [],
+  trigger = 0,
+}) {
   const [visible, setVisible] = useState(false);
   const [text, setText] = useState("");
   const [pos, setPos] = useState({ x: 0, y: 0 });
   const ref = useRef(null);
 
   useEffect(() => {
+    console.log("Render by trigger ", trigger, { meanings });
+
     const targets = document.querySelectorAll(".WORD, .IDIOM, .PHRASE");
-    console.log(targets);
 
     function show(e) {
       let innerText = e.target.innerText;
       let _text = innerText;
 
       if (e.target.classList.contains("WORD")) {
-        const found = meanings.find((ele) => ele.word === innerText);
-        if (found) {
-          _text = found.meaning;
+        const founds = meanings.filter((ele) => ele.word === innerText);
+        if (founds.length > 0) {
+          _text = founds
+            .map((ele) => `(${ele.part_of_speech}) ${ele.meaning}`)
+            .join("\n");
         }
       }
 
@@ -44,11 +52,23 @@ export function GlobalTooltip({ meanings = [], idioms = [], phrases = [], trigge
     function move(e) {
       let padX = 0;
       let padY = 0;
+      
       if (ref.current) {
         padX = ref.current.offsetWidth;
         padY = ref.current.offsetHeight;
       }
-      setPos({ x: e.pageX - padX / 2, y: e.pageY - 1.5 * padY });
+
+      const x = Math.min(
+        Math.max(e.clientX - padX / 2, 0),
+        window.innerWidth - padX
+      );
+
+      const y = Math.min(
+        Math.max(e.clientY - 1.5 * padY, 0),
+        window.innerHeight - padY
+      );
+
+      setPos({ x: x, y: y });
     }
 
     targets.forEach((el) => {

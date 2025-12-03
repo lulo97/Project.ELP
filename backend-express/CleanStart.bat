@@ -9,6 +9,8 @@ SET CONTAINER_PORT=3001
 SET DOCKER_NETWORK=elp-network
 SET ENV_FILE=.env.production
 
+echo Remember to build before running this script!
+
 REM =============================
 REM Stop and remove existing container
 REM =============================
@@ -37,4 +39,5 @@ docker run -d ^
 
 echo.
 echo CleanStart finished. App should be running on http://localhost:%HOST_PORT%
+echo Remember to build before running this script!
 pause

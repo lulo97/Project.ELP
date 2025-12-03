@@ -82,6 +82,13 @@ async function me(req, res, next) {
       }
 
       // decoded contains: { username, iat, exp }
+      console.log({ decoded })
+
+      // token from dotnet have username = unique_name
+      if (decoded.unique_name && !decoded.username) {
+        decoded.username = decoded.unique_name;
+      }
+
       return res.status(200).json({
         error: null,
         data: { user: decoded },

@@ -19,9 +19,10 @@ namespace Controllers
         [HttpGet]
         [Authorize]
         public async Task<ApiResponse<List<part_of_speechs>>> Get(
+            [FromQuery] string? word
         )
         {
-            return await _service.Get();
+            return await _service.Get(word);
         }
     }
 }

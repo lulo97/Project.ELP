@@ -1,5 +1,6 @@
 import React from "react";
 import { getConsts } from "../../utils/const";
+import { ALLOW_SELECTED } from "../../hooks/useSelectedText";
 
 function log(...args) {
   console.log(...args);
@@ -75,6 +76,8 @@ export function HighlightHtmlText({
           color = getConsts().PHRASE_COLOR;
           className = "PHRASE"
         }
+
+        className = className + " " + ALLOW_SELECTED; 
 
         parts.push(
           <span className={className} key={offset} style={{ color }}>

@@ -37,9 +37,7 @@ export const routes = [
   {
     name: "System",
     isAdmin: true,
-    children: [
-      { name: "Users", path: "users", element: <Users /> },
-    ],
+    children: [{ name: "Users", path: "users", element: <Users /> }],
   },
   {
     name: "Library",
