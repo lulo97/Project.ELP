@@ -141,20 +141,6 @@ export function Read() {
     };
   }, []);
 
-  // useEffect(() => {
-  //   const id = setInterval(() => {
-  //     if (isChunksEdit()) {
-  //       message({
-  //         text: "Autosaved",
-  //         duration: 500,
-  //         position: "bottom-center",
-  //       });
-  //     }
-  //   }, 1000);
-
-  //   return () => clearInterval(id);
-  // }, [state.original_chunks, state.chunks]);
-
   if (!state.source_row.id) return <div>Loading...</div>;
 
   const title = getTranslation("Title").replace(
@@ -171,14 +157,6 @@ export function Read() {
         phrases={state.phrases.map((ele) => ele.phrase)}
       />
     );
-    // return (
-    //   <HighlightHtmlText
-    //     htmlString={chunk}
-    //     words={["is", "open"]}
-    //     idioms={["targets and extension"]}
-    //     phrases={["upon each other"]}
-    //   />
-    // );
   }
 
   return (

@@ -9,7 +9,10 @@
  * 
  * Output: [a1 + a2, a3 + a4 + a5, a6]
  */
-export function combineTextsByMinWords(texts, minWords = 15) {
+
+const MIN_WORDS_PER_SENTENCE = 15;
+
+export function combineTextsByMinWords(texts, minWords = MIN_WORDS_PER_SENTENCE) {
   if (!Array.isArray(texts) || texts.length === 0) return [];
 
   const sentences = [];
@@ -31,12 +34,14 @@ export function combineTextsByMinWords(texts, minWords = 15) {
     sentences.push(currentSentence.trim());
   }
 
-  if (sentences.length >= 2) {
+  const MIN_SENTENCE_LENGTH = 2;
+
+  if (sentences.length >= MIN_SENTENCE_LENGTH) {
     const lastSentence = sentences[sentences.length - 1];
     const lastWordCount = lastSentence.split(/\s+/).filter(Boolean).length;
 
     if (lastWordCount < minWords) {
-      sentences[sentences.length - 2] += " " + lastSentence;
+      sentences[sentences.length - MIN_SENTENCE_LENGTH] += " " + lastSentence;
       sentences.pop();
     }
   }

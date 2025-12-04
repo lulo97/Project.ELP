@@ -30,6 +30,16 @@
     "no-trailing-spaces": "off",
     "object-shorthand": "off",
     "no-useless-escape": "off",
-    "no-prototype-builtins": "off"
+    "no-prototype-builtins": "off",
+    "no-magic-numbers": [
+      "error",
+      {
+        "ignore": [0, 1, 2, 100],
+        "ignoreArrayIndexes": true,
+        "enforceConst": true
+      }
+    ],
+    "no-duplicate-imports": "error",
+    "no-unsafe-optional-chaining": "error"
   }
 }

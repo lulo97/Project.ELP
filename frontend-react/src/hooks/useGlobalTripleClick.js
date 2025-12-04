@@ -1,6 +1,9 @@
 import { useEffect, useRef } from "react";
 
-export function useGlobalTripleClick(onTripleClick, interval = 400) {
+const INTERVAL = 400;
+const TRIPLE_CLICK_COUNT = 3;
+
+export function useGlobalTripleClick(onTripleClick, interval = INTERVAL) {
   const clickCount = useRef(0);
   const lastClickTime = useRef(0);
 
@@ -15,7 +18,7 @@ export function useGlobalTripleClick(onTripleClick, interval = 400) {
       clickCount.current += 1;
       lastClickTime.current = now;
 
-      if (clickCount.current === 3) {
+      if (clickCount.current === TRIPLE_CLICK_COUNT) {
         onTripleClick();
         clickCount.current = 0; // reset after firing
       }

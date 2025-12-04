@@ -1,3 +1,4 @@
+/* eslint-disable no-magic-numbers */
 export function getTimeFromId(id, return_type = "String") {
   if (!id || id.length < 14) return null; // invalid ID
 

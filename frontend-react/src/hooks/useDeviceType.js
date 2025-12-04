@@ -1,10 +1,12 @@
-// useDeviceType.js
 import { useState, useEffect } from "react";
+
+const MOBILE_WIDTH = 767;
+const TABLE_WIDTH = 1024
 
 export function useDeviceType() {
   const getType = (width) => {
-    if (width <= 767) return "mobile";
-    if (width <= 1024) return "tablet";
+    if (width <= MOBILE_WIDTH) return "mobile";
+    if (width <= TABLE_WIDTH) return "tablet";
     return "desktop";
   };
 
@@ -29,8 +31,8 @@ export function useDeviceType() {
  * @returns {"mobile" | "tablet" | "desktop"}
  */
 export function getDeviceType(width) {
-  if (width <= 767) return "mobile";
-  if (width <= 1024) return "tablet";
+  if (width <= MOBILE_WIDTH) return "mobile";
+  if (width <= TABLE_WIDTH) return "tablet";
   return "desktop";
 }
 

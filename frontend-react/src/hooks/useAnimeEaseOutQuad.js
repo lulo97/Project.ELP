@@ -19,6 +19,7 @@ export function useAnimeEaseOutQuad(selector, options = {}, deps = []) {
     }
     
     animate(selector, {
+      // eslint-disable-next-line no-magic-numbers
       translateY: [20, 0],
       opacity: [0, 1],
       duration: 500,

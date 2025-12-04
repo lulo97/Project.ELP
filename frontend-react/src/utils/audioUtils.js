@@ -1,4 +1,4 @@
-// Pure utility functions for WAV encoding
+/* eslint-disable no-magic-numbers */
 export function encodeWAV(samples, sampleRate) {
   const flatten = mergeBuffers(samples);
   const buffer = new ArrayBuffer(44 + flatten.length * 2);

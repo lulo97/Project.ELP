@@ -14,7 +14,10 @@ import { getTranslation } from "./getTranslation.js";
     ]
 }
 */
-export function buildMultipleChoiceQuestion({ data, choice_count = 4 }) {
+
+const CHOICE_COUNT = 4;
+
+export function buildMultipleChoiceQuestion({ data, choice_count = CHOICE_COUNT }) {
   if ([null, undefined].includes(data) || data.length < choice_count) {
     return null;
   }
