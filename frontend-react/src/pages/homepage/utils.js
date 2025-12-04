@@ -1,0 +1,57 @@
+/* eslint-disable no-magic-numbers */
+export const ANIMATION = {
+  heading: {
+    translateY: 10,
+    opacityFrom: 0,
+    opacityTo: 1,
+    duration: 420 / 2,
+  },
+  term: {
+    translateY: 28,
+    scaleFrom: 0.98,
+    scaleTo: 1,
+    opacityFrom: 0,
+    opacityTo: 1,
+    duration: 520 / 2,
+    stagger: 28 / 2,
+  },
+  breadcrumb: {
+    translateY: 12,
+    opacityFrom: 0,
+    opacityTo: 1,
+    duration: 380 / 2,
+    staggerDelay: 80 / 2,
+    start: 200 / 2,
+  },
+  label: {
+    translateX: -10,
+    opacityFrom: 0,
+    opacityTo: 1,
+    duration: 360 / 2,
+    staggerDelay: 90 / 2,
+    start: 380 / 2,
+  },
+  content: {
+    translateY: 14,
+    opacityFrom: 0,
+    opacityTo: 1,
+    duration: 420 / 2,
+    staggerDelay: 100 / 2,
+    start: 460 / 2,
+  },
+  funCard: {
+    scaleFrom: 0.985,
+    scaleTo: 1,
+    opacityFrom: 0,
+    opacityTo: 1,
+    duration: 420 / 2,
+    delay: 740 / 2,
+  },
+  footer: {
+    translateY: 10,
+    opacityFrom: 0,
+    opacityTo: 1,
+    duration: 380 / 2,
+    delay: 900 / 2,
+  },
+};

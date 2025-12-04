@@ -1,3 +1,4 @@
+/* eslint-disable no-magic-numbers */
 import { useEffect, useRef } from "react";
 import { animate, stagger } from "animejs";
 
@@ -31,7 +32,7 @@ export function AnimatedList({ children, trigger = 0 }) {
     const items = listRef.current.querySelectorAll(".animated-item");
 
     if (
-      JSON.stringify(refToKeys(items)) == JSON.stringify(oldListRef.current)
+      JSON.stringify(refToKeys(items)) === JSON.stringify(oldListRef.current)
     ) {
      // console.log("Same");
       return;
@@ -47,7 +48,7 @@ export function AnimatedList({ children, trigger = 0 }) {
     const items = listRef.current.querySelectorAll(".animated-item");
 
     runAnimation(items);
-    //console.log("Run by trigger");
+    // console.log("Run by trigger");
   }, [trigger]);
 
   return (
