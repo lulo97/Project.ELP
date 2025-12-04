@@ -58,6 +58,10 @@ export function Read() {
   }, []);
 
   useGlobalTripleClick(() => {
+    if (!selectedTextDoubleClick) {
+      throw Error("Selected text null!");
+    }
+
     // Open popup
     setState((state) => {
       return {
@@ -78,6 +82,8 @@ export function Read() {
   });
 
   useEffect(() => {
+    // console.log(selectedText)
+
     if (selectedText.length === 0) return;
 
     if (state.open_popup) return;

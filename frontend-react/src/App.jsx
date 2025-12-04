@@ -1,5 +1,5 @@
 import { Layout } from "./layouts/Layout";
-import { HomePage } from "./pages/HomePage";
+import { HomePage } from "./pages/homepage/HomePage";
 import { Routes, Route, Link, useNavigate, useLocation } from "react-router-dom";
 import { routes } from "./routes";
 import "./index.css";
@@ -67,12 +67,12 @@ function App() {
     async function checkAuthOnPublicPages() {
       const publicPages = ["/login", "/signup"];
       if (!publicPages.includes(location.pathname)) {
-        //console.log("Not check")
+        // console.log("Not check")
         return;
       };
 
       const user = await getUserByToken(false);
-      console.log({user})
+      // console.log({ user })
       if (user && user.username) {
         navigate("/");
       }

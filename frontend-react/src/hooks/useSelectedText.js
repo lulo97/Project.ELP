@@ -7,13 +7,15 @@ export function useSelectedText() {
   const [selectedText, setSelectedText] = useState("");
 
   function isNotSelected(event) {
+    const target = event.target;
+
     if (
-      event.target &&
-      event.target.className &&
-      event.target.className.includes(ALLOW_SELECTED)
+      target?.className?.includes(ALLOW_SELECTED) ||
+      target?.parentElement?.className?.includes(ALLOW_SELECTED)
     ) {
       return false;
     }
+
     return true;
   }
 

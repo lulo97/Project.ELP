@@ -12,12 +12,10 @@ export function GlobalTooltip({
   const ref = useRef(null);
 
   useEffect(() => {
-    console.log("Render by trigger ", trigger, { meanings });
-
     const targets = document.querySelectorAll(".WORD, .IDIOM, .PHRASE");
 
     function show(e) {
-      let innerText = e.target.innerText;
+      const innerText = e.target.innerText;
       let _text = innerText;
 
       if (e.target.classList.contains("WORD")) {
