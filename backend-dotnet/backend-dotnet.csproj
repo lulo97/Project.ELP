@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>backend_dotnet</RootNamespace>
+    <DebugType>portable</DebugType>
   </PropertyGroup>
 
   <ItemGroup>

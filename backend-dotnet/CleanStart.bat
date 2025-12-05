@@ -7,8 +7,8 @@ SET CONTAINER_PORT=3201
 SET DOCKER_NETWORK=elp-network
 SET ENV_FILE=.env.production
 
-REM Run dotnet publish to /publish folder
-dotnet publish ".\backend-dotnet.csproj" -c Release -o "%CD%\publish"
+REM Run dotnet publish to /publish folder (ignore errors silently)
+dotnet publish ".\backend-dotnet.csproj" -c Release -o "%CD%\publish" || echo Skipping publish (dotnet not installed)
 
 REM Stop and remove existing container, image
 docker rm -f %CONTAINER_NAME%

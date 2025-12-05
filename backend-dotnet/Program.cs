@@ -21,7 +21,10 @@ builder.WebHost.ConfigureKestrel(options =>
     options.ListenAnyIP(int.Parse(appPort));
 });
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<RequestLoggingFilter>();
+});
 
 var host = Environment.GetEnvironmentVariable("POSTGRESQL_HOST");
 var port = Environment.GetEnvironmentVariable("POSTGRESQL_PORT");
@@ -58,6 +61,8 @@ builder.Services.AddScoped<WritingQuestionsService>();
 builder.Services.AddHttpClient<AIService>();
 builder.Services.AddHttpClient<YoutubeService>();
 builder.Services.AddScoped<ReadService>();
+builder.Services.AddScoped<UsersService>();
+
 
 //Scope declare in Program not run yet, only someone calling service then it's running
 builder.Services.AddScoped<JwtSettings>(sp =>
@@ -142,6 +147,10 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseMiddleware<PaginationMiddleware>();
+//Set exception middleware last to prevent error: ObjectDisposedException: Cannot access a closed stream
+//Caused by trying to modify response twice
+//Flow: Request -> Pagination before -> Exeption before -> Controller (error) -> Pagination after (skip) -> Exception after (modify response) -> Done
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.MapControllers();
 

@@ -6,6 +6,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Utils;
+using static Utils.Utils;
 
 public class AuthService
 {
@@ -21,24 +22,30 @@ public class AuthService
     public async Task<ApiResponse<object>> SignUp(string username, string password)
     {
         if (string.IsNullOrWhiteSpace(username))
-            return ApiResponse<object>.Fail("Username is null!");
+            return ApiResponse<object>.Fail("UsernameNull");
 
         if (string.IsNullOrWhiteSpace(password))
-            return ApiResponse<object>.Fail("Password is null!");
+            return ApiResponse<object>.Fail("PasswordNull");
 
         var exists = await _db.users.AnyAsync(u => u.username == username);
         if (exists)
-            return ApiResponse<object>.Fail("User already exists!");
+            return ApiResponse<object>.Fail("UserAlreadyExists");
 
         var user = new users
         {
+            id = GetRandomId(),
             username = username,
             password_hash = BCrypt.Net.BCrypt.HashPassword(password)
         };
 
-        await _db.users.AddAsync(user);
+        //Add alone only write changes to EF Change Tracker
+        //Call SaveChangesAsync() to actually save in db
+        //await _db.users.AddAsync(user);
 
-        return ApiResponse.Ok();
+        _db.users.Add(user);
+        await _db.SaveChangesAsync();
+
+        return ApiResponse.Ok(user);
     }
 
     public async Task<ApiResponse<object>> Login(string username, string password, HttpResponse response)
@@ -112,7 +119,7 @@ public class AuthService
         {
             user = new JwtResponse
             {
-                username = username,
+                username = username!,
                 iat = jwt.IssuedAt,
                 exp = jwt.ValidTo
             }

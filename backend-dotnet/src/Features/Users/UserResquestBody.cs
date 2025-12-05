@@ -1,14 +1,10 @@
-﻿namespace backend_dotnet.src.Features.Users
+﻿public class UserRequestBody
 {
-    public class UserResquestBody
-    {
-        public string id { get; set; } = "";
-        public string username { get; set; } = "";
-        public string login_username { get; set; } = "";
-
-        public override string ToString()
-        {
-            return $"UserResquestBody {{ id = {id}, username = {username} , login_username = {login_username}}}";
-        }
-    }
+    public string id { get; set; } = "";
+    public string username { get; set; } = "";
+    public string email { get; set; } = "";
+    public string password_hash { get; set; } = "";
+    public string fullName { get; set; } = "";
+    public bool is_active { get; set; }
+    public DateTime created_at { get; set; }
 }
