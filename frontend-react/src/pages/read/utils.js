@@ -25,6 +25,7 @@ export const EMPTY_STATE = {
   horizontal_layout:
     localStorage.getItem("horizontal_layout") === "true",
   trigger: 0,
+  selectedTextDoubleClick: ""
 };
 
 export function compareObjects(obj1, obj2) {

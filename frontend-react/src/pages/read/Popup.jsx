@@ -58,7 +58,8 @@ export function Popup({
         ...old_state,
         open_popup: false,
         word_row: EMPTY_STATE.word_row,
-        trigger: old_state.trigger + 1
+        trigger: old_state.trigger + 1,
+        selectedTextDoubleClick: "",
       };
     });
   }

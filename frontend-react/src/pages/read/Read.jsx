@@ -31,8 +31,6 @@ export function Read() {
 
   const [state, setState] = useState(EMPTY_STATE);
 
-  const [selectedTextDoubleClick, setSelectedTextDoubleClick] = useState("");
-
   async function fetchData() {
     const result = await getReadData({ source_id: source_id });
 
@@ -58,7 +56,7 @@ export function Read() {
   }, []);
 
   useGlobalTripleClick(() => {
-    if (!selectedTextDoubleClick) {
+    if (!state.selectedTextDoubleClick) {
       throw Error("Selected text null!");
     }
 
@@ -69,7 +67,7 @@ export function Read() {
         open_popup: true,
         word_row: {
           ...state.word_row,
-          word: selectedTextDoubleClick,
+          word: state.selectedTextDoubleClick,
         },
       };
     });
@@ -97,7 +95,10 @@ export function Read() {
     if (symbols.includes(_word)) return;
 
     // Remember word selected by double click
-    setSelectedTextDoubleClick(_word);
+    setState(old_state => ({
+      ...old_state,
+      selectedTextDoubleClick: _word
+    }))
   }, [selectedText]);
 
   function isChunksEdit() {
