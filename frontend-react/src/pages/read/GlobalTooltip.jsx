@@ -61,8 +61,9 @@ export function GlobalTooltip({
         window.innerWidth - padX
       );
 
+      const MAGIC_NUMBER = 1.5;
       const y = Math.min(
-        Math.max(e.clientY - 1.5 * padY, 0),
+        Math.max(e.clientY - MAGIC_NUMBER * padY, 0),
         window.innerHeight - padY
       );
 
