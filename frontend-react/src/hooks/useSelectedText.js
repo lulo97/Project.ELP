@@ -12,7 +12,7 @@ export function useSelectedText() {
     if (
       target?.className?.includes(ALLOW_SELECTED) ||
       target?.parentElement?.className?.includes(ALLOW_SELECTED)
-    ) {
+    ) { 
       return false;
     }
 
