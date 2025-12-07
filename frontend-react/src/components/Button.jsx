@@ -9,9 +9,10 @@ export function Button({
   className = "",
   ...props
 }) {
-  if (Object.keys(props).includes("disable"))
+  if (Object.keys(props).includes("disable")) {
     console.warn("Incorrect props = 'disable'!");
-
+  }
+  
   const handleClick = () => {
     if (!disabled) {
       onClick();

@@ -20,7 +20,7 @@ export function PopupField({
     fieldComponent.props.className || "", // keep user-provided classes
   ].join(" ");
 
-  if (device == "mobile") {
+  if (device === "mobile") {
     className = className + " w-full";
   }
 
@@ -32,7 +32,7 @@ export function PopupField({
     className: className,
   });
 
-  if (direction === "horizontal" && device != "mobile") {
+  if (direction === "horizontal" && device !== "mobile") {
     return (
       <div className="flex items-center mb-4">
         <label className="w-32 text-sm font-medium text-gray-700">

@@ -36,7 +36,7 @@ export function LogIn() {
         return;
       }
 
-      //Double check with api/me
+      // Double check with api/me
       const result_me = await me();
 
       if (result_me.error) {
@@ -85,6 +85,7 @@ export function LogIn() {
             label={getTranslation("Username", translation)}
             fieldComponent={
               <Input
+                id="username"
                 className="py-0"
                 placeholder={getTranslation("Username", translation)}
                 value={username}
@@ -96,6 +97,7 @@ export function LogIn() {
             label={getTranslation("Password", translation)}
             fieldComponent={
               <Input
+                id="password"
                 className="py-0"
                 type="password"
                 placeholder={getTranslation("Password", translation)}
@@ -108,6 +110,7 @@ export function LogIn() {
 
         <div className="pt-4">
           <Button
+            id="login"
             text={
               loading
                 ? getTranslation("LoggingIn", translation)

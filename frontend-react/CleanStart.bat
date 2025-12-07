@@ -11,9 +11,10 @@ SET ENV_FILE=.env.production
 
 REM == BUILD ==
 echo Running npm run build...
-call npm run build >nul 2>&1
+call npm.cmd run build
 IF %ERRORLEVEL% NEQ 0 (
-  echo Warning: npm run build failed or npm is not installed. Continuing...
+  echo Warning: npm run build failed. Exiting...
+  exit /b %ERRORLEVEL%
 )
 
 REM =============================

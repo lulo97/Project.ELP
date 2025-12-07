@@ -62,6 +62,7 @@ export function SignUp() {
             label={getTranslation("Username", translation)}
             fieldComponent={
               <Input
+                id="username"
                 className="py-0"
                 placeholder={getTranslation("Username", translation)}
                 value={username}
@@ -73,6 +74,7 @@ export function SignUp() {
             label={getTranslation("Password", translation)}
             fieldComponent={
               <Input
+                id="password"
                 className="py-0"
                 type="password"
                 placeholder={getTranslation("Password", translation)}
@@ -85,6 +87,7 @@ export function SignUp() {
             label={getTranslation("ConfirmPassword", translation)}
             fieldComponent={
               <Input
+                id="confirm_password"
                 className="py-0"
                 type="password"
                 placeholder={getTranslation("ConfirmPassword", translation)}
@@ -97,6 +100,7 @@ export function SignUp() {
 
         <div className="pt-4">
           <Button
+            id="signup"
             text={
               loading
                 ? getTranslation("SigningUp", translation)

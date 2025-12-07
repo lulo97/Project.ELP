@@ -2,7 +2,6 @@ import React from "react";
 import { mergeTailwindClasses } from "../utils/mergeTailwindClasses";
 
 export function Input({ label, className = "", padding = "", inputClassName = "", ...props }) {
-
   const _padding = padding || "px-3 py-2";
 
   return (

@@ -1,13 +1,11 @@
 import { getLowercaseKeys } from "../utils/getLowercaseKeys";
-import { cloneElement } from "react";
+import { Fragment } from "react";
 import { isObject } from "../utils/isObject";
 import { Button } from "./Button";
 import { Pagination } from "./Pagination";
-import { Fragment } from "react";
 import { getTranslation } from "../utils/getTranslation";
 import { useDeviceType } from "../hooks/useDeviceType";
 import { TableMobile } from "./TableMobile";
-import { useState, useEffect } from "react";
 
 export function Table({
   translation = {},
@@ -23,7 +21,7 @@ export function Table({
 }) {
   const deviceType = useDeviceType();
 
-  if (deviceType == "mobile") {
+  if (deviceType === "mobile") {
     return (
       <TableMobile
         translation={translation}
@@ -82,11 +80,11 @@ export function Table({
 
                     const key = isObject(col) ? col.id : col;
 
-                    //Trying to map any column name to UI declared column id
-                    //Example: database column = nAmE vs UI column id = NaMe still matched
-                    let cell = getLowercaseKeys(row)[key.toLowerCase()];
+                    // Trying to map any column name to UI declared column id
+                    // Example: database column = nAmE vs UI column id = NaMe still matched
+                    const cell = getLowercaseKeys(row)[key.toLowerCase()];
 
-                    //If cell value is boolean then render special
+                    // If cell value is boolean then render special
                     if (
                       typeof cell === "boolean" ||
                       ["true", "false"].includes(String(cell))
