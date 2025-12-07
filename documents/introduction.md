@@ -24,21 +24,34 @@ A personal project designed to help learn English while being tailored for perso
 # Technology Stack
 
 * **Frontend:** React, JavaScript
-* **Backend:** Express, Python
+* **Backend:** Express, Python, C#
 * **Deployment:** Docker, Nginx
 
 ---
 
 # Services
 
-* **ELP.Application:** Main application source code, including frontend and backend.
-* **ELP.YoutubeService:**
+* **ELP.FrontendReact:** Main application UI source code using React primary.
+- Using Tailwind for css style
+- Creating UI components from scratch in /components folder
+- Design responsive UI and allow changing application display language
 
-  * Stores YouTube audio files in MP3 format.
-  * Provides an open API for fetching transcripts.
-  * Supports base64 encoding and audio streaming.
+* **ELP.BackendExpress:** Main application bussiness source code using ExpressJS primary.
+- Main logic code written in PL/SQL of PosgreSQL
+- ExpressJS calling procedure and expected output { p_rows: [], p_error: "" } as output
+
+* **ELP.BackendDotnet:** Main application bussiness source code using Dotnet WebApi primary.
+- Integrate EF framework and LINQ to writing logic code interact with database
+
+* **ELP.Utils:**
+  - Youtube utils:
+    * Stores YouTube audio files in MP3 format.
+    * Provides an open API for fetching transcripts.
+    * Supports base64 encoding and audio streaming.
+  - Speech to text utils using OpenAI Whisper
+  - Text to speech utils using PiperTTS 
+  - LLM API backend using llama.cpp
+
 * **ELP.PostgreSQL:** Primary database for storing entities like words, users, events, etc.
-* **ELP.Redis:** Caches infrequently changing data.
-* **ELP.Whisper:** OpenAI Whisper container providing speech-to-text services.
-* **ELP.Piper:** PiperTTS container providing text-to-speech services.
-* **ELP.LLama:** LLM API backend using `llama.cpp`.
+
+* **ELP.Redis:** Caches infrequently changing data like consts table

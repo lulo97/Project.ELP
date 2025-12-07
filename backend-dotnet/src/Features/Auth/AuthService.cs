@@ -135,6 +135,7 @@ public class AuthService
 
         var descriptor = new SecurityTokenDescriptor
         {
+            //http://schemas.xmlsoap.org/ws/2005/05/identity/claims -> { "unique_name": username }
             Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, username) }),
             Expires = DateTime.UtcNow.AddSeconds(_jwt.MaxAgeSeconds),
             IssuedAt = DateTime.UtcNow,
