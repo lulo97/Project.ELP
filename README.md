@@ -9,6 +9,6 @@
 # [4. API design](./documents/api_design.md)
 
 # [5. Features]
-## [5.1 Manage user's learning materials](./documents/features/user_library.md)
+## [5.1 Manage user's learning materials](./documents/features/user_library/user_library.md)
 
 # [6. Deployment](./documents/deployment.md)
