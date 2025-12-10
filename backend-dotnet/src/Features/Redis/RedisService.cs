@@ -52,6 +52,23 @@ public class RedisService
     public async Task<string?> Get(string key)
     {
         var db = _redis.GetDatabase();
+
+        if (key == "CONSTS")
+        {
+            var output = await db.StringGetAsync(key);
+            if (output == RedisValue.Null)
+            {
+                await InitAsync();
+                output = await db.StringGetAsync(key);
+                if (output == RedisValue.Null)
+                {
+                    throw new Exception("Can't get key = CONSTS");
+                }
+            }
+
+            return output;
+        }
+
         return await db.StringGetAsync(key);
     }
 

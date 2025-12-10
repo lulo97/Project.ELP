@@ -63,6 +63,7 @@ builder.Services.AddHttpClient<YoutubeService>();
 builder.Services.AddScoped<ReadService>();
 builder.Services.AddScoped<UsersService>();
 
+builder.Services.AddHostedService<ThreadLoggingService>();
 
 //Scope declare in Program not run yet, only someone calling service then it's running
 builder.Services.AddScoped<JwtSettings>(sp =>
