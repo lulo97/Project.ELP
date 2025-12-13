@@ -91,7 +91,8 @@ export function Table({
                     ) {
                       return (
                         <td
-                          key={key + rowIndex}
+                          id={key + "_" + rowIndex}
+                          key={key + "_" + rowIndex}
                           className="px-4 py-3 h-[48px] flex items-center justify-center"
                         >
                           <input
@@ -105,7 +106,8 @@ export function Table({
 
                     return (
                       <td
-                        key={key + rowIndex}
+                        id={key + "_" + rowIndex}
+                        key={key + "_" + rowIndex}
                         className={`px-4 py-3 max-w-[200px] h-[48px] ${
                           isTruncate ? "truncate" : "whitespace-pre-line"
                         }`}
@@ -126,6 +128,7 @@ export function Table({
                       <div className="flex h-full items-center space-x-2">
                         {showEditButton && (
                           <Button
+                            id={"edit_" + rowIndex}
                             className="py-0 h-full"
                             text={getTranslation("Edit")}
                             onClick={() =>
@@ -135,6 +138,7 @@ export function Table({
                         )}
                         {showDeleteButton && (
                           <Button
+                            id={"delete_" + rowIndex}
                             className="py-0 h-full"
                             text={getTranslation("Delete")}
                             onClick={() =>

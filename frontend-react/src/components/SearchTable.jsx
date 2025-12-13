@@ -2,11 +2,10 @@ import { useDeviceType } from "../hooks/useDeviceType";
 import { getTranslation } from "../utils/getTranslation";
 import { Button } from "./Button";
 import { Input } from "./Input";
-import { useState } from "react";
 import { SearchTableMobile } from "./SearchTableMobile";
 
 export function SearchTable({ searchValues, setSearchValues, fetchRows }) {
-  if (useDeviceType() == "mobile") {
+  if (useDeviceType() === "mobile") {
     return (
       <SearchTableMobile
         searchValues={searchValues}
@@ -25,6 +24,7 @@ export function SearchTable({ searchValues, setSearchValues, fetchRows }) {
               {data.label}
             </label>
             <Input
+              id={"search_by_" + data.id}
               value={data.value}
               onChange={(event) => {
                 const newSearchValues = searchValues.map((ele) =>
@@ -44,6 +44,7 @@ export function SearchTable({ searchValues, setSearchValues, fetchRows }) {
       })}
       <div className="flex items-end">
         <Button
+          id="btn_search"
           text={getTranslation("Search")}
           onClick={() => {
             fetchRows();

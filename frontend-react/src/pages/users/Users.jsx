@@ -60,7 +60,7 @@ export function Users() {
   async function handleConfirm({ action }) {
     let result = null;
 
-    if (action == "DELETE") {
+    if (action === "DELETE") {
       result = await deleteUser({ id: currentRow.id });
     }
 

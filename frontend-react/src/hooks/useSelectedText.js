@@ -12,7 +12,7 @@ export function useSelectedText() {
     if (
       target?.className?.includes(ALLOW_SELECTED) ||
       target?.parentElement?.className?.includes(ALLOW_SELECTED)
-    ) { 
+    ) {
       return false;
     }
 
@@ -24,7 +24,10 @@ export function useSelectedText() {
       const selection = window.getSelection();
       const text = selection.toString();
 
-      if (isNotSelected(event)) return;
+      if (isNotSelected(event)) {
+        setSelectedText("");
+        return;
+      }
 
       setSelectedText(text);
     }
@@ -33,7 +36,10 @@ export function useSelectedText() {
       const selection = window.getSelection();
       const text = selection.toString();
 
-      if (isNotSelected(event)) return;
+      if (isNotSelected(event)) {
+        setSelectedText("");
+        return;
+      }
 
       if (!text) {
         setSelectedText(""); // clear if nothing selected

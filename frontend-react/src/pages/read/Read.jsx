@@ -21,6 +21,8 @@ import { FloatingSettings } from "../../components/FloatingSettings";
 import { SplitPane } from "../../components/SplitPane";
 import { GlobalTooltip } from "./GlobalTooltip";
 import { useGlobalTripleClick } from "../../hooks/useGlobalTripleClick";
+import { SettingsList } from "./SettingsList";
+import { AddTooltip } from "./AddTooltip";
 
 const getTranslation = (key) => _getTranslation(key, translation);
 
@@ -56,7 +58,9 @@ export function Read() {
   }, []);
 
   useGlobalTripleClick(() => {
-    if (!state.selectedTextDoubleClick) {
+    return;
+
+    if (!state.selectedWordDoubleClick) {
       throw Error("Selected text null!");
     }
 
@@ -67,7 +71,7 @@ export function Read() {
         open_popup: true,
         word_row: {
           ...state.word_row,
-          word: state.selectedTextDoubleClick,
+          word: state.selectedWordDoubleClick,
         },
       };
     });
@@ -82,23 +86,45 @@ export function Read() {
   useEffect(() => {
     // console.log(selectedText)
 
-    if (selectedText.length === 0) return;
+    if (selectedText.length === 0) {
+      setState((old_state) => ({
+        ...old_state,
+        selectedWordDoubleClick: "",
+        selectedPhraseDoubleClick: "",
+      }));
+      return;
+    };
 
     if (state.open_popup) return;
 
-    const _word = selectedText.trim();
+    const _selectedText = selectedText.trim();
 
-    if (!_word || _word.length === 0 || _word.includes(" ")) return;
+    // Save phrase
+    if (_selectedText.includes(" ")) {
+      setState((old_state) => ({
+        ...old_state,
+        selectedPhraseDoubleClick: _selectedText,
+      }));
+      return;
+    }
+
+    if (
+      !_selectedText ||
+      _selectedText.length === 0 ||
+      _selectedText.includes(" ")
+    ) {
+      return;
+    }
 
     const symbols = ["+", "-", "*", "/", "=", "<", ">", ".", ",", "'", '"'];
 
-    if (symbols.includes(_word)) return;
+    if (symbols.includes(_selectedText)) return;
 
     // Remember word selected by double click
-    setState(old_state => ({
+    setState((old_state) => ({
       ...old_state,
-      selectedTextDoubleClick: _word
-    }))
+      selectedWordDoubleClick: _selectedText,
+    }));
   }, [selectedText]);
 
   function isChunksEdit() {
@@ -191,7 +217,7 @@ export function Read() {
                   <br />
                 </div>
               );
-            };
+            }
 
             return (
               <div key={idx}>
@@ -327,34 +353,8 @@ export function Read() {
         phrases={state.phrases}
         trigger={state.trigger}
       />
-    </div>
-  );
-}
 
-function SettingsList({
-  settings = [
-    { id: "darkMode", label: "Enable Dark Mode" },
-    { id: "notifications", label: "Show Notifications" },
-    { id: "autoSave", label: "Auto Save Drafts" },
-    { id: "beta", label: "Join Beta Features" },
-  ],
-}) {
-  return (
-    <div className="space-y-3">
-      {settings.map((s) => (
-        <label
-          key={s.id}
-          className="flex items-center justify-between cursor-pointer"
-        >
-          <span className="text-gray-700">{s.label}</span>
-          <input
-            checked={s.checked}
-            onClick={() => s.onClick()}
-            type="checkbox"
-            className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-          />
-        </label>
-      ))}
+      <AddTooltip state={state} setState={setState} />
     </div>
   );
 }
